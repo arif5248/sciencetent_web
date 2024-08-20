@@ -7,7 +7,8 @@
   },
  "scripts": {
   "postinstall": "npm install --legacy-peer-deps",
-  "start": "node server.js"
+  "start": "yarn run server",
+  "build": "yarn run build"
   },
   "author": "Arifish",
   "license": "MIT",
