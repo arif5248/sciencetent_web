@@ -7,7 +7,7 @@ const bodyParser = require("body-parser");
 const fileUpload = require("express-fileupload");
 const cron = require("node-cron");
 
-dotenv.config({ path: "backend/config/config.env" });
+dotenv.config({ path: "./config/config.env" });
 
 const user = require("./routes/userRoutes");
 const batch = require("./routes/batchRoutes");
