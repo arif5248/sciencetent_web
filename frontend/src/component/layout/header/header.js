@@ -6,7 +6,7 @@ import Navbar from "react-bootstrap/Navbar";
 import Dropdown from "react-bootstrap/Dropdown";
 import "./header.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { Link, useNavigate } from "react-router-dom";
 import { fetchUserLogout } from "../../../slice/userSlice";
 import Loader from "../loader/loader";
@@ -16,7 +16,7 @@ function Header() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isLoading, user } = useSelector((state) => state.user);
-
+  console.log(user)
   const [showDropdown, setShowDropdown] = useState(false);
   const [showLogoutAlert, setShowLogoutAlert] = useState(false);
 
