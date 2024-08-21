@@ -1,6 +1,7 @@
 const dotenv = require("dotenv");
 const express = require("express");
 // const path = require("path");
+const cors = require('cors');
 const app = express();
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
@@ -21,6 +22,13 @@ const errorMiddleware = require("./middleware/error");
 const {
   birthdayNotification,
 } = require("./controllers/notifiactionController");
+
+// Add CORS middleware
+app.use(cors({
+  origin: 'https://sciencetent.vercel.app', // Allow requests from your frontend
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow specific HTTP methods
+  credentials: true, // Allow credentials such as cookies or authentication headers
+}));
 
 app.use(express.json({ limit: "1.5mb" }));
 app.use(cookieParser());
