@@ -25,7 +25,7 @@ const {
 
 // Add CORS middleware
 app.use(cors({
-  origin: 'https://sciencetent.vercel.app', // Allow requests from your frontend
+  origin: '*', // Allow requests from your frontend
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow specific HTTP methods
   credentials: true, // Allow credentials such as cookies or authentication headers
 }));
