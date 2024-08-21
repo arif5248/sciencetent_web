@@ -37,6 +37,7 @@ export const fetchUserLogout = createAsyncThunk(
 
 export const fetchLoadUser = createAsyncThunk("user/fetchUser", async () => {
   const { data } = await axios.get(`/api/v1/me`);
+  console.log(data,"show data here==========")
   return data;
 });
 
