@@ -1,8 +1,6 @@
 const dotenv = require("dotenv");
 const express = require("express");
-// const path = require("path");
 const cors = require('cors');
-const app = express();
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const fileUpload = require("express-fileupload");
@@ -19,26 +17,36 @@ const notification = require("./routes/noifiactionRoutes");
 const permission = require("./routes/permissionRoutes");
 
 const errorMiddleware = require("./middleware/error");
-const {
-  birthdayNotification,
-} = require("./controllers/notifiactionController");
+const { birthdayNotification } = require("./controllers/notifiactionController");
 
-// Add CORS middleware
-app.use(cors({
-  origin: '*', // Allow requests from your frontend
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow specific HTTP methods
-  credentials: true, // Allow credentials such as cookies or authentication headers
-}));
+const app = express();
 
+// Global Middleware
 app.use(express.json({ limit: "1.5mb" }));
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(fileUpload());
 
+// CORS Configuration
+// This setup handles CORS preflight requests manually
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "https://sciencetent.vercel.app");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.header("Access-Control-Allow-Credentials", "true");
+  
+  // Handle preflight requests
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
+  next();
+});
+
+// Route Handlers
 app.get('/', (req, res) => {
   res.status(404).json({ message: "This is an API server. Please use the appropriate endpoints." });
 });
-
 
 app.use("/api/v1", user);
 app.use("/api/v1", batch);
@@ -48,11 +56,10 @@ app.use("/api/v1", classDetails);
 app.use("/api/v1", notification);
 app.use("/api/v1", permission);
 
-// app.use(express.static(path.join(__dirname, "../frontend/build")));
-// app.get("*", (req, res) => {
-//   res.sendFile(path.resolve(__dirname, "../frontend/build/index.html"));
-// });
+// Error Middleware
+app.use(errorMiddleware);
 
+// Schedule Tasks
 cron.schedule(
   "0 0 * * *",
   () => {
@@ -62,7 +69,5 @@ cron.schedule(
     timezone: "Asia/Dhaka",
   }
 );
-
-app.use(errorMiddleware);
 
 module.exports = app;
