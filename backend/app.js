@@ -27,6 +27,11 @@ app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(fileUpload());
 
+app.get('/', (req, res) => {
+  res.status(404).json({ message: "This is an API server. Please use the appropriate endpoints." });
+});
+
+
 app.use("/api/v1", user);
 app.use("/api/v1", batch);
 app.use("/api/v1", course);
