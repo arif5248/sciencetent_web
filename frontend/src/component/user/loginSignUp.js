@@ -63,10 +63,10 @@ const LoginSignUp = ({ history, location }) => {
       console.log(error);
     }
 
-    if (isAuthenticated) {
-      //   history.push(redirect);
-      Navigate(redirect);
-    }
+    // if (isAuthenticated) {
+    //   //   history.push(redirect);
+    //   Navigate(redirect);
+    // }
   }, [dispatch, error, alert, Navigate, isAuthenticated, redirect]);
 
   const switchTabs = (e, tab) => {
