@@ -29,10 +29,10 @@ function App() {
       {isAuthenticated}
       <Routes>
         <Route exact path="/" Component={Home} />
-        {/* <Route exact path="/account" Component={Profile} />
+        <Route exact path="/account" Component={Profile} />
         <Route exact path="/me/update" Component={UpdateProfile} />
 
-        <Route exact path="/login" Component={LoginSignUp} /> */}
+        <Route exact path="/login" Component={LoginSignUp} />
       </Routes>
     </Router>
   );
