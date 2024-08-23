@@ -36,6 +36,7 @@ export const fetchUserLogout = createAsyncThunk(
 );
 
 export const fetchLoadUser = createAsyncThunk("user/fetchUser", async () => {
+  console.log('main aagaiyeee')
   const  { data }  = await axios.get(`https://sciencetent-backend.vercel.app/api/v1/me`);
   console.log(data,"show data here==========")
   return data;
