@@ -6,7 +6,7 @@ export const fetchUserRegister = createAsyncThunk(
   async (userData) => {
     const config = { headers: { "Content-Type": "application/json" } };
 
-    const { data } = await axios.post(`/api/v1/register`, userData, config);
+    const { data } = await axios.post(`https://sciencetent-backend.vercel.app/api/v1/register`, userData, config);
     return data;
   }
 );
@@ -37,7 +37,10 @@ export const fetchUserLogout = createAsyncThunk(
 
 export const fetchLoadUser = createAsyncThunk("user/fetchUser", async () => {
   console.log('main aagaiyeee')
-  const  { data }  = await axios.get(`https://sciencetent-backend.vercel.app/api/v1/me`);
+  const  { data }  = await axios.get(`https://sciencetent-backend.vercel.app/api/v1/me`, {
+    withCredentials: true,
+  } );
+  
   console.log(data,"show data here==========")
   return data;
 });
