@@ -29,19 +29,16 @@ app.use(fileUpload());
 
 // CORS Configuration
 // This setup handles CORS preflight requests manually
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "https://sciencetent.vercel.app/");
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.header("Access-Control-Allow-Credentials", "true");
-  
-  // Handle preflight requests
-  if (req.method === "OPTIONS") {
-    return res.status(200).end();
-  }
+// CORS Configuration using cors middleware
+const corsOptions = {
+  origin: "https://sciencetent.vercel.app",
+  methods: "GET, POST, PUT, DELETE, OPTIONS",
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+};
 
-  next();
-});
+app.use(cors(corsOptions));
+
 
 // Route Handlers
 app.get('/', (req, res) => {
