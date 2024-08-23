@@ -61,7 +61,6 @@ const userSlice = createSlice({
       state.error = null;
     });
     builder.addCase(fetchUserLogin.rejected, (state, action) => {
-      console.log("=======================================", action);
       state.isLoading = false;
       state.isAuthenticated = false;
       state.user = {};
