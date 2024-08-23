@@ -31,7 +31,7 @@ export const fetchUserLogin = createAsyncThunk(
 export const fetchUserLogout = createAsyncThunk(
   "user/fetchLogout",
   async () => {
-    await axios.get(`/api/v1/logout`);
+    await axios.get(`https://sciencetent-backend.vercel.app/api/v1/logout`);
   }
 );
 
