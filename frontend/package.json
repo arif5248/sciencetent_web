@@ -58,6 +58,6 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "https://sciencetent-backend.vercel.app/"
+  "proxy": "https://sciencetent-backend.vercel.app"
 }
 
