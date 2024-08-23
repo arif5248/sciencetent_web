@@ -14,11 +14,11 @@ function Profile() {
     (state) => state.user
   );
 // console.log("=========is authenticated===========", isAuthenticated)
-  // useEffect(() => {
-  //   if (!user) {
-  //     navigate("/login");
-  //   }
-  // }, [isAuthenticated, navigate]);
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/login");
+    }
+  }, [isAuthenticated, navigate]);
   return (
     <Fragment>
       {isLoading ? (
