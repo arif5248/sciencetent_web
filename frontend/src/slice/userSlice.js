@@ -15,7 +15,7 @@ export const fetchUserLogin = createAsyncThunk(
   "user/fetchUserLogin",
   async ({ email, password }) => {
     try {
-      const config = { headers: { "Content-Type": "application/json" } };
+      const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
       const { data } = await axios.post(
         `https://sciencetent-backend.vercel.app/api/v1/login`,
         { email, password },
