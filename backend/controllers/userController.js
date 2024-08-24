@@ -166,28 +166,38 @@ exports.updateProfile = catchAsyncError(async (req, res, next) => {
     email: req.body.email,
   };
 
-  if (req.user.avatar !== "") {
-    const user = await User.findById(req.user.id);
-    const imageId = user.avatar.public_id;
-    if (imageId === "") {
-      const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
-        folder: "avatars",
-        width: 150,
-        crop: "scale",
-      });
+  if (req.files && req.files.avatar) {
+    const avatarData = req.files.avatar.data;
 
-      newUserData.avatar = {
-        public_id: myCloud.public_id,
-        url: myCloud.secure_url,
+    if (req.user.avatar !== "") {
+      // const user = await User.findById(req.user.id);
+      const imageId = req.user.avatar.public_id;
+
+      // Helper function to handle the Cloudinary upload
+      const uploadToCloudinary = (buffer) => {
+        return new Promise((resolve, reject) => {
+          const stream = cloudinary.v2.uploader.upload_stream(
+            {
+              folder: "avatars",
+              width: 150,
+              crop: "scale",
+            },
+            (error, result) => {
+              if (error) return reject(error);
+              resolve(result);
+            }
+          );
+          require('stream').Readable.from(buffer).pipe(stream);
+        });
       };
-    } else {
-      await cloudinary.v2.uploader.destroy(imageId);
 
-      const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
-        folder: "avatars",
-        width: 150,
-        crop: "scale",
-      });
+      // If the user already has an avatar, delete the existing one
+      if (imageId !== "") {
+        await cloudinary.v2.uploader.destroy(imageId);
+      }
+
+      // Upload the new avatar
+      const myCloud = await uploadToCloudinary(avatarData);
 
       newUserData.avatar = {
         public_id: myCloud.public_id,
@@ -204,6 +214,8 @@ exports.updateProfile = catchAsyncError(async (req, res, next) => {
 
   res.status(200).json({ success: true });
 });
+
+
 
 //Get All Users(admin)
 exports.getAllUsers = catchAsyncError(async (req, res, next) => {
