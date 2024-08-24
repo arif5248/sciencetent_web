@@ -6,7 +6,7 @@ export const fetchUserUpdateProfile = createAsyncThunk(
   async (userData) => {
     const config = { headers: { "Content-Type": "application/json" } };
 
-    const { data } = await axios.put(`/api/v1/me/update`, userData, config);
+    const { data } = await axios.put(`https://sciencetent-backend.vercel.app/api/v1/me/update`, userData, config);
     return data;
   }
 );
