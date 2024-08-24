@@ -52,33 +52,21 @@ exports.loginUser = catchAsyncError(async (req, res, next) => {
 
 //Logout
 exports.logout = catchAsyncError(async (req, res, next) => {
-
+  // Set the expiration date to a time in the past to delete the cookie
   const options = {
-    expires: new Date(
-      Date.now()
-    ),
+    expires: new Date(Date.now() - 1000), // Set expiration to a second in the past
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production", // Should be true for HTTPS
-    sameSite: "None",
+    secure: process.env.NODE_ENV === "production", // Ensure secure only in production
+    sameSite: "None", // or 'Lax', depending on your needs
+    path: "/", // Path should match the original path when the cookie was set
   };
 
   res
-    .status(statusCode)
-    .cookie("token", null, options)
+    .status(200)
+    .cookie("token", null, options) // Set cookie with null value and past expiration
     .json({ success: true, message: "Logged Out" });
-
-
-
-
-  // res.cookie("token", null, {
-  //   expires: new Date(Date.now()),
-  //   httpOnly: true,
-  //   secure: process.env.NODE_ENV === "production", // ensure secure only in production
-  //   sameSite: "None", // or 'Lax', depending on your needs
-  //   path: "/", // make sure it's the same as when the cookie was set
-  // });
-  // res.status(200).json({ success: true, message: "Logged Out" });
 });
+
 
 
 //forgot password
