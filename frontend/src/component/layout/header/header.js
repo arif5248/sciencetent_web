@@ -16,7 +16,7 @@ function Header() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isLoading, user } = useSelector((state) => state.user);
-  console.log(user)
+  // console.log(user)
   const [showDropdown, setShowDropdown] = useState(false);
   const [showLogoutAlert, setShowLogoutAlert] = useState(false);
 

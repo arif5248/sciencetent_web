@@ -9,11 +9,14 @@ import { fetchLoadUser } from "../../slice/userSlice";
 import ProfilePng from "../../images/user.png";
 
 const UpdateProfile = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { user, isloading, isAuthenticated } = useSelector(
+  const { user, isLoading, isAuthenticated } = useSelector(
     (state) => state.user
   );
+  console.log(user)
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  
+  
   const { error, isUpdated } = useSelector((state) => state.profile);
 
   const [name, setName] = useState("");
@@ -68,7 +71,7 @@ const UpdateProfile = () => {
 
   return (
     <Fragment>
-      {isloading ? (
+      {isLoading ? (
         <Loader />
       ) : (
         <Fragment>

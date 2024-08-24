@@ -36,12 +36,11 @@ export const fetchUserLogout = createAsyncThunk(
 );
 
 export const fetchLoadUser = createAsyncThunk("user/fetchUser", async () => {
-  console.log('main aagaiyeee')
+  // console.log('main aagaiyeee')
   const  { data }  = await axios.get(`https://sciencetent-backend.vercel.app/api/v1/me`, {
     withCredentials: true,
   } );
   
-  console.log(data,"show data here==========")
   return data;
 });
 
@@ -87,14 +86,12 @@ const userSlice = createSlice({
       state.isAuthenticated = false;
     });
     builder.addCase(fetchLoadUser.fulfilled, (state, action) => {
-      console.log("=======action for fetchUser======", action.payload.user)
       state.isLoading = false;
       state.isAuthenticated = true;
       state.user = action.payload.user;
       state.error = null;
     });
     builder.addCase(fetchLoadUser.rejected, (state, action) => {
-      console.log("fetch load user rejected")
       state.isLoading = false;
       state.isAuthenticated = false;
       state.user = null;

@@ -52,14 +52,32 @@ exports.loginUser = catchAsyncError(async (req, res, next) => {
 
 //Logout
 exports.logout = catchAsyncError(async (req, res, next) => {
-  res.cookie("token", null, {
-    expires: new Date(Date.now()),
+
+  const options = {
+    expires: new Date(
+      Date.now()
+    ),
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production", // ensure secure only in production
-    sameSite: "None", // or 'Lax', depending on your needs
-    path: "/", // make sure it's the same as when the cookie was set
-  });
-  res.status(200).json({ success: true, message: "Logged Out" });
+    secure: process.env.NODE_ENV === "production", // Should be true for HTTPS
+    sameSite: "None",
+  };
+
+  res
+    .status(statusCode)
+    .cookie("token", null, options)
+    .json({ success: true, message: "Logged Out" });
+
+
+
+
+  // res.cookie("token", null, {
+  //   expires: new Date(Date.now()),
+  //   httpOnly: true,
+  //   secure: process.env.NODE_ENV === "production", // ensure secure only in production
+  //   sameSite: "None", // or 'Lax', depending on your needs
+  //   path: "/", // make sure it's the same as when the cookie was set
+  // });
+  // res.status(200).json({ success: true, message: "Logged Out" });
 });
 
 
