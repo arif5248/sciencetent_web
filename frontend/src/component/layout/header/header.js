@@ -16,19 +16,27 @@ function Header() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isLoading, user } = useSelector((state) => state.user);
-  // console.log(user)
   const [showDropdown, setShowDropdown] = useState(false);
-  const [showLogoutAlert, setShowLogoutAlert] = useState(false);
+  const [message, setMessage] = useState("");
+  const [isError, setIsError] = useState(false);
 
   const onMouseOver = () => {
     setShowDropdown(true);
   };
 
-  const userLogout = () => {
-    dispatch(fetchUserLogout());
-    navigate("/");
-    setShowLogoutAlert(true);
-    setTimeout(() => setShowLogoutAlert(false), 3000);
+  const userLogout = async () => {
+    try {
+      const resultAction = await dispatch(fetchUserLogout()).unwrap();
+      setMessage(resultAction.message); // Assuming the backend sends a success message
+      navigate("/");
+    } catch (error) {
+      setMessage(error.message); // Display the error message from the backend
+      setIsError(true);
+    }
+    setTimeout(() => {
+      setMessage("");
+      setIsError(false);
+    }, 3000);
   };
 
   return (
@@ -61,9 +69,6 @@ function Header() {
               </Navbar.Collapse>
 
               <div className="nav-icon-box">
-                {/* <Nav.Link as={Link} to="/search">
-                  <FontAwesomeIcon icon={faSearch} />
-                </Nav.Link> */}
                 {user ? (
                   <Nav.Link as={Link} to="/login">
                     <div className="user-icon" onMouseOver={onMouseOver}>
@@ -81,11 +86,7 @@ function Header() {
                         <Dropdown.Item as={Link} to="/profile">
                           Update Profile
                         </Dropdown.Item>
-                        <Dropdown.Item
-                          //   as={Link}
-                          onClick={userLogout}
-                          //   to="/login"
-                        >
+                        <Dropdown.Item onClick={userLogout}>
                           Logout
                         </Dropdown.Item>
                       </Dropdown.Menu>
@@ -99,9 +100,14 @@ function Header() {
               </div>
             </Container>
           </Navbar>
-          {showLogoutAlert && (
-            <div className="alert alert-success logoutAlert" role="alert">
-              Successfully Logout
+          {message && (
+            <div
+              className={`alert ${
+                isError ? "alert-danger" : "alert-success"
+              } logoutAlert`}
+              role="alert"
+            >
+              {message}
             </div>
           )}
         </Fragment>
