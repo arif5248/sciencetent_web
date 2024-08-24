@@ -31,15 +31,15 @@ export const fetchUserLogin = createAsyncThunk(
 export const fetchUserLogout = createAsyncThunk(
   "user/fetchLogout",
   async () => {
-    await axios.get(`https://sciencetent-backend.vercel.app/api/v1/logout`);
+    const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
+    await axios.get(`https://sciencetent-backend.vercel.app/api/v1/logout`), config;
   }
 );
 
 export const fetchLoadUser = createAsyncThunk("user/fetchUser", async () => {
   // console.log('main aagaiyeee')
-  const  { data }  = await axios.get(`https://sciencetent-backend.vercel.app/api/v1/me`, {
-    withCredentials: true,
-  } );
+  const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
+  const  { data }  = await axios.get(`https://sciencetent-backend.vercel.app/api/v1/me`, config );
   
   return data;
 });
