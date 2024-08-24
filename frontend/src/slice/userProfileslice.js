@@ -4,10 +4,8 @@ import axios from "axios";
 export const fetchUserUpdateProfile = createAsyncThunk(
   "user/fetchUserProfile",
   async (userData) => {
-    userData.forEach((value, key) => {
-      console.log(key + ': ' + value);
-    });
-    const config = { headers: { "Content-Type": "application/json" } };
+    
+    const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
 
     const { data } = await axios.put(`https://sciencetent-backend.vercel.app/api/v1/me/update`, userData, config);
     return data;

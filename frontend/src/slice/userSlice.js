@@ -4,7 +4,7 @@ import axios from "axios";
 export const fetchUserRegister = createAsyncThunk(
   "user/fetchUserRegistration",
   async (userData) => {
-    const config = { headers: { "Content-Type": "application/json" } };
+    const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
 
     const { data } = await axios.post(`https://sciencetent-backend.vercel.app/api/v1/register`, userData, config);
     return data;
