@@ -46,12 +46,12 @@ function Header() {
       ) : (
         <Fragment>
           <Navbar className="navBar my-text" expand="lg">
-            <Container>
-              <Navbar.Brand as={Link} to="/" className="nab-brand my-text">
+            <Container className="navbar-container">
+              <Navbar.Toggle aria-controls="basic-navbar-nav" className="navbar-toggler" />
+              <Navbar.Brand as={Link} to="/" className="navbar-brand my-text">
                 <img src={logo} alt="ScienceTent" className="logo" />
               </Navbar.Brand>
-              <Navbar.Toggle aria-controls="basic-navbar-nav" />
-              <Navbar.Collapse id="basic-navbar-nav">
+              <Navbar.Collapse id="basic-navbar-nav" className="navbar-menu">
                 <Nav className="nab-item ml-auto">
                   <Nav.Link as={Link} to="/">
                     Home

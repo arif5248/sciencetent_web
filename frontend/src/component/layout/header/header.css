@@ -1,4 +1,5 @@
 .navBar {
+  flex: 0 0 auto;
   /* padding: 15px 0px !important; */
   background-color: #016c81;
 }
@@ -9,7 +10,7 @@
   font-weight: 600;
 }
 .logo {
-  width: 100%;
+  width: 200px;
   height: auto;
 }
 .nab-brand > span {
@@ -65,4 +66,13 @@
   margin: 0px;
   --bs-alert-margin-bottom: 0px !important;
   text-align: center;
+}
+
+@media (min-width: 200px) and (max-width: 500px) {
+  .logo{
+    width: 150px;
+  }
+  .nav-icon-box{
+    margin-left: 0px;
+  }
 }

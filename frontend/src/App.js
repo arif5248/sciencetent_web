@@ -1,29 +1,37 @@
-import "./App.css";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import WebFont from "webfontloader";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import ProtectedRoute from "./component/ProtectedRoute.js";
+// import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import Header from "./component/layout/header/header.js";
+import Home from "./component/Home/home.js";
 import LoginSignUp from "./component/user/loginSignUp.js";
-import Store from "./store";
 import Profile from "./component/user/profile.js";
 import UpdateProfile from "./component/user/updateProfile";
+import ProtectedRoute from "./component/ProtectedRoute";
 import { fetchLoadUser } from "./slice/userSlice";
-import Home from "./component/Home/home.js";
-// import { useSelector } from "react-redux";
-import Header from "./component/layout/header/header.js";
+import Loader from "./component/layout/loader/loader";
 
 function App() {
-  // const { isAuthenticated } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  // const { isAuthenticated, isLoading } = useSelector((state) => state.user);
+  const [appLoading, setAppLoading] = useState(true);
 
-  React.useEffect(() => {
+  useEffect(() => {
     WebFont.load({
       google: {
         families: ["Roboto", "Droid Sans", "Chilanka"],
       },
     });
 
-    Store.dispatch(fetchLoadUser());
-  }, []);
+    dispatch(fetchLoadUser()).then(() => {
+      setAppLoading(false);
+    });
+  }, [dispatch]);
+
+  if (appLoading) {
+    return <Loader />; // Show a loader until fetchLoadUser is complete
+  }
 
   return (
     <Router>

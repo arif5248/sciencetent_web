@@ -12,7 +12,7 @@ const UpdateProfile = () => {
   const { user, isLoading, isAuthenticated } = useSelector(
     (state) => state.user
   );
-  console.log(user)
+  // console.log(user)
   const dispatch = useDispatch();
   const navigate = useNavigate();
   
