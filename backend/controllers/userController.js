@@ -57,7 +57,7 @@ exports.logout = catchAsyncError(async (req, res, next) => {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production", // ensure secure only in production
     sameSite: "None", // or 'Lax', depending on your needs
-    // path: "/", // make sure it's the same as when the cookie was set
+    path: "/", // make sure it's the same as when the cookie was set
   });
   res.status(200).json({ success: true, message: "Logged Out" });
 });
