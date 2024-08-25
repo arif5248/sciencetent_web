@@ -170,45 +170,92 @@ exports.updatePassword = catchAsyncError(async (req, res, next) => {
 });
 
 //Update User Profile
+// exports.updateProfile = catchAsyncError(async (req, res, next) => {
+//   const newUserData = {
+//     name: req.body.name,
+//     email: req.body.email,
+//   };
+//   console.log(req.files)
+//   if (req.files && req.files.avatar) {
+//     const avatarData = req.files.avatar.data;
+
+//     if (req.user.avatar !== "") {
+//       // const user = await User.findById(req.user.id);
+//       const imageId = req.user.avatar.public_id;
+
+//       // Helper function to handle the Cloudinary upload
+//       const uploadToCloudinary = (buffer) => {
+//         return new Promise((resolve, reject) => {
+//           const stream = cloudinary.v2.uploader.upload_stream(
+//             {
+//               folder: "avatars",
+//               width: 150,
+//               crop: "scale",
+//             },
+//             (error, result) => {
+//               if (error) return reject(error);
+//               resolve(result);
+//             }
+//           );
+//           require('stream').Readable.from(buffer).pipe(stream);
+//         });
+//       };
+
+//       // If the user already has an avatar, delete the existing one
+//       if (imageId !== "") {
+//         await cloudinary.v2.uploader.destroy(imageId);
+//       }
+
+//       // Upload the new avatar
+//       const myCloud = await uploadToCloudinary(avatarData);
+      
+//       newUserData.avatar = {
+//         public_id: myCloud.public_id,
+//         url: myCloud.secure_url,
+//       };
+//     }
+//   }
+
+//   const user = await User.findByIdAndUpdate(req.user.id, newUserData, {
+//     new: true,
+//     runValidators: true,
+//     useFindAndModify: false,
+//   });
+
+//   res.status(200).json({ success: true, user });
+// });
+
+// tested purpose
+
 exports.updateProfile = catchAsyncError(async (req, res, next) => {
   const newUserData = {
     name: req.body.name,
     email: req.body.email,
   };
-  console.log(req.files)
-  if (req.files && req.files.avatar) {
-    const avatarData = req.files.avatar.data;
 
-    if (req.user.avatar !== "") {
-      // const user = await User.findById(req.user.id);
-      const imageId = req.user.avatar.public_id;
+  if (req.user.avatar !== "") {
+    const user = await User.findById(req.user.id);
+    const imageId = user.avatar.public_id;
+    if (imageId === "") {
+      const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
+        folder: "avatars",
+        width: 150,
+        crop: "scale",
+      });
 
-      // Helper function to handle the Cloudinary upload
-      const uploadToCloudinary = (buffer) => {
-        return new Promise((resolve, reject) => {
-          const stream = cloudinary.v2.uploader.upload_stream(
-            {
-              folder: "avatars",
-              width: 150,
-              crop: "scale",
-            },
-            (error, result) => {
-              if (error) return reject(error);
-              resolve(result);
-            }
-          );
-          require('stream').Readable.from(buffer).pipe(stream);
-        });
+      newUserData.avatar = {
+        public_id: myCloud.public_id,
+        url: myCloud.secure_url,
       };
+    } else {
+      await cloudinary.v2.uploader.destroy(imageId);
 
-      // If the user already has an avatar, delete the existing one
-      if (imageId !== "") {
-        await cloudinary.v2.uploader.destroy(imageId);
-      }
+      const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
+        folder: "avatars",
+        width: 150,
+        crop: "scale",
+      });
 
-      // Upload the new avatar
-      const myCloud = await uploadToCloudinary(avatarData);
-      
       newUserData.avatar = {
         public_id: myCloud.public_id,
         url: myCloud.secure_url,
@@ -222,8 +269,10 @@ exports.updateProfile = catchAsyncError(async (req, res, next) => {
     useFindAndModify: false,
   });
 
-  res.status(200).json({ success: true, user });
+  res.status(200).json({ success: true });
 });
+
+//tested purpose end
 
 
 
