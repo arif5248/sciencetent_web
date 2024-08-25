@@ -1,22 +1,18 @@
 import React, { Fragment, useRef, useState, useEffect } from "react";
 import "./loginSignUp.css";
 import Loader from "../layout/loader/loader";
-import { Link, useNavigate } from "react-router-dom";
-// import MailOutlineIcon from "@material-ui/icons/MailOutline";
-// import LockOpenIcon from "@material-ui/icons/LockOpen";
-// import FaceIcon from "@material-ui/icons/Face";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserLogin, fetchUserRegister } from "../../slice/userSlice";
 import { useAlert } from "react-alert";
 
-const LoginSignUp = ({ history, location }) => {
+const LoginSignUp = () => {
   const dispatch = useDispatch();
   const alert = useAlert();
-  const Navigate = useNavigate();
+  const navigate = useNavigate();
+  const location = useLocation(); // Use the useLocation hook
 
-  const { error, loading, isAuthenticated } = useSelector(
-    (state) => state.user
-  );
+  const { error, isAuthenticated } = useSelector((state) => state.user);
 
   const loginTab = useRef(null);
   const registerTab = useRef(null);
@@ -24,6 +20,7 @@ const LoginSignUp = ({ history, location }) => {
 
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const [user, setUser] = useState({
     name: "",
@@ -35,18 +32,24 @@ const LoginSignUp = ({ history, location }) => {
 
   const loginSubmit = (e) => {
     e.preventDefault();
-    dispatch(fetchUserLogin({ email: loginEmail, password: loginPassword }));
+    setLoading(true); // Show loader
+    dispatch(fetchUserLogin({ email: loginEmail, password: loginPassword }))
+      .unwrap()
+      .finally(() => setLoading(false)); // Hide loader once the request is finished
   };
 
   const registerSubmit = (e) => {
     e.preventDefault();
+    setLoading(true); // Show loader
 
     const myForm = new FormData();
-
     myForm.set("name", name);
     myForm.set("email", email);
     myForm.set("password", password);
-    dispatch(fetchUserRegister(myForm));
+
+    dispatch(fetchUserRegister(myForm))
+      .unwrap()
+      .finally(() => setLoading(false)); // Hide loader once the request is finished
   };
 
   const registerDataChange = (e) => {
@@ -59,15 +62,13 @@ const LoginSignUp = ({ history, location }) => {
 
   useEffect(() => {
     if (error) {
-      //   alert.error(error);
-      console.log(error);
+      alert.error(error);
     }
 
     if (isAuthenticated) {
-      //   history.push(redirect);
-      Navigate(redirect);
+      navigate(redirect);
     }
-  }, [dispatch, error, alert, Navigate, isAuthenticated, redirect]);
+  }, [dispatch, error, alert, navigate, isAuthenticated, redirect]);
 
   const switchTabs = (e, tab) => {
     if (tab === "login") {
@@ -108,7 +109,6 @@ const LoginSignUp = ({ history, location }) => {
               </div>
               <form className="loginForm" ref={loginTab} onSubmit={loginSubmit}>
                 <div className="loginEmail">
-                  {/* <MailOutlineIcon /> */}
                   <input
                     type="email"
                     placeholder="Email"
@@ -118,7 +118,6 @@ const LoginSignUp = ({ history, location }) => {
                   />
                 </div>
                 <div className="loginPassword">
-                  {/* <LockOpenIcon /> */}
                   <input
                     type="password"
                     placeholder="Password"
@@ -137,7 +136,6 @@ const LoginSignUp = ({ history, location }) => {
                 onSubmit={registerSubmit}
               >
                 <div className="signUpName">
-                  {/* <FaceIcon /> */}
                   <input
                     type="text"
                     placeholder="Name"
@@ -148,7 +146,6 @@ const LoginSignUp = ({ history, location }) => {
                   />
                 </div>
                 <div className="signUpEmail">
-                  {/* <MailOutlineIcon /> */}
                   <input
                     type="email"
                     placeholder="Email"
@@ -159,7 +156,6 @@ const LoginSignUp = ({ history, location }) => {
                   />
                 </div>
                 <div className="signUpPassword">
-                  {/* <LockOpenIcon /> */}
                   <input
                     type="password"
                     placeholder="Password"

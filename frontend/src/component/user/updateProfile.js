@@ -12,51 +12,59 @@ const UpdateProfile = () => {
   const { user, isLoading, isAuthenticated } = useSelector(
     (state) => state.user
   );
-  // console.log(user)
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  
   
   const { error, isUpdated } = useSelector((state) => state.profile);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [avatar, setAvatar] = useState("");
-  const [avatarPreview, setAvatarPreview] = useState(
-    user.avatar.url === "" ? ProfilePng : user.avatar.url
-  );
+  const [avatar, setAvatar] = useState(null);  // Changed to null initially
+  const [avatarPreview, setAvatarPreview] = useState(ProfilePng);
 
   const updateProfileSubmit = (e) => {
     e.preventDefault();
-
+  
     const myForm = new FormData();
     myForm.append("name", name);
     myForm.append("email", email);
-    myForm.append("avatar", avatar);
-
+  
+    if (avatar) {
+      myForm.append("avatar", avatar);
+    }
+  
+    // Log the FormData contents
+    for (let pair of myForm.entries()) {
+      console.log(pair[0] + ": " + pair[1]);
+    }
+  
     dispatch(fetchUserUpdateProfile(myForm));
   };
-
+  
+  
   const UpdateProfileDataChange = (e) => {
     const file = e.target.files[0];
-
+  
     if (file) {
+      setAvatar(file); // Set the avatar state to the file object
+  
       const reader = new FileReader();
       reader.onload = () => {
         if (reader.readyState === 2) {
-          setAvatar(reader.result);
-          setAvatarPreview(reader.result);
+          setAvatarPreview(reader.result); // Set the preview to base64 for UI display
         }
       };
       reader.readAsDataURL(file);
     }
   };
+  
 
   useEffect(() => {
     if (user) {
       setName(user.name);
       setEmail(user.email);
-      setAvatar(user.avatar.url);
+      setAvatarPreview(user.avatar.url || ProfilePng);
     }
     if (error) {
       console.error(error);
@@ -85,9 +93,7 @@ const UpdateProfile = () => {
                   {error && (
                     <div className="error-message update-error-message">
                       <p>
-                        Failed to Update your profile. Maybe it happened to your
-                        image size. Please try again with less than 1MB image
-                        size or contact Admin.
+                        Failed to update your profile. Please try again with an image size less than 1MB or contact Admin.
                       </p>
                       <div className="btn btn-danger close-btn">X</div>
                     </div>

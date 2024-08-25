@@ -12,6 +12,8 @@ import ProtectedRoute from "./component/ProtectedRoute";
 import { fetchLoadUser } from "./slice/userSlice";
 import Loader from "./component/layout/loader/loader";
 
+import "./App.css"
+
 function App() {
   const dispatch = useDispatch();
   // const { isAuthenticated, isLoading } = useSelector((state) => state.user);

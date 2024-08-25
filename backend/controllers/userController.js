@@ -175,7 +175,7 @@ exports.updateProfile = catchAsyncError(async (req, res, next) => {
     name: req.body.name,
     email: req.body.email,
   };
-
+  console.log(req.files)
   if (req.files && req.files.avatar) {
     const avatarData = req.files.avatar.data;
 
@@ -208,7 +208,7 @@ exports.updateProfile = catchAsyncError(async (req, res, next) => {
 
       // Upload the new avatar
       const myCloud = await uploadToCloudinary(avatarData);
-
+      
       newUserData.avatar = {
         public_id: myCloud.public_id,
         url: myCloud.secure_url,
@@ -222,7 +222,7 @@ exports.updateProfile = catchAsyncError(async (req, res, next) => {
     useFindAndModify: false,
   });
 
-  res.status(200).json({ success: true });
+  res.status(200).json({ success: true, user });
 });
 
 
