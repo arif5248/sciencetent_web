@@ -1,11 +1,13 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
+// const baseUrl= "http://localhost:5000"
+const baseUrl= "https://sciencetent-backend.vercel.app"
 export const fetchUserRegister = createAsyncThunk(
   "user/fetchUserRegistration",
   async (userData) => {
     const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
-    const { data } = await axios.post(`https://sciencetent-backend.vercel.app/api/v1/register`, userData, config);
+    const { data } = await axios.post(`${baseUrl}/api/v1/register`, userData, config);
     return data;
   }
 );
@@ -16,7 +18,7 @@ export const fetchUserLogin = createAsyncThunk(
     try {
       const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
       const { data } = await axios.post(
-        `https://sciencetent-backend.vercel.app/api/v1/login`,
+        `${baseUrl}/api/v1/login`,
         { email, password },
         config
       );
@@ -31,13 +33,13 @@ export const fetchUserLogout = createAsyncThunk(
   "user/fetchLogout",
   async () => {
     const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
-    await axios.get(`https://sciencetent-backend.vercel.app/api/v1/logout`, config);
+    await axios.get(`${baseUrl}/api/v1/logout`, config);
   }
 );
 
 export const fetchLoadUser = createAsyncThunk("user/fetchUser", async () => {
   const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
-  const { data } = await axios.get(`https://sciencetent-backend.vercel.app/api/v1/me`, config);
+  const { data } = await axios.get(`${baseUrl}/api/v1/me`, config);
   return data;
 });
 
