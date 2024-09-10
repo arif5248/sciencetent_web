@@ -175,7 +175,7 @@ exports.updateProfile = catchAsyncError(async (req, res, next) => {
     name: req.body.name,
     email: req.body.email,
   };
-  console.log(req.files)
+  
   if (req.files && req.files.avatar) {
     const avatarData = req.files.avatar.data;
 

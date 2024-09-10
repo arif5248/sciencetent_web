@@ -33,7 +33,7 @@ app.use(fileUpload());
 const corsOptions = {
   origin: ["https://sciencetent.vercel.app", "http://localhost:3000"],
   methods: "GET, POST, PUT, DELETE, OPTIONS",
-  allowedHeaders: ["Content-Type", "Authorization"],
+  allowedHeaders: ["Content-Type", "Authorization", "cookie"],
   credentials: true,
 };
 
