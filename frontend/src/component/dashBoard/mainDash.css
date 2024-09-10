@@ -1,0 +1,98 @@
+.mainSection{
+    border: 2px solid #fff;
+    display: flex;
+    height: 100vh;
+}
+.leftBox{
+    width: 20vw;
+    background-color: #2166D1;
+    border-radius: 10px 0px 0px 10px;
+}
+.rightBox{
+    width: 80vw;
+}
+ul{
+    padding-left: 0 !important;
+    margin-top: 60px !important;
+}
+li{
+    position: relative;
+    list-style: none;
+    padding: 5px 0px;
+    padding-left: 25px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+li > p{
+    margin: 0;
+    padding-left: 10px;
+}
+li:hover{
+    background-color: #fff;
+    border-radius: 20px 0px 0px 20px;
+    margin-left: 5px;
+}
+li:hover::before{
+    content: '';
+    position: absolute;
+    top: -35px;
+    right: 0; /* Adjust this value to control the amount of curve */
+    height: 35px; /* Height of the list item */
+    width: 35px; /* Width of the curve effect */
+    background-color: #2166D1; /* Color of the curve effect */
+    border-radius: 50%;
+    box-shadow: 20px 20px 0px 5px #fff;
+}
+li:hover::after{
+    content: '';
+    position: absolute;
+    bottom: -35px;
+    right: 0;
+    height: 35px;
+    width: 35px;
+    background-color: #2166D1;
+    border-radius: 50%;
+    box-shadow: 20px -20px 0px 5px #fff;
+}
+li.active{
+    background-color: #fff;
+    border-radius: 20px 0px 0px 20px;
+    margin-left: 5px;
+}
+li.active::before{
+    content: '';
+    position: absolute;
+    top: -35px;
+    right: 0; /* Adjust this value to control the amount of curve */
+    height: 35px; /* Height of the list item */
+    width: 35px; /* Width of the curve effect */
+    background-color: #2166D1; /* Color of the curve effect */
+    border-radius: 50%;
+    box-shadow: 20px 20px 0px 5px #fff;
+}
+li.active::after{
+    content: '';
+    position: absolute;
+    bottom: -35px;
+    right: 0;
+    height: 35px;
+    width: 35px;
+    background-color: #2166D1;
+    border-radius: 50%;
+    box-shadow: 20px -20px 0px 5px #fff;
+}
+.icon{
+    width: 32px;
+}
+
+/* all right code */
+.firstRow{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0px 1px 5px -2px #000;
+}
+.right > img{
+    border-radius: 20%;
+}

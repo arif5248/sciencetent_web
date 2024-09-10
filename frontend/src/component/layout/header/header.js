@@ -70,10 +70,8 @@ function Header() {
 
               <div className="nav-icon-box">
                 {user ? (
-                  <Nav.Link as={Link} to="/login">
-                    <div className="user-icon" onMouseOver={onMouseOver}>
-                      <FontAwesomeIcon icon={faUser} />
-                    </div>
+                  <div className="user-icon" onMouseOver={onMouseOver}>
+                    <FontAwesomeIcon icon={faUser} />
                     <Dropdown
                       className="user-dropdown"
                       show={showDropdown}
@@ -91,7 +89,7 @@ function Header() {
                         </Dropdown.Item>
                       </Dropdown.Menu>
                     </Dropdown>
-                  </Nav.Link>
+                  </div>
                 ) : (
                   <Nav.Link as={Link} to="/login">
                     <FontAwesomeIcon icon={faUser} />

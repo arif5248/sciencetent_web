@@ -13,6 +13,7 @@ import { fetchLoadUser } from "./slice/userSlice";
 import Loader from "./component/layout/loader/loader";
 
 import "./App.css"
+import MainDashBoard from "./component/dashBoard/mainDash.js";
 
 function App() {
   const dispatch = useDispatch();
@@ -46,6 +47,15 @@ function App() {
           element={
             <ProtectedRoute>
               <Profile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          exact
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <MainDashBoard />
             </ProtectedRoute>
           }
         />
