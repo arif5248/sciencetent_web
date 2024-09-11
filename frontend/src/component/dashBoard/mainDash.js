@@ -43,6 +43,7 @@ function MainDashBoard() {
 
   const handleClickArrow = (direction) => {
     setIsThin(direction === "leftArrow");
+
     if (leftArrowRef.current && rightArrowRef.current) {
       leftArrowRef.current.style.display = direction === "leftArrow" ? 'none' : 'block';
       rightArrowRef.current.style.display = direction === "rightArrow" ? 'none' : 'block';
@@ -91,7 +92,7 @@ function MainDashBoard() {
             ))}
           </ul>
         </div>
-        <div className="rightBox">
+        <div className={`rightBox ${isThin ? 'fat' : ''}`}>
           <div className="container firstRow">
             <div className="left">
               <img

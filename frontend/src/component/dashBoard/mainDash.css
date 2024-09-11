@@ -127,6 +127,9 @@ li.active::after{
  .thin {
     width: 7vw; /* Adjust the width as needed */
   }
+  .fat{
+    width: 93vw;
+  }
   
 .thin > ul > li > p {
     display: none;
@@ -164,5 +167,15 @@ li.active::after{
     .userIcon {
         width: 25px;
         padding: 5px 0px;
+    }
+    .fat > .mainDiv > .btnGroup{
+        margin: 0;
+        margin-top: 5px;
+    }
+    .fat > .mainDiv > .btnGroup > .button{
+        padding: 5px;
+        margin: 5px 5px;
+        width: 120px;
+        min-width: 120px;
     }
 }
