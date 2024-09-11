@@ -1,15 +1,20 @@
 .mainSection{
     border: 2px solid #fff;
     display: flex;
-    height: 100vh;
+    flex: 1 1 auto;
+    height: 100%;
 }
 .leftBox{
     width: 20vw;
     background-color: #2166D1;
     border-radius: 10px 0px 0px 10px;
+    transition: width 0.3s ease;
 }
 .rightBox{
     width: 80vw;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 ul{
     padding-left: 0 !important;
@@ -23,6 +28,7 @@ li{
     margin-bottom: 10px;
     display: flex;
     align-items: center;
+    color: #fff;
 }
 li > p{
     margin: 0;
@@ -32,6 +38,7 @@ li:hover{
     background-color: #fff;
     border-radius: 20px 0px 0px 20px;
     margin-left: 5px;
+    color: #000;
 }
 li:hover::before{
     content: '';
@@ -42,7 +49,7 @@ li:hover::before{
     width: 35px; /* Width of the curve effect */
     background-color: #2166D1; /* Color of the curve effect */
     border-radius: 50%;
-    box-shadow: 20px 20px 0px 5px #fff;
+    box-shadow: 10px 10px 5px -2px #fff;
 }
 li:hover::after{
     content: '';
@@ -53,12 +60,13 @@ li:hover::after{
     width: 35px;
     background-color: #2166D1;
     border-radius: 50%;
-    box-shadow: 20px -20px 0px 5px #fff;
+    box-shadow: 10px -10px 5px -2px #fff;
 }
 li.active{
     background-color: #fff;
     border-radius: 20px 0px 0px 20px;
     margin-left: 5px;
+    color: #000;
 }
 li.active::before{
     content: '';
@@ -69,7 +77,7 @@ li.active::before{
     width: 35px; /* Width of the curve effect */
     background-color: #2166D1; /* Color of the curve effect */
     border-radius: 50%;
-    box-shadow: 20px 20px 0px 5px #fff;
+    box-shadow: 10px 10px 5px -2px #fff;
 }
 li.active::after{
     content: '';
@@ -80,10 +88,17 @@ li.active::after{
     width: 35px;
     background-color: #2166D1;
     border-radius: 50%;
-    box-shadow: 20px -20px 0px 5px #fff;
+    box-shadow: 10px -10px 5px -2px #fff;
 }
 .icon{
     width: 32px;
+}
+.userIcon{
+    width: 30px;
+    padding: 5px 0px;
+}
+.arrowIcon{
+    width: 28px;
 }
 
 /* all right code */
@@ -95,4 +110,59 @@ li.active::after{
 }
 .right > img{
     border-radius: 20%;
+}
+.middle > h1{
+    font-size: 25px;
+    margin: 0;
+    text-align: center;
+}
+.mainDiv{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow-y: auto;
+}
+
+
+ .thin {
+    width: 7vw; /* Adjust the width as needed */
+  }
+  
+.thin > ul > li > p {
+    display: none;
+}
+
+/* .leftBox .list img {
+    width: 100%; 
+} */
+  
+
+@media screen and (max-width: 600px) {
+    .mainSection{
+        position: relative;
+        width: 100vw;
+    }
+    .leftBox{
+        width: 50vw;
+    }
+    .thin{
+        width: 15vw;
+    }
+    .rightBox{
+        min-width: 50vw;
+        /* overflow: auto; */
+    }
+    .thin > ul > li{
+        padding-left: 5px;
+    }
+    .arrowIcon{
+        width: 18px;
+    }
+    .middle > h1 {
+        font-size: 16px;
+    }
+    .userIcon {
+        width: 25px;
+        padding: 5px 0px;
+    }
 }
