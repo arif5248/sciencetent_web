@@ -2,13 +2,16 @@
     border: 2px solid #fff;
     display: flex;
     flex: 1 1 auto;
-    height: 100%;
+    height: calc(100% - 75px);
 }
 .leftBox{
     width: 20vw;
     background-color: #2166D1;
     border-radius: 10px 0px 0px 10px;
     transition: width 0.3s ease;
+    height: 100%;
+    overflow-y: auto;
+    padding-bottom: 15px;
 }
 .rightBox{
     width: 80vw;
@@ -24,7 +27,7 @@ li{
     position: relative;
     list-style: none;
     padding: 5px 0px;
-    padding-left: 25px;
+    padding-left: 15px;
     margin-bottom: 10px;
     display: flex;
     align-items: center;
@@ -125,10 +128,10 @@ li.active::after{
 
 
  .thin {
-    width: 7vw; /* Adjust the width as needed */
+    width: 10vw; /* Adjust the width as needed */
   }
   .fat{
-    width: 93vw;
+    width: 90vw;
   }
   
 .thin > ul > li > p {

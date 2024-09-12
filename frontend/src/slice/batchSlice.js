@@ -22,6 +22,17 @@ export const fetchCreateBatch = createAsyncThunk(
   }
 );
 
+export const fetchAllBatch = createAsyncThunk("batch/fetchAllBatch", async () => {
+  const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
+  const { data } = await axios.get(`${baseUrl}/api/v1/admin/batches`, config);
+  return data;
+});
+
+export const fetchDeleteBatch = createAsyncThunk("batch/fetchDeleteBatch", async (batchId) => {
+  const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
+  const { data } = await axios.delete(`${baseUrl}/api/v1/admin/deleteBatch/${batchId}`, config);
+  return data;
+});
 // Batch Slice
 const batchSlice = createSlice({
   name: "batch",
@@ -49,6 +60,34 @@ const batchSlice = createSlice({
         state.isAuthenticated = false;
         state.batch = null;
         state.error = action.payload || action.error.message;  // Use custom error message if available
+      })
+      .addCase(fetchAllBatch.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(fetchAllBatch.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isAuthenticated = true;
+        state.allBatch = action.payload.batches;
+        state.error = null;
+      })
+      .addCase(fetchAllBatch.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isAuthenticated = false;
+        state.allBatch = null;
+        state.error = action.error.message;
+      })
+      .addCase(fetchDeleteBatch.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchDeleteBatch.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.allBatch = state.allBatch.filter(batch => batch._id !== action.meta.arg);
+        state.error = null;
+      })
+      .addCase(fetchDeleteBatch.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload || action.error.message;
       });
   },
 });

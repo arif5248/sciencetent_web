@@ -13,7 +13,7 @@ function CreateBatch() {
   const [branchName, setBranchName] = useState("");
   const [year, setYear] = useState(new Date().getFullYear());
   const [batchCode, setBatchCode] = useState("");
-  const { user } = useSelector((state) => state.user);
+  // const { user } = useSelector((state) => state.user);
   const { isLoading, error, batch } = useSelector((state) => state.batch); // get batch state from Redux
   const [loading, setLoading] = useState(false);
 
@@ -49,7 +49,7 @@ function CreateBatch() {
 
   return (
     <Fragment>
-      <MetaData title={`${user.name}'s Dashboard`} />
+      <MetaData title={`Create Batch`} />
       <div className="createBatchSection">
         <h2>Create Batch</h2>
 

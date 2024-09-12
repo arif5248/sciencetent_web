@@ -20,3 +20,11 @@ exports.getAllBatches = catchAsyncError(async (req, res, next) => {
 
   res.status(200).json({ success: true, batches });
 });
+exports.deleteBatch = catchAsyncError(async (req, res, next) => {
+  const batch = await Batches.findOne({ _id: req.params.id });
+  if(!batch){
+    return next(new ErrorHandler("Batch is not found", 409));
+  }
+  await Batches.findByIdAndDelete({ _id: batch._id })
+  res.status(200).json({ success: true, message:"Batch deleted successfully" });
+});

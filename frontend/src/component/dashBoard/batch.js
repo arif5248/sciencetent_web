@@ -10,6 +10,7 @@ import createBatchIcon from "../../images/icons/createBatch.png";
 
 import "./batch.css";
 import CreateBatch from "../batch/createBatch";
+import AllBatch from "../batch/allBatch";
 
 function Batch() {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ function Batch() {
 
   const allButtons = [
     { id: "btn1", title:"Create Batch", content: <CreateBatch />},
-    { id: "btn2", title:"All Batch", content: "Content for Create Batch2" },
+    { id: "btn2", title:"All Batch", content: <AllBatch /> },
     { id: "btn3", title:"Batch Details", content: "Content for Create Batch3" },
     { id: "btn4", title:"Delete Batch", content: "Content for Create Batch4" },
     { id: "btn5", title:"Edit Batch", content: "Content for Create Batch5" }
@@ -53,7 +54,7 @@ function Batch() {
           </div>
         ))}
      </div>
-     <div className="container">
+     <div className="contentSection">
         {/* Display content of the active item */}
         {allButtons.find((item) => item.id === activeItem)?.content || "Please select an item from the list."}
       </div>
