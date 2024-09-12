@@ -28,3 +28,18 @@ exports.deleteBatch = catchAsyncError(async (req, res, next) => {
   await Batches.findByIdAndDelete({ _id: batch._id })
   res.status(200).json({ success: true, message:"Batch deleted successfully" });
 });
+exports.editBatch = catchAsyncError(async (req, res, next) => {
+  let batch = await Batches.findOne({ _id: req.params.id });
+  if(!batch){
+    return next(new ErrorHandler("Batch is not found", 409));
+  }
+  const newBatchData = {
+    name: req.body.name
+  }
+  batch = await Batches.findByIdAndUpdate(batch._id, newBatchData, {
+    new: true,
+    runValidators: true,
+    useFindAndModify: false,
+  });
+  res.status(200).json({ success: true, message:"Batch Edited successfully", batch});
+});

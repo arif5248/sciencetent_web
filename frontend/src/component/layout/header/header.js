@@ -78,14 +78,19 @@ function Header() {
                       onMouseLeave={() => setShowDropdown(false)}
                     >
                       <Dropdown.Menu>
-                        <Dropdown.Item as={Link} to="/dashboard">
-                          Dashboard
+                        <Dropdown.Item as={Link} to="/account">
+                          Account
                         </Dropdown.Item>
-                        <Dropdown.Item as={Link} to="/profile">
-                          Update Profile
+                        {user.role === "masterAdmin" && (
+                          <Dropdown.Item as={Link} to="/dashboard">
+                            Dashboard
+                          </Dropdown.Item>
+                        )}
+                        <Dropdown.Item as={Link} to="/me/update">
+                          Edit Profile
                         </Dropdown.Item>
                         <Dropdown.Item onClick={userLogout}>
-                          Logout
+                          {isLoading? "Logging Out..." : "Logout"}
                         </Dropdown.Item>
                       </Dropdown.Menu>
                     </Dropdown>

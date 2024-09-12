@@ -19,10 +19,7 @@ function Batch() {
 
   const allButtons = [
     { id: "btn1", title:"Create Batch", content: <CreateBatch />},
-    { id: "btn2", title:"All Batch", content: <AllBatch /> },
-    { id: "btn3", title:"Batch Details", content: "Content for Create Batch3" },
-    { id: "btn4", title:"Delete Batch", content: "Content for Create Batch4" },
-    { id: "btn5", title:"Edit Batch", content: "Content for Create Batch5" }
+    { id: "btn2", title:"All Batch", content: <AllBatch /> }
   ];
   
 

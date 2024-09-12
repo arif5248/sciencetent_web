@@ -93,13 +93,15 @@ function PopupForEditDetailsDelete({ content, onClose }) {
 
         {content.type === "delete" && (
           <Fragment>
-            <h3>Are you sure you want to delete this batch?</h3>
-            <button onClick={handleDelete} disabled={loading}>
-              {loading ? "Deleting..." : "OK"}
-            </button>
-            <button onClick={onClose} disabled={loading}>
-              Cancel
-            </button>
+            <h3 style={{fontSize: "20px"}}>Are you sure to delete "{content.batch.name}" batch?</h3>
+            <div className="deleteBtnGroup">
+                <button style={{width:'45%'}} className="btn btn-danger" onClick={onClose} disabled={loading}>
+                Cancel
+                </button>
+                <button style={{width:'45%'}} className="btn btn-success" onClick={handleDelete} disabled={loading}>
+                {loading ? "Deleting..." : "OK"}
+                </button>
+            </div>
           </Fragment>
         )}
       </div>

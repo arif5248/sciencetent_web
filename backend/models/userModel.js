@@ -35,8 +35,6 @@ const userSchema = new mongoose.Schema({
       enum: ["pending", "approved"],
     },
   },
-  
-  
   password: {
     type: String,
     required: [true, "Please Enter your Password"],
@@ -70,13 +68,12 @@ const userSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Batches",
   },
-
   createdAt: {
     type: Date,
     default: Date.now,
   },
   resetPasswordToken: String,
-  resetPaswordExpire: Date,
+  resetPasswordExpire: Date,
 });
 
 userSchema.pre("save", async function (next) {
@@ -93,12 +90,12 @@ userSchema.methods.getJWTToken = function () {
   });
 };
 
-//compare pasword
+//compare password
 userSchema.methods.comparePassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-//Generaing Pasword Reset Token
+//Generating Password Reset Token
 userSchema.methods.getResetPasswordToken = function () {
   //Generating Token
   const resetToken = crypto.randomBytes(20).toString("hex");
@@ -109,7 +106,7 @@ userSchema.methods.getResetPasswordToken = function () {
     .update(resetToken)
     .digest("hex");
 
-  this.resetPaswordExpire = Date.now() + 15 * 60 * 1000;
+  this.resetPasswordExpire = Date.now() + 15 * 60 * 1000;
 
   return resetToken;
 };

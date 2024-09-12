@@ -5,6 +5,7 @@ const {
   createBatch,
   getAllBatches,
   deleteBatch,
+  editBatch,
 } = require("../controllers/batchcontroller");
 
 const { isAuthenticatedUser, isAuthorizeRoles, isPermitted } = require("../middleware/auth");
@@ -20,5 +21,8 @@ router
   router
   .route("/admin/deleteBatch/:id")
   .delete(isAuthenticatedUser, isPermitted(process.env.GET_ALL_BATCH), deleteBatch);
+  router
+  .route("/admin/editBatch/:id")
+  .put(isAuthenticatedUser, isPermitted(process.env.GET_ALL_BATCH), editBatch);
 
 module.exports = router;
