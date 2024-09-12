@@ -1,18 +1,27 @@
 import React, { Fragment, useState } from "react";
 import { useDispatch } from "react-redux";
 import "./actionBatch.css";
-import { fetchDeleteBatch } from "../../slice/batchSlice";
+import { fetchDeleteBatch, fetchEditBatch } from "../../slice/batchSlice";
 
 function PopupForEditDetailsDelete({ content, onClose }) {
   const [batchName, setBatchName] = useState(content.batch?.name || "");
   const [loading, setLoading] = useState(false); // Add loading state
   const dispatch = useDispatch(); // Add useDispatch hook
 
-  const handleEdit = () => {
-    // Dispatch the edit action here (implement as needed)
-    alert("Edit functionality is under development");
-    console.log("Edit dispatched for:", content.batch._id);
-    onClose(); // Close the popup after editing
+  const handleEdit = async () => {
+    
+    try {
+        setLoading(true); // Set loading to true while processing
+        const myForm = new FormData();
+        myForm.append("name", batchName);
+        await dispatch(fetchEditBatch({ batchId: content.batch._id, batchData: { name: batchName }})).unwrap(); // Dispatch the delete batch action
+        console.log("Batch Edited successfully:", content.batch._id);
+      } catch (error) {
+        console.error("Error editing batch:", error); // Handle any errors during deletion
+      } finally {
+        setLoading(false); // Set loading to false after deletion completes
+        onClose(); // Close the popup after deletion
+      }
   };
 
   const handleDelete = async () => {
@@ -87,7 +96,7 @@ function PopupForEditDetailsDelete({ content, onClose }) {
               value={batchName}
               onChange={(e) => setBatchName(e.target.value)}
             />
-            <button onClick={handleEdit}>Save</button>
+            <button className="btn btn-primary" onClick={handleEdit} disabled={loading}>{loading ? "Saving..." : "Save"}</button>
           </Fragment>
         )}
 

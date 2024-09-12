@@ -33,6 +33,23 @@ export const fetchDeleteBatch = createAsyncThunk("batch/fetchDeleteBatch", async
   const { data } = await axios.delete(`${baseUrl}/api/v1/admin/deleteBatch/${batchId}`, config);
   return data;
 });
+export const fetchEditBatch = createAsyncThunk(
+  "batch/fetchEditBatch",
+  async ({ batchId, batchData }, { rejectWithValue }) => {
+    try {
+      const config = { withCredentials: true };
+      const { data } = await axios.put(`${baseUrl}/api/v1/admin/editBatch/${batchId}`, batchData, config);
+      return data;
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      }
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+
 // Batch Slice
 const batchSlice = createSlice({
   name: "batch",
@@ -86,6 +103,23 @@ const batchSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchDeleteBatch.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload || action.error.message;
+      })
+      .addCase(fetchEditBatch.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchEditBatch.fulfilled, (state, action) => {
+        state.isLoading = false;
+        // Update the batch data in the state
+        const updatedBatch = action.payload.batch;
+        state.allBatch = state.allBatch.map(batch =>
+          batch._id === updatedBatch._id ? updatedBatch : batch
+        );
+        state.error = null;
+      })
+      .addCase(fetchEditBatch.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload || action.error.message;
       });
