@@ -4,13 +4,13 @@ import axios from "axios";
 // const baseUrl = "http://localhost:5000";
 const baseUrl = "https://sciencetent-backend.vercel.app";
 
-// Thunk for creating a new batch
+// Thunk for creating a new course
 export const fetchCreateCourse = createAsyncThunk(
-  "batch/fetchCreateCourse",
+  "course/fetchCreateCourse",
   async (userData, { rejectWithValue }) => {
     try {
       const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
-      const { data } = await axios.post(`${baseUrl}/api/v1/admin/course/new`, userData, config);
+      const { data } = await axios.post(`${baseUrl}/api/v1/admin/newCourse`, userData, config);
       return data;
     } catch (error) {
       // Handle error response, including HTTP 409 Conflict
@@ -22,23 +22,23 @@ export const fetchCreateCourse = createAsyncThunk(
   }
 );
 
-export const fetchAllCourses = createAsyncThunk("batch/fetchAllCourses", async () => {
+export const fetchAllCourses = createAsyncThunk("course/fetchAllCourses", async () => {
   const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
   const { data } = await axios.get(`${baseUrl}/api/v1/admin/courses`, config);
   return data;
 });
 
-export const fetchDeleteCourse = createAsyncThunk("batch/fetchDeleteCourse", async (courseId) => {
+export const fetchDeleteCourse = createAsyncThunk("course/fetchDeleteCourse", async (courseId) => {
   const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
   const { data } = await axios.delete(`${baseUrl}/api/v1/admin/deleteCourse/${courseId}`, config);
   return data;
 });
 export const fetchEditCourse = createAsyncThunk(
-  "batch/fetchEditCourse",
-  async ({ courseId, batchData }, { rejectWithValue }) => {
+  "course/fetchEditCourse",
+  async ({ courseId, courseData }, { rejectWithValue }) => {
     try {
       const config = { withCredentials: true };
-      const { data } = await axios.put(`${baseUrl}/api/v1/admin/editCourse/${courseId}`, batchData, config);
+      const { data } = await axios.put(`${baseUrl}/api/v1/admin/editCourse/${courseId}`, courseData, config);
       return data;
     } catch (error) {
       if (error.response && error.response.data.message) {
@@ -50,12 +50,12 @@ export const fetchEditCourse = createAsyncThunk(
 );
 
 
-// Batch Slice
-const batchSlice = createSlice({
+// Course Slice
+const courseSlice = createSlice({
   name: "course",
   initialState: {
     isLoading: false,
-    course: null,  // Store the batch data
+    course: null,  // Store the course data
     isAuthenticated: false,
     error: null,
   },
@@ -69,13 +69,13 @@ const batchSlice = createSlice({
       .addCase(fetchCreateCourse.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isAuthenticated = true;
-        state.course = action.payload.course;  // Store batch data from the response
+        state.course = action.payload.course;  // Store course data from the response
         state.error = null;  // Clear any previous errors
       })
       .addCase(fetchCreateCourse.rejected, (state, action) => {
         state.isLoading = false;
         state.isAuthenticated = false;
-        state.batch = null;
+        state.course = null;
         state.error = action.payload || action.error.message;  // Use custom error message if available
       })
       .addCase(fetchAllCourses.pending, (state) => {
@@ -112,9 +112,9 @@ const batchSlice = createSlice({
       })
       .addCase(fetchEditCourse.fulfilled, (state, action) => {
         state.isLoading = false;
-        // Update the batch data in the state
-        const updatedCourse = action.payload.batch;
-        state.allBatch = state.allCourses.map(course =>
+        // Update the course data in the state
+        const updatedCourse = action.payload.course;
+        state.allCourses = state.allCourses.map(course =>
           course._id === updatedCourse._id ? updatedCourse : course
         );
         state.error = null;
@@ -126,4 +126,4 @@ const batchSlice = createSlice({
   },
 });
 
-export default batchSlice.reducer;
+export default courseSlice.reducer;

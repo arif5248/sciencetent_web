@@ -9,7 +9,7 @@ const courseSchema = new mongoose.Schema({
   },
   courseCode: {
     type: String,
-    default: "Not Set",
+    unique: true
   },
   paymentType: {
     type: String,

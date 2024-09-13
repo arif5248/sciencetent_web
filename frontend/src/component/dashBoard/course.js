@@ -10,6 +10,7 @@ import createBatchIcon from "../../images/icons/createBatch.png";
 
 import "./course.css";
 import CreateCourse from "../course/createCourse";
+import AllCourse from "../course/allCourse";
 
 function Course() {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ function Course() {
 
   const allButtons = [
     { id: "btn1", title:"Create Course", content: <CreateCourse />},
-    { id: "btn2", title:"All Course", content: "" }
+    { id: "btn2", title:"All Course", content: <AllCourse /> }
   ];
   
 

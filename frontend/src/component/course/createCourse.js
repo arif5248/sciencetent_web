@@ -14,7 +14,7 @@ function CreateCourse() {
   const [paymentType, setPaymentType] = useState("Per Class");
   const [paymentAmount, setPaymentAmount] = useState();
   // const { user } = useSelector((state) => state.user);
-  const { isLoading, error, courses } = useSelector((state) => state.courses); // get batch state from Redux
+  const { isLoading, error, course } = useSelector((state) => state.courses); // get batch state from Redux
   const [loading, setLoading] = useState(false);
 
   // Automatically generate branch code based on selected branch and year
@@ -93,9 +93,9 @@ function CreateCourse() {
                   required
                 >
                   <option value="">Select Payment Type</option>
-                  <option value="Cuet Branch">Per Class</option>
-                  <option value="Cuet Branch">Per Month</option>
-                  <option value="Noapara Branch">Per Course</option>
+                  <option value="perClass">Per Class</option>
+                  <option value="perMonth">Per Month</option>
+                  <option value="perCourse">Per Course</option>
                 </select>
               </div>
 
@@ -119,7 +119,7 @@ function CreateCourse() {
                 {loading ? "Creating..." : "Create Course"}
               </button>
             </form>
-            {courses && <p style={{ color: "green" }}>Course created successfully!</p>} {/* Success message */}
+            {course && <p style={{ color: "green" }}>Course created successfully!</p>} {/* Success message */}
           </Fragment>
         )}
       </div>
