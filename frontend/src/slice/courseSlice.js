@@ -114,6 +114,7 @@ const courseSlice = createSlice({
         state.isLoading = false;
         // Update the course data in the state
         const updatedCourse = action.payload.course;
+        console.log('update course', action.payload)
         state.allCourses = state.allCourses.map(course =>
           course._id === updatedCourse._id ? updatedCourse : course
         );

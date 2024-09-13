@@ -36,9 +36,9 @@ exports.editCourse = catchAsyncError(async (req, res, next) => {
   if(!course){
     return next(new ErrorHandler("Course is not found", 409));
   }
-  
+  console.log(course)
   const newCourseData = req.body
-  course = await Batches.findByIdAndUpdate(course._id, newCourseData, {
+  course = await Courses.findByIdAndUpdate(course._id, newCourseData, {
     new: true,
     runValidators: true,
     useFindAndModify: false,
