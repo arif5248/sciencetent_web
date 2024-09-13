@@ -13,10 +13,10 @@ function CreateBatch() {
   const [branchName, setBranchName] = useState("");
   const [year, setYear] = useState(new Date().getFullYear());
   const [batchCode, setBatchCode] = useState("");
-  // const { user } = useSelector((state) => state.user);
   const { isLoading, error, batch } = useSelector((state) => state.batch); // get batch state from Redux
   const [loading, setLoading] = useState(false);
-
+  const [errorMessage, setErrorMessage] = useState(null); // Local state for error message
+  const [successMessage, setSuccessMessage] = useState(null); // Local state for success message
   // Automatically generate branch code based on selected branch and year
   useEffect(() => {
     if (branchName && year) {
@@ -39,10 +39,18 @@ function CreateBatch() {
     dispatch(fetchCreateBatch(myForm))
       .unwrap()
       .then(() => {
-        navigate("/dashboard"); // Navigate after success
+        setSuccessMessage("Batch created successfully!"); // Show success message
+        setTimeout(() => {
+          setSuccessMessage(null); // Clear success message after 5 seconds
+          navigate("/dashboard"); // Navigate after success
+        }, 5000);
       })
       .catch((err) => {
-        console.error("Error creating batch:", err);
+        console.error("Error creating course:", err);
+        setErrorMessage(err); // Show error message
+        setTimeout(() => {
+          setErrorMessage(null); // Clear error message after 5 seconds
+        }, 5000);
       })
       .finally(() => setLoading(false));
   };
@@ -109,13 +117,13 @@ function CreateBatch() {
                 />
               </div>
 
-              {error && <p style={{ color: "red" }}>{error}</p>} {/* Display error */}
+              {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>} {/* Display error */}
+              {successMessage && <p style={{ color: "green" }}>{successMessage}</p>} {/* Display success */}
 
-              <button type="submit" className="btn btn-primary" disabled={loading}>
+              <button style={{marginTop: "5px"}} type="submit" className="btn btn-primary" disabled={loading}>
                 {loading ? "Creating..." : "Create Batch"}
               </button>
             </form>
-            {batch && <p style={{ color: "green" }}>Batch created successfully!</p>} {/* Success message */}
           </Fragment>
         )}
       </div>

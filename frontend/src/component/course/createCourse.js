@@ -11,20 +11,12 @@ function CreateCourse() {
   const dispatch = useDispatch();
   const [courseName, setCourseName] = useState("");
   const [courseCode, setCourseCode] = useState("");
-  const [paymentType, setPaymentType] = useState("Per Class");
-  const [paymentAmount, setPaymentAmount] = useState();
-  // const { user } = useSelector((state) => state.user);
-  const { isLoading, error, course } = useSelector((state) => state.courses); // get batch state from Redux
+  const [paymentType, setPaymentType] = useState("");
+  const [paymentAmount, setPaymentAmount] = useState("");
+  const { isLoading, error, course } = useSelector((state) => state.courses); // Get course state from Redux
   const [loading, setLoading] = useState(false);
-
-  // Automatically generate branch code based on selected branch and year
-//   useEffect(() => {
-//     if (branchName && year) {
-//       const branchInitial = branchName === "Cuet Branch" ? "CB" : "NB";
-//       const yearCode = year.toString().slice(-2); // Get last two digits of the year
-//       setBatchCode(`${branchInitial}${yearCode}`);
-//     }
-//   }, [branchName, year]);
+  const [errorMessage, setErrorMessage] = useState(null); // Local state for error message
+  const [successMessage, setSuccessMessage] = useState(null); // Local state for success message
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -39,17 +31,25 @@ function CreateCourse() {
     dispatch(fetchCreateCourse(myForm))
       .unwrap()
       .then(() => {
-        navigate("/dashboard"); // Navigate after success
+        setSuccessMessage("Course created successfully!"); // Show success message
+        setTimeout(() => {
+          setSuccessMessage(null); // Clear success message after 5 seconds
+          navigate("/dashboard"); // Navigate after success
+        }, 5000);
       })
       .catch((err) => {
-        console.error("Error creating batch:", err);
+        console.error("Error creating course:", err);
+        setErrorMessage(err); // Show error message
+        setTimeout(() => {
+          setErrorMessage(null); // Clear error message after 5 seconds
+        }, 5000);
       })
       .finally(() => setLoading(false));
   };
 
   return (
     <Fragment>
-      <MetaData title={`Create Batch`} />
+      <MetaData title={`Create Course`} />
       <div className="createCourseSection">
         <h2>Create Course</h2>
 
@@ -102,7 +102,7 @@ function CreateCourse() {
               <div className="form-group">
                 <label htmlFor="paymentAmount">Payment Amount</label>
                 <input
-                placeholder="Enter a amount as your Payment Type"
+                  placeholder="Enter an amount as your Payment Type"
                   type="number"
                   id="paymentAmount"
                   className="form-control"
@@ -113,13 +113,13 @@ function CreateCourse() {
                 />
               </div>
 
-              {error && <p style={{ color: "red" }}>{error}</p>} {/* Display error */}
+              {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>} {/* Display error */}
+              {successMessage && <p style={{ color: "green" }}>{successMessage}</p>} {/* Display success */}
 
-              <button type="submit" className="btn btn-primary" disabled={loading}>
+              <button style={{marginTop: "5px"}} type="submit" className="btn btn-primary" disabled={loading}>
                 {loading ? "Creating..." : "Create Course"}
               </button>
             </form>
-            {course && <p style={{ color: "green" }}>Course created successfully!</p>} {/* Success message */}
           </Fragment>
         )}
       </div>

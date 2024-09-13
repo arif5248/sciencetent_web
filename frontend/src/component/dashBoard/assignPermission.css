@@ -1,0 +1,18 @@
+.assignPermissionSection {
+    padding: 20px;
+  }
+  
+  .searchGroup {
+    margin-bottom: 20px;
+  }
+  
+  .permissionsList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  button {
+    margin-top: 20px;
+  }
+  

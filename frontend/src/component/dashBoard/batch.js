@@ -14,7 +14,7 @@ import AllBatch from "../batch/allBatch";
 
 function Batch() {
   const navigate = useNavigate();
-  const [activeItem, setActiveItem] = useState(null);
+  const [activeItem, setActiveItem] = useState("btn1");
   const { user, isLoading } = useSelector((state) => state.user);
 
   const allButtons = [

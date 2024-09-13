@@ -14,7 +14,7 @@ import AllCourse from "../course/allCourse";
 
 function Course() {
   const navigate = useNavigate();
-  const [activeItem, setActiveItem] = useState(null);
+  const [activeItem, setActiveItem] = useState("btn1");
   const { user, isLoading } = useSelector((state) => state.user);
 
   const allButtons = [

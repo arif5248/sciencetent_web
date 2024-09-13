@@ -236,7 +236,7 @@ exports.getAllUsers = catchAsyncError(async (req, res, next) => {
 
 //Get Single Users(admin)
 exports.getSingleUser = catchAsyncError(async (req, res, next) => {
-  const user = await User.findById(req.params.id);
+  const user = await User.findOne({"name": req.body.name});
   if (!user) {
     return next(
       new ErrorHandler(`User doesn't exist with Id: ${req.params.id}`, 400)
