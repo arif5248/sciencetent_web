@@ -18,11 +18,11 @@ router
 router
   .route("/admin/batches")
   .get(isAuthenticatedUser, isPermitted(process.env.GET_ALL_BATCH), getAllBatches);
-  router
+router
   .route("/admin/deleteBatch/:id")
-  .delete(isAuthenticatedUser, isPermitted(process.env.GET_ALL_BATCH), deleteBatch);
-  router
+  .delete(isAuthenticatedUser, isPermitted(process.env.DELETE_BATCH), deleteBatch);
+router
   .route("/admin/editBatch/:id")
-  .put(isAuthenticatedUser, isPermitted(process.env.GET_ALL_BATCH), editBatch);
+  .put(isAuthenticatedUser, isPermitted(process.env.EDIT_BATCH), editBatch);
 
 module.exports = router;

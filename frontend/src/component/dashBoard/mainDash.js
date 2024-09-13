@@ -11,6 +11,7 @@ import rightArrow from "../../images/icons/rightArrow.png";
 
 import "./mainDash.css";
 import Batch from "./batch";
+import Course from "./course";
 
 function MainDashBoard() {
   const navigate = useNavigate();
@@ -25,7 +26,7 @@ function MainDashBoard() {
   // Array of items with their ids and display content
   const items = [
     { id: "list1", title: "Batch", content: <Batch /> },
-    { id: "list2", title: "Course", content: "Content for Create Batch2" },
+    { id: "list2", title: "Course", content: <Course /> },
     { id: "list3", title: "Class", content: "Content for Create Batch3" },
     { id: "list4", title: "Students", content: "Content for Create Batch4" },
     { id: "list5", title: "Permissions", content: "Content for Create Batch5" },
