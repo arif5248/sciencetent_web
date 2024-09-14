@@ -21,8 +21,11 @@ function AssignPermission() {
   useEffect(() => {
     dispatch(fetchAllPermissions())
       .unwrap()
-      .then((res) => setPermissionsList(res.permissions))
-      .catch((err) => console.error(err));
+      .then((res) => {
+        console.log("Fetched permissions:", res.permissions); // Check if permissions are fetched
+        setPermissionsList(res.permissions || []); // Set permissions list
+      })
+      .catch((err) => console.error("Error fetching permissions:", err));
   }, [dispatch]);
 
   // Handle Search button click
@@ -30,20 +33,23 @@ function AssignPermission() {
     dispatch(fetchSingleUser(searchUser))
       .unwrap()
       .then((res) => {
+        console.log("Fetched user details:", res.user); // Check if user is fetched
         setUserDetails(res.user);
+
         // Check the user's current permissions and update selectedPermissions state
-        const userPermissionIds = res.user.permissions.map(p => p._id);
+        const userPermissionIds = res.user.permissions.map((p) => p); // Store the whole permission object
         setSelectedPermissions(userPermissionIds);
+        console.log("User's permission IDs:", userPermissionIds);
       })
       .catch((err) => console.error("Error fetching user details:", err));
   };
 
   // Handle permission checkbox change
-  const handlePermissionChange = (permissionId) => {
+  const handlePermissionChange = (permission) => {
     setSelectedPermissions((prev) => 
-      prev.includes(permissionId) 
-        ? prev.filter(id => id !== permissionId) 
-        : [...prev, permissionId]
+      prev.includes(permission) 
+        ? prev.filter(p => p !== permission) 
+        : [...prev, permission]
     );
   };
 
@@ -51,7 +57,7 @@ function AssignPermission() {
   const handleAssignPermissions = () => {
     const assignData = {
       userId: userDetails._id,
-      permissions: selectedPermissions,
+      permissions: selectedPermissions.map(p => p._id || p), // Include permission object or ID
     };
     dispatch(fetchAssignPermissions(assignData))
       .unwrap()
@@ -66,7 +72,7 @@ function AssignPermission() {
   return (
     <Fragment>
       <MetaData title={`${user.name}'s DashBoard`} />
-      
+
       <div className="assignPermissionSection">
         {/* Search User */}
         <div className="searchGroup">
@@ -79,25 +85,30 @@ function AssignPermission() {
           <button onClick={handleSearchUser}>Search</button>
         </div>
 
-        {/* Render Permissions Check List */}
+        {/* Show permissions list if user details are fetched */}
         {userDetails && (
           <Fragment>
             <h3>Assign Permissions to {userDetails.name}</h3>
-            <div className="permissionsList">
-              {permissionsList.map((permission) => (
-                <div key={permission._id}>
-                  <input 
-                    type="checkbox"
-                    id={permission._id}
-                    checked={selectedPermissions.includes(permission._id)}
-                    onChange={() => handlePermissionChange(permission._id)}
-                  />
-                  <label htmlFor={permission._id}>
-                    {permission.name}
-                  </label>
-                </div>
-              ))}
-            </div>
+            
+            {permissionsList.length > 0 ? (
+              <div className="permissionsList">
+                {permissionsList.map((permission) => (
+                  <div key={permission._id}>
+                    <input 
+                      type="checkbox"
+                      id={permission._id}
+                      checked={selectedPermissions.some(p => p._id === permission._id || p === permission)} // Compare the whole permission or by _id
+                      onChange={() => handlePermissionChange(permission)}
+                    />
+                    <label htmlFor={permission._id}>
+                      {permission.name}
+                    </label>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p>No permissions available</p>
+            )}
 
             {/* Button to Assign Permissions */}
             <button onClick={handleAssignPermissions}>Assign Permissions</button>
