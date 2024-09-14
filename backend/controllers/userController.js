@@ -236,10 +236,10 @@ exports.getAllUsers = catchAsyncError(async (req, res, next) => {
 
 //Get Single Users(admin)
 exports.getSingleUser = catchAsyncError(async (req, res, next) => {
-  const user = await User.findOne({"name": req.body.name});
+  const user = await User.findOne({"name": req.params.name});
   if (!user) {
     return next(
-      new ErrorHandler(`User doesn't exist with Id: ${req.params.id}`, 400)
+      new ErrorHandler(`User doesn't exist with Name: ${req.params.name}`, 400)
     );
   }
   res.status(200).json({ success: true, user });

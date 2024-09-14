@@ -11,7 +11,6 @@ import { fetchAllPermissions, fetchAssignPermissions } from "../../slice/permiss
 function AssignPermission() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [activeItem, setActiveItem] = useState("btn1");
   const [searchUser, setSearchUser] = useState(""); // For input field
   const [selectedPermissions, setSelectedPermissions] = useState([]); // For storing selected permissions
   const [permissionsList, setPermissionsList] = useState([]); // Store fetched permissions
@@ -28,7 +27,7 @@ function AssignPermission() {
 
   // Handle Search button click
   const handleSearchUser = () => {
-    dispatch(fetchSingleUser({name: searchUser}))
+    dispatch(fetchSingleUser(searchUser))
       .unwrap()
       .then((res) => {
         setUserDetails(res.user);

@@ -43,8 +43,8 @@ export const fetchLoadUser = createAsyncThunk("user/fetchUser", async () => {
   return data;
 });
 export const fetchSingleUser = createAsyncThunk("user/fetchSingleUser", async (userName) => {
-  const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
-  const { data } = await axios.get(`${baseUrl}/api/v1/admin/getSingleUser`, userName, config);
+  const config =  { withCredentials: true };
+  const { data } = await axios.get(`${baseUrl}/api/v1/admin/getSingleUser/${name}`, config);
   return data;
 });
 
@@ -55,6 +55,7 @@ const userSlice = createSlice({
     user: null,  // Ensure consistency in initializing and resetting user state
     isAuthenticated: false,
     error: null,
+    singleUser: null
   },
   extraReducers: (builder) => {
     builder
@@ -120,13 +121,11 @@ const userSlice = createSlice({
       })
       .addCase(fetchSingleUser.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.isAuthenticated = true;
         state.singleUser = action.payload.user;
         state.error = null;
       })
       .addCase(fetchSingleUser.rejected, (state, action) => {
         state.isLoading = false;
-        state.isAuthenticated = false;
         state.singleUser = null;
         state.error = action.error.message;
       })
