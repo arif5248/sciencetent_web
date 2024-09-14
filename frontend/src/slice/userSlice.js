@@ -44,7 +44,7 @@ export const fetchLoadUser = createAsyncThunk("user/fetchUser", async () => {
 });
 export const fetchSingleUser = createAsyncThunk("user/fetchSingleUser", async (userName) => {
   const config =  { withCredentials: true };
-  const { data } = await axios.get(`${baseUrl}/api/v1/admin/getSingleUser/${name}`, config);
+  const { data } = await axios.get(`${baseUrl}/api/v1/admin/getSingleUser/${userName}`, config);
   return data;
 });
 
