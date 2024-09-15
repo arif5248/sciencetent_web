@@ -4,6 +4,7 @@ import userProfileslice from "./slice/userProfileslice";
 import batchSlice from "./slice/batchSlice";
 import courseSlice from "./slice/courseSlice";
 import permissionSlice from "./slice/permissionSlice";
+import studentSlice from "./slice/studentSlice";
 
 const Store = configureStore({
   reducer: {
@@ -11,7 +12,8 @@ const Store = configureStore({
     profile: userProfileslice,
     batch: batchSlice,
     courses: courseSlice,
-    permissions : permissionSlice
+    permissions : permissionSlice,
+    student : studentSlice
   },
 });
 export default Store;

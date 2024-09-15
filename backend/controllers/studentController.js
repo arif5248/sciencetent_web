@@ -9,7 +9,7 @@ exports.registerStudent = catchAsyncError(async (req, res, next) => {
     return next(new ErrorHandler("You are already registered this form", 400));
   }
             
-     
+  let guardianInfo = {}
   const user = req.user.id;
   const {
     name,
@@ -59,7 +59,7 @@ exports.registerStudent = catchAsyncError(async (req, res, next) => {
 
     const myCloud = await uploadToCloudinary(signatureData);
 
-    const guardianInfo = {
+    guardianInfo = {
       name: guardianName,
       mobile:guardianMobile,
       relationWithStudent: guardianRelationWithStudent,

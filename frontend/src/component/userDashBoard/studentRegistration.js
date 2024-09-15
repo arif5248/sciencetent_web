@@ -1,11 +1,12 @@
 import React, { Fragment, useState, useEffect } from "react";
 import MetaData from "../layout/metaData/metaData";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import Loader from "../layout/loader/loader";
 import { useNavigate } from "react-router-dom";
 import "./studentRegistration.css";
 import { fetchAllBatchForReg } from "../../slice/batchSlice";
 import { fetchAllCoursesForReg } from "../../slice/courseSlice";
+import { fetchRegisterStudent } from "../../slice/studentSlice";
 
 function StudentRegistration() {
   const navigate = useNavigate();
@@ -31,16 +32,7 @@ function StudentRegistration() {
   const [signaturePreview, setSignaturePreview] = useState(null);
   const [courseOptions, setCourseOptions] = useState([]); // Store fetched courses
   const [batchOptions, setBatchOptions] = useState([]); // Store fetched batches
-
-
-  const [guardianInfo, setGuardianInfo] = useState({
-    name: "",
-    mobile: "",
-    relationWithStudent: "",
-    signature: { public_id: "", url: "" },
-  });
  
-
   useEffect(() => {
     // Dispatch to fetch batches and courses
     dispatch(fetchAllBatchForReg()).then((response) => setBatchOptions(response.payload.batches));
@@ -53,7 +45,8 @@ function StudentRegistration() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+    setLoading(true);
+
     const myForm = new FormData();
     myForm.append("name", name);
     myForm.append("fatherName", fatherName);
@@ -72,12 +65,17 @@ function StudentRegistration() {
       myForm.append("guardianSignature", guardianSignature);
     }
   
-    // Log the FormData contents
-    for (let pair of myForm.entries()) {
-      console.log(pair[0] + ": " + pair[1]);
-    }
-  
-    // dispatch(fetchUserUpdateProfile(myForm));
+    try {
+
+        dispatch(fetchRegisterStudent(myForm));
+        setTimeout(() => {
+          setSuccessMessage("Registration successful!");
+          setLoading(false); // End loading
+        }, 2000);
+      } catch (error) {
+        setErrorMessage("An error occurred while registering.");
+        setLoading(false); // End loading in case of an error
+      }
   };
   
   
