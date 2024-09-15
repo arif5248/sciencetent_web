@@ -27,7 +27,11 @@ export const fetchAllCourses = createAsyncThunk("course/fetchAllCourses", async 
   const { data } = await axios.get(`${baseUrl}/api/v1/admin/courses`, config);
   return data;
 });
-
+export const fetchAllCoursesForReg = createAsyncThunk("course/fetchAllCoursesForReg", async () => {
+  const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
+  const { data } = await axios.get(`${baseUrl}/api/v1/user/coursesForReg`, config);
+  return data;
+});
 export const fetchDeleteCourse = createAsyncThunk("course/fetchDeleteCourse", async (courseId) => {
   const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
   const { data } = await axios.delete(`${baseUrl}/api/v1/admin/deleteCourse/${courseId}`, config);
@@ -91,6 +95,21 @@ const courseSlice = createSlice({
         state.isLoading = false;
         state.isAuthenticated = false;
         state.allCourses = null;
+        state.error = action.error.message;
+      })
+
+
+      .addCase(fetchAllCoursesForReg.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(fetchAllCoursesForReg.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.allCoursesForReg = action.payload.courses;
+        state.error = null;
+      })
+      .addCase(fetchAllCoursesForReg.rejected, (state, action) => {
+        state.isLoading = false;
+        state.allCoursesForReg = null;
         state.error = action.error.message;
       })
       .addCase(fetchDeleteCourse.pending, (state) => {

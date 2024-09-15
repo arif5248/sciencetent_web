@@ -4,6 +4,8 @@ import { useSelector, useDispatch } from "react-redux";
 import Loader from "../layout/loader/loader";
 import { useNavigate } from "react-router-dom";
 import "./studentRegistration.css";
+import { fetchAllBatchForReg } from "../../slice/batchSlice";
+import { fetchAllCoursesForReg } from "../../slice/courseSlice";
 
 function StudentRegistration() {
   const navigate = useNavigate();
@@ -41,40 +43,56 @@ function StudentRegistration() {
 
   useEffect(() => {
     // Dispatch to fetch batches and courses
-    dispatch(fetchBatches()).then((response) => setBatchOptions(response.payload));
-    dispatch(fetchCourses()).then((response) => setCourseOptions(response.payload));
+    dispatch(fetchAllBatchForReg()).then((response) => setBatchOptions(response.payload.batches));
+    dispatch(fetchAllCoursesForReg()).then((response) => setCourseOptions(response.payload.courses));
+    console.log(batchOptions)
   }, [dispatch]);
 
   // Handle form submission
+  
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    const studentData = {
-      name,
-      fatherName,
-      motherName,
-      whatsappNumber,
-      dateOfBirth,
-      address,
-      collegeName,
-      batch,
-      enrolledCourses: enrolledCourses.map((courseID) => ({ courseID })),
-      gua,
-    };
-    dispatch(registerStudent(studentData));
+    
+    const myForm = new FormData();
+    myForm.append("name", name);
+    myForm.append("fatherName", fatherName);
+    myForm.append("motherName", motherName);
+    myForm.append("whatsappNumber", whatsappNumber);
+    myForm.append("dateOfBirth", dateOfBirth);
+    myForm.append("address", address);
+    myForm.append("collegeName", collegeName);
+    myForm.append("batch", batch);
+    myForm.append("enrolledCourses", enrolledCourses.map((courseID) => ({ courseID })));
+    myForm.append("guardianName", guardianName);
+    myForm.append("guardianMobile", guardianMobile);
+    myForm.append("guardianRelationWithStudent", guardianRelationWithStudent);
+  
+    if (guardianSignature) {
+      myForm.append("guardianSignature", guardianSignature);
+    }
+  
+    // Log the FormData contents
+    for (let pair of myForm.entries()) {
+      console.log(pair[0] + ": " + pair[1]);
+    }
+  
+    // dispatch(fetchUserUpdateProfile(myForm));
   };
-
-  // Handle image upload and preview
-  const handleSignatureUpload = (e) => {
+  
+  
+  const UpdateSignatureDataChange = (e) => {
     const file = e.target.files[0];
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setSignaturePreview(reader.result);
-      setGuardianInfo((prev) => ({
-        ...prev,
-        signature: { public_id: "dummy_id", url: reader.result },
-      }));
-    };
+  
     if (file) {
+      setGuardianSignature(file); // Set the avatar state to the file object
+  
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (reader.readyState === 2) {
+          setSignaturePreview(reader.result); // Set the preview to base64 for UI display
+        }
+      };
       reader.readAsDataURL(file);
     }
   };
@@ -195,7 +213,7 @@ function StudentRegistration() {
               </div>
 
               <div className="form-group">
-                <label>Enrolled Courses:</label>
+                <label>Enroll Your Courses:</label>
                 <div className="course-list">
                   {courseOptions.length > 0 ? (
                     courseOptions.map((course) => (
@@ -219,10 +237,8 @@ function StudentRegistration() {
                 <label>Guardian Name:</label>
                 <input
                   type="text"
-                  value={guardianInfo.name}
-                  onChange={(e) =>
-                    setGuardianInfo({ ...guardianInfo, name: e.target.value })
-                  }
+                  value={guardianName}     
+                  onChange={(e) => setGuardianName(e.target.value )}
                   required
                   className="form-control"
                 />
@@ -232,9 +248,9 @@ function StudentRegistration() {
                 <label>Guardian Mobile:</label>
                 <input
                   type="text"
-                  value={guardianInfo.mobile}
+                  value={guardianMobile}
                   onChange={(e) =>
-                    setGuardianInfo({ ...guardianInfo, mobile: e.target.value })
+                    setGuardianMobile(e.target.value)
                   }
                   required
                   className="form-control"
@@ -245,12 +261,9 @@ function StudentRegistration() {
                 <label>Relation with Student:</label>
                 <input
                   type="text"
-                  value={guardianInfo.relationWithStudent}
+                  value={guardianRelationWithStudent}
                   onChange={(e) =>
-                    setGuardianInfo({
-                      ...guardianInfo,
-                      relationWithStudent: e.target.value,
-                    })
+                    setGuardianRelationWithStudent(e.target.value)
                   }
                   required
                   className="form-control"
@@ -262,11 +275,12 @@ function StudentRegistration() {
                 <input
                   type="file"
                   accept="image/*"
-                  onChange={handleSignatureUpload}
+                  onChange={UpdateSignatureDataChange}
                   className="form-control"
                 />
                 {signaturePreview && (
                   <img
+                  style={{width: "150px"}}
                     src={signaturePreview}
                     alt="Signature Preview"
                     className="img-preview"

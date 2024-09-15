@@ -8,6 +8,8 @@ exports.registerStudent = catchAsyncError(async (req, res, next) => {
   if (registeredStudent.length !== 0) {
     return next(new ErrorHandler("You are already registered this form", 400));
   }
+            
+     
   const user = req.user.id;
   const {
     name,
@@ -19,7 +21,10 @@ exports.registerStudent = catchAsyncError(async (req, res, next) => {
     address,
     batch,
     enrolledCourses,
-    guardianInfo,
+    guardianName,
+    guardianMobile,
+    guardianRelationWithStudent,
+    guardianSignature
   } = req.body;
 
   const courseDetails = await Promise.all(
@@ -31,6 +36,40 @@ exports.registerStudent = catchAsyncError(async (req, res, next) => {
       };
     })
   );
+
+  if (req.files && req.files.guardianSignature) {
+    const signatureData = req.files.guardianSignature.data;
+
+    const uploadToCloudinary = (buffer) => {
+      return new Promise((resolve, reject) => {
+        const stream = cloudinary.v2.uploader.upload_stream(
+          {
+            folder: "avatars",
+            width: 200,
+            crop: "scale",
+          },
+          (error, result) => {
+            if (error) return reject(error);
+            resolve(result);
+          }
+        );
+        require('stream').Readable.from(buffer).pipe(stream);
+      });
+    };
+
+    const myCloud = await uploadToCloudinary(signatureData);
+
+    const guardianInfo = {
+      name: guardianName,
+      mobile:guardianMobile,
+      relationWithStudent: guardianRelationWithStudent,
+      signature: {
+          public_id: myCloud.public_id,
+          url: myCloud.secure_url
+      }
+   }
+
+  }
 
   const student = await Students.create({
     user,

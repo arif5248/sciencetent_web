@@ -27,6 +27,11 @@ export const fetchAllBatch = createAsyncThunk("batch/fetchAllBatch", async () =>
   const { data } = await axios.get(`${baseUrl}/api/v1/admin/batches`, config);
   return data;
 });
+export const fetchAllBatchForReg = createAsyncThunk("batch/fetchAllBatchForReg", async () => {
+  const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
+  const { data } = await axios.get(`${baseUrl}/api/v1/user/batchesForStudentReg`, config);
+  return data;
+});
 
 export const fetchDeleteBatch = createAsyncThunk("batch/fetchDeleteBatch", async (batchId) => {
   const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
@@ -91,6 +96,21 @@ const batchSlice = createSlice({
         state.isLoading = false;
         state.isAuthenticated = false;
         state.allBatch = null;
+        state.error = action.error.message;
+      })
+
+
+      .addCase(fetchAllBatchForReg.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(fetchAllBatchForReg.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.allBatchForReg = action.payload.batches;
+        state.error = null;
+      })
+      .addCase(fetchAllBatchForReg.rejected, (state, action) => {
+        state.isLoading = false;
+        state.allBatchForReg = null;
         state.error = action.error.message;
       })
       .addCase(fetchDeleteBatch.pending, (state) => {
