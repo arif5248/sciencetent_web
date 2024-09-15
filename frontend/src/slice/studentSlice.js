@@ -8,7 +8,7 @@ export const fetchRegisterStudent = createAsyncThunk(
   "student/fetchRegisterStudent",
   async (studentData) => {
     const config = { withCredentials: true }; // No need for Content-Type
-    const { data } = await axios.post(`${baseUrl}/api/v1/me/update`, studentData, config);
+    const { data } = await axios.post(`${baseUrl}/api/v1/student/register`, studentData, config);
     return data;
   }
 );
