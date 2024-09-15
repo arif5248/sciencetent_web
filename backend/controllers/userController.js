@@ -59,7 +59,7 @@ exports.logout = catchAsyncError(async (req, res, next) => {
     ),
     httpOnly: true,
     secure: process.env.NODE_ENV === "production", // Should be true for HTTPS
-    sameSite: none,
+    sameSite: "none",
   };
 
   res
