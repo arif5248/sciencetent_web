@@ -20,7 +20,7 @@ router
   .route("/admin/batches")
   .get(isAuthenticatedUser, isPermitted(process.env.GET_ALL_BATCH), getAllBatches);
 router
-  .route("/admin/batchesForStudentReg")
+  .route("/user/batchesForStudentReg")
   .get(isAuthenticatedUser, getAllBatchesForStudents);
 router
   .route("/admin/deleteBatch/:id")
