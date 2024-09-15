@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useEffect } from "react";
 import MetaData from "../layout/metaData/metaData";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Loader from "../layout/loader/loader";
 import { useNavigate } from "react-router-dom";
 import "./studentRegistration.css";
@@ -12,6 +12,7 @@ function StudentRegistration() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
+  const { isLoading, isAuthenticated, error, message } = useSelector((state) => state.student);
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
 
@@ -37,16 +38,34 @@ function StudentRegistration() {
     // Dispatch to fetch batches and courses
     dispatch(fetchAllBatchForReg()).then((response) => setBatchOptions(response.payload.batches));
     dispatch(fetchAllCoursesForReg()).then((response) => setCourseOptions(response.payload.courses));
-    console.log(batchOptions)
+    // console.log(batchOptions)
   }, [dispatch]);
 
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      setSuccessMessage("Registration successful! Please wait for the admin's approval");
+      setTimeout(() => {
+        setSuccessMessage(null); // Clear error message after 5 seconds
+      }, 5000);
+    }
+
+    if (!isLoading && error) {
+      setErrorMessage(error);
+      setTimeout(() => {
+        setErrorMessage(null); // Clear error message after 5 seconds
+      }, 10000);
+    }
+
+    setLoading(isLoading);
+  }, [isLoading, isAuthenticated, error]);
   // Handle form submission
   
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
-
+  
+    // Prepare FormData
     const myForm = new FormData();
     myForm.append("name", name);
     myForm.append("fatherName", fatherName);
@@ -56,7 +75,7 @@ function StudentRegistration() {
     myForm.append("address", address);
     myForm.append("collegeName", collegeName);
     myForm.append("batch", batch);
-    myForm.append("enrolledCourses", enrolledCourses.map((courseID) => ({ courseID })));
+    myForm.append("enrolledCourses", JSON.stringify(enrolledCourses));
     myForm.append("guardianName", guardianName);
     myForm.append("guardianMobile", guardianMobile);
     myForm.append("guardianRelationWithStudent", guardianRelationWithStudent);
@@ -64,18 +83,11 @@ function StudentRegistration() {
     if (guardianSignature) {
       myForm.append("guardianSignature", guardianSignature);
     }
-  
-    try {
-
-        dispatch(fetchRegisterStudent(myForm));
-        setTimeout(() => {
-          setSuccessMessage("Registration successful!");
-          setLoading(false); // End loading
-        }, 2000);
-      } catch (error) {
-        setErrorMessage("An error occurred while registering.");
-        setLoading(false); // End loading in case of an error
-      }
+    // for (let pair of myForm.entries()) {
+    //     console.log(pair[0] + ": " + pair[1]);
+    //   }
+    // // Dispatch the async thunk
+    dispatch(fetchRegisterStudent(myForm));
   };
   
   
@@ -97,13 +109,21 @@ function StudentRegistration() {
 
   // Handle checkbox for enrolled courses
   const handleCourseChange = (e) => {
-    const courseID = e.target.value;
+    const courseID = e.target.value; // Only get the ID as a string
+  
     if (e.target.checked) {
-      setEnrolledCourses((prev) => [...prev, courseID]);
+      // Add the courseID object to the array if it is checked
+      setEnrolledCourses((prev) => [...prev, { courseID }]);
     } else {
-      setEnrolledCourses((prev) => prev.filter((id) => id !== courseID));
+      // Remove the courseID object from the array if it is unchecked
+      setEnrolledCourses((prev) =>
+        prev.filter((course) => course.courseID !== courseID)
+      );
     }
   };
+  
+  
+  
 
   return (
     <Fragment>
@@ -217,10 +237,10 @@ function StudentRegistration() {
                     courseOptions.map((course) => (
                       <div key={course._id} className="course-item">
                         <input
-                          type="checkbox"
-                          value={course._id}
-                          onChange={handleCourseChange}
-                          checked={enrolledCourses.includes(course._id)}
+                            type="checkbox"
+                            value={course._id}
+                            onChange={handleCourseChange}
+                            checked={enrolledCourses.some((enrolled) => enrolled.courseID === course._id)}
                         />
                         <label>{course.name}</label>
                       </div>

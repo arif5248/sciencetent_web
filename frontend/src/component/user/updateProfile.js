@@ -35,9 +35,9 @@ const UpdateProfile = () => {
     }
   
     // Log the FormData contents
-    for (let pair of myForm.entries()) {
-      console.log(pair[0] + ": " + pair[1]);
-    }
+    // for (let pair of myForm.entries()) {
+    //   console.log(pair[0] + ": " + pair[1]);
+    // }
   
     dispatch(fetchUserUpdateProfile(myForm));
   };
