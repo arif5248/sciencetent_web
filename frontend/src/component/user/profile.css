@@ -26,7 +26,7 @@
   transform: translateX(-10vmax) translateY(-2vmax);
 }
 .profile-container > div:first-child > img {
-  width: 20vmax;
+  width: 10vmax;
   border-radius: 10%;
   transition: all 0.5s;
 }
