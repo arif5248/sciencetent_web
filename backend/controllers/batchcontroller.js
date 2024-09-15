@@ -43,3 +43,10 @@ exports.editBatch = catchAsyncError(async (req, res, next) => {
   });
   res.status(200).json({ success: true, message:"Batch Edited successfully", batch});
 });
+exports.getAllBatchesForStudents = catchAsyncError(async (req, res, next) => {
+  const currentYear = new Date().getFullYear(); 
+
+  const batches = await Batches.find({ finalYear: { $gte: currentYear } });
+
+  res.status(200).json({ success: true, batches });
+});

@@ -5,14 +5,16 @@ import Loader from "../layout/loader/loader";
 // import { useNavigate } from "react-router-dom";
 
 import ProfilePng from "../../images/user.png";
-import createBatchIcon from "../../images/icons/createBatch.png";
+import studentRegistration from "../../images/icons/studentRegistration.png";
+import exStudentRegistration from "../../images/icons/exstudents.png";
 import leftArrow from "../../images/icons/leftArrow.png";
 import rightArrow from "../../images/icons/rightArrow.png";
 
 import "./userDashBoard.css";
+import StudentRegistration from "./studentRegistration";
 
 function UserDashBoard() {
-  const [activeItem, setActiveItem] = useState(null);
+  const [activeItem, setActiveItem] = useState("list1");
   const [isThin, setIsThin] = useState(false);
   const { user, isLoading } = useSelector((state) => state.user);
 
@@ -22,8 +24,8 @@ function UserDashBoard() {
 
   // Array of items with their ids and display content
   const items = [
-    { id: "list1", title: "Student Registration", content: "" },
-    { id: "list2", title: "Ex-Student Registration", content: "" },
+    { id: "list1",src: studentRegistration, title: "Student Registration", content: <StudentRegistration /> },
+    { id: "list2",src: exStudentRegistration, title: "Ex-Student Registration", content: "" },
   ];
 
   if (isLoading) {
@@ -76,8 +78,8 @@ function UserDashBoard() {
                   onClick={() => handleClick(item.id)}
                 >
                   <img
-                    src={createBatchIcon}
-                    alt="createBatchIcon"
+                    src={item.src}
+                    alt={item.title+"Icon"}
                     className="icon"
                   />
                   <p>{item.title}</p>
