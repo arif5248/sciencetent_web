@@ -77,21 +77,28 @@ function MainDashBoard() {
       <section className="mainSection">
         <div className={`leftBox ${isThin ? 'thin' : ''}`}>
           <ul onMouseOver={handleMouseOver} onMouseLeave={handleMouseLeave}>
-            {items.map((item) => (
-              <li
-                key={item.id}
-                className={`list ${activeItem === item.id ? "active" : ""}`}
-                id={item.id}
-                onClick={() => handleClick(item.id)}
-              >
-                <img
-                  src={createBatchIcon}
-                  alt="createBatchIcon"
-                  className="icon"
-                />
-                <p>{item.title}</p>
-              </li>
-            ))}
+            {items.map((item) => {
+              // Skip the "Permissions" item for users who are not "masterAdmin"
+              if (user.role !== "masterAdmin" && item.title === "Permissions") {
+                return null;
+              }
+
+              return (
+                <li
+                  key={item.id}
+                  className={`list ${activeItem === item.id ? "active" : ""}`}
+                  id={item.id}
+                  onClick={() => handleClick(item.id)}
+                >
+                  <img
+                    src={createBatchIcon}
+                    alt="createBatchIcon"
+                    className="icon"
+                  />
+                  <p>{item.title}</p>
+                </li>
+              );
+            })}
           </ul>
         </div>
         <div className={`rightBox ${isThin ? 'fat' : ''}`}>
