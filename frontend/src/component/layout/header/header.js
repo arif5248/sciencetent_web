@@ -81,7 +81,7 @@ function Header() {
                         <Dropdown.Item as={Link} to="/account">
                           Account
                         </Dropdown.Item>
-                        {user.role === "masterAdmin" || user.role === "admin" && (
+                        {(user.role === "masterAdmin" || user.role === "admin") && (
                           <Dropdown.Item as={Link} to="/dashboard">
                             Dashboard
                           </Dropdown.Item>
