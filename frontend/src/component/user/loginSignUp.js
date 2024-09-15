@@ -5,6 +5,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserLogin, fetchUserRegister } from "../../slice/userSlice";
 import { useAlert } from "react-alert";
+import MetaData from "../layout/metaData/metaData";
 
 const LoginSignUp = () => {
   const dispatch = useDispatch();
@@ -89,6 +90,7 @@ const LoginSignUp = () => {
 
   return (
     <Fragment>
+      <MetaData title={`Login or Registration`} />
       {loading ? (
         <Loader />
       ) : (

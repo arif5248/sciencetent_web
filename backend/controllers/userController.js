@@ -54,11 +54,12 @@ exports.loginUser = catchAsyncError(async (req, res, next) => {
 exports.logout = catchAsyncError(async (req, res, next) => {
   // Set the expiration date to a time in the past to delete the cookie
   const options = {
-    expires: new Date(Date.now() - 1000), // Set expiration to a second in the past
+    expires: new Date(
+      Date.now() 
+    ),
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production", // Ensure secure only in production
-    sameSite: "None", // or 'Lax', depending on your needs
-    path: "/", // Path should match the original path when the cookie was set
+    secure: process.env.NODE_ENV === "production", // Should be true for HTTPS
+    sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
   };
 
   res

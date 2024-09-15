@@ -86,6 +86,11 @@ function Header() {
                             Dashboard
                           </Dropdown.Item>
                         )}
+                        {(user.role === "user" ) && (
+                          <Dropdown.Item as={Link} to="/userDashboard">
+                            Dashboard
+                          </Dropdown.Item>
+                        )}
                         <Dropdown.Item as={Link} to="/me/update">
                           Edit Profile
                         </Dropdown.Item>

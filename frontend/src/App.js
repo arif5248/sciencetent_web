@@ -14,6 +14,7 @@ import Loader from "./component/layout/loader/loader";
 
 import "./App.css"
 import MainDashBoard from "./component/dashBoard/mainDash.js";
+import UserDashBoard from "./component/userDashBoard/userDashBoard.js";
 
 function App() {
   const dispatch = useDispatch();
@@ -56,6 +57,15 @@ function App() {
           element={
             <ProtectedRoute>
               <MainDashBoard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          exact
+          path="/userDashboard"
+          element={
+            <ProtectedRoute>
+              <UserDashBoard />
             </ProtectedRoute>
           }
         />

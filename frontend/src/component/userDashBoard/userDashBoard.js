@@ -9,13 +9,9 @@ import createBatchIcon from "../../images/icons/createBatch.png";
 import leftArrow from "../../images/icons/leftArrow.png";
 import rightArrow from "../../images/icons/rightArrow.png";
 
-import "./mainDash.css";
-import Batch from "./batch";
-import Course from "./course";
-import AssignPermission from "./assignPermission";
+import "./userDashBoard.css";
 
-function MainDashBoard() {
-  // const navigate = useNavigate();
+function UserDashBoard() {
   const [activeItem, setActiveItem] = useState(null);
   const [isThin, setIsThin] = useState(false);
   const { user, isLoading } = useSelector((state) => state.user);
@@ -26,13 +22,8 @@ function MainDashBoard() {
 
   // Array of items with their ids and display content
   const items = [
-    { id: "list1", title: "Batch", content: <Batch /> },
-    { id: "list2", title: "Course", content: <Course /> },
-    { id: "list3", title: "Class", content: "Content for Create Batch3" },
-    { id: "list4", title: "Students", content: "Content for Create Batch4" },
-    { id: "list5", title: "Permissions", content: <AssignPermission /> },
-    { id: "list6", title: "Others", content: "Content for Create Batch6" },
-    { id: "list7", title: "Batch", content: "Content for Create Batch7" }
+    { id: "list1", title: "Student Registration", content: "" },
+    { id: "list2", title: "Ex-Student Registration", content: "" },
   ];
 
   if (isLoading) {
@@ -77,13 +68,7 @@ function MainDashBoard() {
       <section className="mainSection">
         <div className={`leftBox ${isThin ? 'thin' : ''}`}>
           <ul onMouseOver={handleMouseOver} onMouseLeave={handleMouseLeave}>
-            {items.map((item) => {
-              // Skip the "Permissions" item for users who are not "masterAdmin"
-              if (user.role !== "masterAdmin" && item.title === "Permissions") {
-                return null;
-              }
-
-              return (
+            {items.map((item) => (
                 <li
                   key={item.id}
                   className={`list ${activeItem === item.id ? "active" : ""}`}
@@ -97,8 +82,7 @@ function MainDashBoard() {
                   />
                   <p>{item.title}</p>
                 </li>
-              );
-            })}
+            ))}
           </ul>
         </div>
         <div className={`rightBox ${isThin ? 'fat' : ''}`}>
@@ -142,4 +126,4 @@ function MainDashBoard() {
   );
 }
 
-export default MainDashBoard;
+export default UserDashBoard;
