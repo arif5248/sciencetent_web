@@ -46,7 +46,7 @@ exports.registerStudent = catchAsyncError(async (req, res, next) => {
   }
   const batchDetails = {
     batchId : getBatch._id,
-    batchName : getBatch.name
+    batchCode : getBatch.batchCode
   }
 
   if (req.files && req.files.guardianSignature) {

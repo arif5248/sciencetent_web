@@ -56,7 +56,7 @@ const studentsSchema = new mongoose.Schema({
       ref: "Batches",
       required: true,
     },
-    batchName: {
+    batchCode: {
       type: String,
       required: [true, "Please provide your college name"],
     }
