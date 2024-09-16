@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import Loader from "../layout/loader/loader";
 import { useNavigate } from "react-router-dom";
 import "./getPendingStudents.css";
+import { fetchAllPendingStudents } from "../../slice/studentSlice";
 // import PopupForEditDetailsDelete from "./actionBatch";
 
 function AllPendingStudents() {
@@ -18,7 +19,7 @@ function AllPendingStudents() {
 
   useEffect(() => {
     setLoading(true);
-    dispatch(fetchAllBatch())
+    dispatch(fetchAllPendingStudents())
       .unwrap()
       .catch((err) => console.error("Error fetching students:", err))
       .finally(() => setLoading(false));

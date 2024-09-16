@@ -1,6 +1,7 @@
 const ErrorHandler = require("../utils/errorhander");
 const catchAsyncError = require("../middleware/catchAsyncError");
 const Students = require("../models/studentModel");
+const Batches = require("../models/batchModel");
 const Courses = require("../models/courseModel");
 const cloudinary = require("cloudinary");
 
@@ -38,6 +39,15 @@ exports.registerStudent = catchAsyncError(async (req, res, next) => {
       };
     })
   );
+
+  const getBatch = await Batches.findById(batch)
+  if(!getBatch){
+    return next(new ErrorHandler("Failed to get batch", 500));
+  }
+  const batchDetails = {
+    batchId : getBatch._id,
+    batchName : getBatch.name
+  }
 
   if (req.files && req.files.guardianSignature) {
     const signatureData = req.files.guardianSignature.data;
@@ -87,7 +97,7 @@ exports.registerStudent = catchAsyncError(async (req, res, next) => {
       dateOfBirth,
       collegeName,
       address,
-      batch,
+      batchDetails,
       enrolledCourses: courseDetails,
       guardianInfo,
     });

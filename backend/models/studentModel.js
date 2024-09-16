@@ -50,10 +50,17 @@ const studentsSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please provide your address"],
   },
-  batch: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Batches",
-    required: true,
+  batchDetails: {
+    batchId : {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Batches",
+      required: true,
+    },
+    batchName: {
+      type: String,
+      required: [true, "Please provide your college name"],
+    }
+
   },
   enrolledCourses: [
     {
