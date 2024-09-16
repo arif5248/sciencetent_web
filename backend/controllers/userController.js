@@ -55,11 +55,12 @@ exports.logout = catchAsyncError(async (req, res, next) => {
   // Set the expiration date to a time in the past to delete the cookie
   const options = {
     expires: new Date(
-      Date.now() 
+      Date.now() - 10*60*1000
     ),
     httpOnly: true,
     secure: process.env.NODE_ENV === "development", // Should be true for HTTPS
-    sameSite: "None",
+    sameSite: process.env.NODE_ENV === "development" ? "None" : "Lax",
+    path: "/"
   };
 
   res
