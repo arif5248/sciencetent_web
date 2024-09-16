@@ -22,6 +22,12 @@ export const fetchRegisterStudent = createAsyncThunk(
   }
 );
 
+export const fetchAllPendingStudents = createAsyncThunk("student/fetchAllPendingStudents", async () => {
+  const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
+  const { data } = await axios.get(`${baseUrl}/api/v1/admin/pending-students`, config);
+  return data;
+});
+
 
 const studentSlice = createSlice({
   name: "student",
@@ -29,6 +35,7 @@ const studentSlice = createSlice({
     isLoading: false,
     isAuthenticated: false,
     student : null,
+    allPendingStudents : null,
     error: null,
   },
   extraReducers: (builder) => {
@@ -53,7 +60,23 @@ const studentSlice = createSlice({
       
       state.isAuthenticated = false;
       state.error = action.payload || action.error.message; 
-    });
+    })
+
+    .addCase(fetchAllPendingStudents.pending, (state) => {
+      state.isLoading = true;
+    })
+    .addCase(fetchAllPendingStudents.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isAuthenticated = true;
+      state.allPendingStudents = action.payload.students;
+      state.error = null;
+    })
+    .addCase(fetchAllPendingStudents.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isAuthenticated = false;
+      state.allBatch = null;
+      state.error = action.error.message;
+    })
   },
 });
 export default studentSlice.reducer;
