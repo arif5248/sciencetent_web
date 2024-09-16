@@ -2,19 +2,22 @@ import React, { Fragment, useState, useEffect } from "react";
 import MetaData from "../layout/metaData/metaData";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../layout/loader/loader";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import "./studentRegistration.css";
 import { fetchAllBatchForReg } from "../../slice/batchSlice";
 import { fetchAllCoursesForReg } from "../../slice/courseSlice";
 import { fetchRegisterStudent } from "../../slice/studentSlice";
 
 function StudentRegistration() {
-  const navigate = useNavigate();
+//   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
-  const { isLoading, isAuthenticated, error, message } = useSelector((state) => state.student);
+  const { isLoading, isAuthenticated, error } = useSelector((state) => state.student);
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
+  const [courseError, setCourseError] = useState(null);
+  const [batchError, setBatchError] = useState(null);
+
 
   // Form fields
   const [name, setName] = useState("");
@@ -35,11 +38,31 @@ function StudentRegistration() {
   const [batchOptions, setBatchOptions] = useState([]); // Store fetched batches
  
   useEffect(() => {
-    // Dispatch to fetch batches and courses
-    dispatch(fetchAllBatchForReg()).then((response) => setBatchOptions(response.payload.batches));
-    dispatch(fetchAllCoursesForReg()).then((response) => setCourseOptions(response.payload.courses));
-    // console.log(batchOptions)
+    // Fetch batches and handle errors
+    dispatch(fetchAllBatchForReg())
+      .then((response) => {
+        if (response.error) {
+          setBatchError("Failed to load batches. Please try again.");
+        } else {
+          setBatchOptions(response.payload.batches);
+          setBatchError(null); // Clear any previous errors
+        }
+      })
+      .catch(() => setBatchError("Failed to load batches. Please try again."));
+  
+    // Fetch courses and handle errors
+    dispatch(fetchAllCoursesForReg())
+      .then((response) => {
+        if (response.error) {
+          setCourseError("Failed to load courses. Please try again.");
+        } else {
+          setCourseOptions(response.payload.courses);
+          setCourseError(null); // Clear any previous errors
+        }
+      })
+      .catch(() => setCourseError("Failed to load courses. Please try again."));
   }, [dispatch]);
+  
 
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
@@ -216,26 +239,28 @@ function StudentRegistration() {
               <div className="form-group">
                 <label>Batch:</label>
                 <select
-                  value={batch}
-                  onChange={(e) => setBatch(e.target.value)}
-                  required
-                  className="form-control"
+                    value={batch}
+                    onChange={(e) => setBatch(e.target.value)}
+                    required
+                    className="form-control"
                 >
-                  <option value="">Select Batch</option>
-                  {batchOptions.map((batch) => (
+                    <option value="">Select Batch</option>
+                    {batchOptions.map((batch) => (
                     <option key={batch._id} value={batch._id}>
-                      {batch.name}
+                        {batch.name}
                     </option>
-                  ))}
+                    ))}
                 </select>
-              </div>
+                {batchError && <p style={{ color: "red" }}>{batchError}</p>} {/* Display batch error */}
+            </div>
 
-              <div className="form-group">
+
+            <div className="form-group">
                 <label>Enroll Your Courses:</label>
                 <div className="course-list">
-                  {courseOptions.length > 0 ? (
+                    {courseOptions.length > 0 ? (
                     courseOptions.map((course) => (
-                      <div key={course._id} className="course-item">
+                        <div key={course._id} className="course-item">
                         <input
                             type="checkbox"
                             value={course._id}
@@ -243,13 +268,15 @@ function StudentRegistration() {
                             checked={enrolledCourses.some((enrolled) => enrolled.courseID === course._id)}
                         />
                         <label>{course.name}</label>
-                      </div>
+                        </div>
                     ))
-                  ) : (
+                    ) : (
                     <p>Loading courses...</p>
-                  )}
+                    )}
                 </div>
-              </div>
+                {courseError && <p style={{ color: "red" }}>{courseError}</p>} {/* Display course error */}
+            </div>
+
 
               <div className="form-group">
                 <label>Guardian Name:</label>
