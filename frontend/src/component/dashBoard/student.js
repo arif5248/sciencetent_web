@@ -9,6 +9,7 @@ import createBatchIcon from "../../images/icons/createBatch.png";
 // import leftArrow from "../../images/icons/leftArrow.png";
 
 import "./student.css";
+import AllPendingStudents from "../student/getPendingStudents";
 
 function Student() {
   const navigate = useNavigate();
@@ -16,8 +17,8 @@ function Student() {
   const { user, isLoading } = useSelector((state) => state.user);
 
   const allButtons = [
-    { id: "btn1", title:"Create Batch", content: ""},
-    { id: "btn2", title:"All Batch", content: "" }
+    { id: "btn1", title:"All Students", content: ""},
+    { id: "btn2", title:"Pending Students", content: <AllPendingStudents /> }
   ];
   
 

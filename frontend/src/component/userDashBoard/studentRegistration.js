@@ -33,6 +33,7 @@ function StudentRegistration() {
   const [guardianMobile, setGuardianMobile] = useState("");
   const [guardianRelationWithStudent, setGuardianRelationWithStudent] = useState("");
   const [guardianSignature, setGuardianSignature] = useState("");
+  const [admissionFeeRef, setAdmissionFeeRef] = useState("");
   const [signaturePreview, setSignaturePreview] = useState(null);
   const [courseOptions, setCourseOptions] = useState([]); // Store fetched courses
   const [batchOptions, setBatchOptions] = useState([]); // Store fetched batches
@@ -102,6 +103,7 @@ function StudentRegistration() {
     myForm.append("guardianName", guardianName);
     myForm.append("guardianMobile", guardianMobile);
     myForm.append("guardianRelationWithStudent", guardianRelationWithStudent);
+    myForm.append("admissionFeeRef", admissionFeeRef);
   
     if (guardianSignature) {
       myForm.append("guardianSignature", guardianSignature);
@@ -310,6 +312,16 @@ function StudentRegistration() {
                   onChange={(e) =>
                     setGuardianRelationWithStudent(e.target.value)
                   }
+                  required
+                  className="form-control"
+                />
+              </div>
+              <div className="form-group">
+                <label>Admission Fee Ref.</label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setAdmissionFeeRef(e.target.value)}
                   required
                   className="form-control"
                 />

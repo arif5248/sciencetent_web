@@ -71,7 +71,16 @@ function Header() {
               <div className="nav-icon-box">
                 {user ? (
                   <div className="user-icon" onMouseOver={onMouseOver}>
-                    <FontAwesomeIcon icon={faUser} />
+                    {user.avatar && user.avatar.url ? (
+                      <img
+                        src={user.avatar.url}
+                        alt="User Avatar"
+                        className="user-avatar"
+                        style={{ width: "40px", height: "40px", borderRadius: "50%" }}
+                      />
+                    ) : (
+                      <FontAwesomeIcon icon={faUser} />
+                    )}
                     <Dropdown
                       className="user-dropdown"
                       show={showDropdown}
@@ -86,7 +95,7 @@ function Header() {
                             Dashboard
                           </Dropdown.Item>
                         )}
-                        {(user.role === "user" ) && (
+                        {user.role === "user" && (
                           <Dropdown.Item as={Link} to="/userDashboard">
                             Dashboard
                           </Dropdown.Item>
@@ -95,7 +104,7 @@ function Header() {
                           Edit Profile
                         </Dropdown.Item>
                         <Dropdown.Item onClick={userLogout}>
-                          {isLoading? "Logging Out..." : "Logout"}
+                          {isLoading ? "Logging Out..." : "Logout"}
                         </Dropdown.Item>
                       </Dropdown.Menu>
                     </Dropdown>
@@ -110,9 +119,7 @@ function Header() {
           </Navbar>
           {message && (
             <div
-              className={`alert ${
-                isError ? "alert-danger" : "alert-success"
-              } logoutAlert`}
+              className={`alert ${isError ? "alert-danger" : "alert-success"} logoutAlert`}
               role="alert"
             >
               {message}

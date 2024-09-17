@@ -27,6 +27,7 @@ exports.registerStudent = catchAsyncError(async (req, res, next) => {
     guardianName,
     guardianMobile,
     guardianRelationWithStudent,
+    admissionFeeRef
   } = req.body;
 
   const enrolledCoursesArray = JSON.parse(enrolledCourses);
@@ -100,6 +101,7 @@ exports.registerStudent = catchAsyncError(async (req, res, next) => {
       batchDetails,
       enrolledCourses: courseDetails,
       guardianInfo,
+      admissionFeeRef
     });
 
     res.status(200).json({ success: true, student });

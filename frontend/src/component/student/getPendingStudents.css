@@ -1,0 +1,79 @@
+
+.searchBox {
+    margin-bottom: 20px;
+    padding: 10px;
+    width: 100%;
+    max-width: 400px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .studentTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .studentTable th,
+  .studentTable td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+  }
+  
+  .studentTable th {
+    background-color: #f4f4f4;
+  }
+  .studentTable tbody tr:hover{
+    background-color: #016c81;
+    color: #fff;
+  }
+  .studentTable tbody tr:hover .three-dot-btn{
+    color: #fff;
+  }
+  .studentTable tbody tr td{
+    text-align: center;
+  }
+  .three-dot-btn{
+    transform: rotate(90deg);
+  }
+  .three-dot-container {
+    position: relative;
+  }
+  
+  .three-dot-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+  }
+  
+  .action-popup {
+    display: none;
+    position: absolute;
+    top: 25px;
+    right: 0;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+  }
+  
+  .three-dot-container:hover .action-popup {
+    display: block;
+  }
+  
+  .action-popup button {
+    background: none;
+    border: none;
+    padding: 10px 15px;
+    text-align: left;
+    width: 100%;
+    cursor: pointer;
+  }
+  
+  .action-popup button:hover {
+    background-color: #f4f4f4;
+  }
+  

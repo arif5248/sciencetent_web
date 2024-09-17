@@ -69,7 +69,7 @@ function AllPendingStudents() {
 
         <input
           type="text"
-          placeholder="Search Batch Name..."
+          placeholder="Search Student Name..."
           value={searchTerm}
           onChange={handleSearchChange}
           className="searchBox"
@@ -83,28 +83,26 @@ function AllPendingStudents() {
             <table className="studentTable">
               <thead>
                 <tr>
-                  <th>Batch Code</th>
-                  <th>Batch Name</th>
-                  <th>Branch</th>
-                  <th>Created By</th>
+                  <th>Name</th>
+                  <th>Batch</th>
+                  <th>Enrolled Course</th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {filteredBatches.length > 0 ? (
-                  filteredBatches.map((batch) => (
-                    <tr key={batch._id}>
-                      <td>{batch.batchCode}</td>
-                      <td>{batch.name}</td>
-                      <td>{batch.branch}</td>
-                      <td>{batch.createdBy.name}</td>
+                {filteredStudents.length > 0 ? (
+                  filteredStudents.map((student) => (
+                    <tr key={student._id}>
+                      <td>{student.name}</td>
+                      <td>{student.batchDetails.batchCode}</td>
+                      <td>{student.enrolledCourses.map(course =>( course.name+","))}</td>
                       <td>
                         <div className="three-dot-container">
                           <button className="three-dot-btn">...</button>
                           <div className="action-popup">
-                            <button onClick={() => handleEdit(batch)}>Edit</button>
-                            <button onClick={() => handleDelete(batch)}>Delete</button>
-                            <button onClick={() => handleDetails(batch)}>Details</button>
+                            <button onClick={() => handleEdit(student)}>Edit</button>
+                            <button onClick={() => handleDelete(student)}>Delete</button>
+                            <button onClick={() => handleDetails(student)}>Details</button>
                           </div>
                         </div>
                       </td>
@@ -121,7 +119,7 @@ function AllPendingStudents() {
         )}
       </div>
 
-      {showPopup && <PopupForEditDetailsDelete content={popupContent} onClose={closePopup} />}
+      {/* {showPopup && <PopupForEditDetailsDelete content={popupContent} onClose={closePopup} />} */}
     </Fragment>
   );
 }

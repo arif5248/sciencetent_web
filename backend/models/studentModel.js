@@ -107,7 +107,7 @@ const studentsSchema = new mongoose.Schema({
       },
     },
   },
-  admisionFeeRef: {
+  admissionFeeRef: {
     type: String,
     default: "Payment not Completed",
   },
