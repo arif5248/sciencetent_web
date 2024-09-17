@@ -3,7 +3,8 @@ const catchAsyncError = require("../middleware/catchAsyncError");
 const Students = require("../models/studentModel");
 const Batches = require("../models/batchModel");
 const Courses = require("../models/courseModel");
-const cloudinary = require("cloudinary");
+const cloudinary = require("cloudinary")
+const mongoose = require('mongoose')
 
 exports.registerStudent = catchAsyncError(async (req, res, next) => {
   const registeredStudent = await Students.find({ user: req.user._id });
@@ -157,32 +158,43 @@ exports.getAllBatchStudents = catchAsyncError(async (req, res, next) => {
 });
 
 exports.approveStudent = catchAsyncError(async (req, res, next) => {
-  const student = await Students.findById(req.params.id);
-  if (student.status === "approved") {
-    return next(new ErrorHandler("Status is already approved", 400));
-  } else {
-    const newStatus = {
-      status: "approved",
-    };
+  const session = await mongoose.startSession()
+  session.startTransaction()
+  try {
+    const student = await Students.findById(req.params.id).session(session);
+    if (student.status === "approved") {
+      return next(new ErrorHandler("Status is already approved", 400));
+    } else {
+      const newStatus = {
+        status: "approved",
+      };
 
-    const approvedStudent = await Students.findByIdAndUpdate(
-      student._id,
-      newStatus,
-      {
-        new: true,
-        runValidators: true,
-        useFindAndModify: false,
-      }
-    );
+      const approvedStudent = await Students.findByIdAndUpdate(
+        student._id,
+        newStatus,
+        {
+          new: true,
+          runValidators: true,
+          useFindAndModify: false,
+        }
+      ).session(session);
 
     if (!student) {
       return next(new ErrorHandler("Student not found", 400));
     }
 
     req.student = approvedStudent;
-
+    req.session = session
     next();
   }
+  } catch (error) {
+    console.error(error)
+    await session.abortTransaction()
+    session.endSession()
+    res.status(500).json({ success: false, message: 'Student Approve failed' })
+  
+  }
+  
 });
 exports.test = catchAsyncError(async (req, res) => {
   const studentID = req.user.studentRef;

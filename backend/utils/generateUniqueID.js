@@ -6,22 +6,25 @@ const Users = require("../models/userModel");
 const sendSMS = require("../utils/sendSms");
 
 exports.generateUniqueID = catchAsyncError(async (req, res, next) => {
-  const batch = await Batches.findOne({ _id: req.student.batch });
-
-  if (!batch) {
-    return next(new ErrorHandler("Batch not found", 400));
-  }
-  const batchCode = batch.batchCode;
-
+  const { session } = req
   try {
-    const count = await Students.countDocuments({
+    const batch = await Batches.findOne({ _id: req.student.batchDetails.batchId }).session(session);
+
+    if (!batch) {
+      return next(new ErrorHandler("Batch not found", 400));
+    }
+    const batchCode = batch.batchCode;
+
+    let count = await Students.countDocuments({
       status: "approved",
       batch: batch._id,
-    });
-
+    }).session(session);
+    count = count +  1
     const paddedCount = count.toString().padStart(2, "0");
+    
+    // console.log(paddedCount)
     const uniqueID = `${batchCode}${paddedCount}`;
-
+    // console.log(uniqueID)
     const setUniqueID = {
       studentID: uniqueID,
     };
@@ -34,7 +37,7 @@ exports.generateUniqueID = catchAsyncError(async (req, res, next) => {
         runValidators: true,
         useFindAndModify: false,
       }
-    );
+    ).session(session);
 
     if (!student) {
       return next(new ErrorHandler("Student not found", 400));
@@ -52,12 +55,15 @@ exports.generateUniqueID = catchAsyncError(async (req, res, next) => {
         runValidators: true,
         useFindAndModify: false,
       }
-    );
+    ).session(session);
 
-    // await sendSMS({
-    //   number: student.whatsappNumber,
-    //   message: `Dear ${student.name}, Your Registration is Approved. Your Student ID is ${student.studentID} From: Science Tent( ${batch.branch} Branch )`,
-    // });
+    await sendSMS({
+      number: student.whatsappNumber,
+      message: `Dear ${student.name}, Your Registration is Approved. Your Student ID is ${student.studentID} From: Science Tent( ${batch.branch} Branch )`,
+    });
+
+    await session.commitTransaction()
+    session.endSession()
 
     res.status(200).json({ success: true, student });
   } catch (error) {

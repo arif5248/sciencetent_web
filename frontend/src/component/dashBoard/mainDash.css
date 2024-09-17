@@ -19,11 +19,11 @@
     flex-direction: column;
     height: 100%;
 }
-ul{
+.leftBox ul{
     padding-left: 0 !important;
     margin-top: 60px !important;
 }
-li{
+.leftBox ul li{
     position: relative;
     list-style: none;
     padding: 5px 0px;
@@ -33,17 +33,17 @@ li{
     align-items: center;
     color: #fff;
 }
-li > p{
+.leftBox ul li > p{
     margin: 0;
     padding-left: 10px;
 }
-li:hover{
+.leftBox ul li:hover{
     background-color: #fff;
     border-radius: 20px 0px 0px 20px;
     margin-left: 5px;
     color: #000;
 }
-li:hover::before{
+.leftBox ul li:hover::before{
     content: '';
     position: absolute;
     top: -35px;
@@ -54,7 +54,7 @@ li:hover::before{
     border-radius: 50%;
     box-shadow: 10px 10px 5px -2px #fff;
 }
-li:hover::after{
+.leftBox ul li:hover::after{
     content: '';
     position: absolute;
     bottom: -35px;
@@ -65,13 +65,13 @@ li:hover::after{
     border-radius: 50%;
     box-shadow: 10px -10px 5px -2px #fff;
 }
-li.active{
+.leftBox ul li.active{
     background-color: #fff;
     border-radius: 20px 0px 0px 20px;
     margin-left: 5px;
     color: #000;
 }
-li.active::before{
+.leftBox ul li.active::before{
     content: '';
     position: absolute;
     top: -35px;
@@ -82,7 +82,7 @@ li.active::before{
     border-radius: 50%;
     box-shadow: 10px 10px 5px -2px #fff;
 }
-li.active::after{
+.leftBox ul li.active::after{
     content: '';
     position: absolute;
     bottom: -35px;

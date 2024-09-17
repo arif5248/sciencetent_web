@@ -5,7 +5,7 @@ import Loader from "../layout/loader/loader";
 import { useNavigate } from "react-router-dom";
 import "./getPendingStudents.css";
 import { fetchAllPendingStudents } from "../../slice/studentSlice";
-// import PopupForEditDetailsDelete from "./actionBatch";
+import PopupForDetailsApproveReject from "./actionStudent";
 
 function AllPendingStudents() {
   const navigate = useNavigate();
@@ -40,24 +40,24 @@ function AllPendingStudents() {
   const openPopup = (content) => setShowPopup(true) || setPopupContent(content);
   const closePopup = () => setShowPopup(false) || setPopupContent(null);
 
-  const handleEdit = (batch) => {
+  const handleReject = (student) => {
     openPopup({
-      type: "edit",
-      batch,
+      type: "reject",
+      student,
     });
   };
 
-  const handleDelete = (batch) => {
+  const handleApprove = (student) => {
     openPopup({
-      type: "delete",
-      batch,
+      type: "approve",
+      student,
     });
   };
 
-  const handleDetails = (batch) => {
+  const handleDetails = (student) => {
     openPopup({
       type: "details",
-      batch,
+      student,
     });
   };
 
@@ -100,9 +100,9 @@ function AllPendingStudents() {
                         <div className="three-dot-container">
                           <button className="three-dot-btn">...</button>
                           <div className="action-popup">
-                            <button onClick={() => handleEdit(student)}>Edit</button>
-                            <button onClick={() => handleDelete(student)}>Delete</button>
                             <button onClick={() => handleDetails(student)}>Details</button>
+                            <button onClick={() => handleApprove(student)}>Approve</button>
+                            <button onClick={() => handleReject(student)}>Reject</button>
                           </div>
                         </div>
                       </td>
@@ -110,7 +110,7 @@ function AllPendingStudents() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="6">No batches found</td>
+                    <td colSpan="6">No Students Found</td>
                   </tr>
                 )}
               </tbody>
@@ -119,7 +119,7 @@ function AllPendingStudents() {
         )}
       </div>
 
-      {/* {showPopup && <PopupForEditDetailsDelete content={popupContent} onClose={closePopup} />} */}
+      {showPopup && <PopupForDetailsApproveReject content={popupContent} onClose={closePopup} />}
     </Fragment>
   );
 }

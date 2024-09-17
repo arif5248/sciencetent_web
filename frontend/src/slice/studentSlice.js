@@ -28,6 +28,12 @@ export const fetchAllPendingStudents = createAsyncThunk("student/fetchAllPending
   return data;
 });
 
+export const fetchApproveStudent= createAsyncThunk("student/fetchApproveStudent", async (studentID) => {
+  const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
+  const { data } = await axios.put(`${baseUrl}/api/v1/admin/approve/students/${studentID}`, config);
+  return data;
+});
+
 
 const studentSlice = createSlice({
   name: "student",
@@ -76,6 +82,20 @@ const studentSlice = createSlice({
       state.isAuthenticated = false;
       state.allBatch = null;
       state.error = action.error.message;
+    })
+
+    .addCase(fetchApproveStudent.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    })
+    .addCase(fetchApproveStudent.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.allPendingStudents = state.allPendingStudents.filter(student => student._id !== action.meta.arg);
+      state.error = null;
+    })
+    .addCase(fetchApproveStudent.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload || action.error.message;
     })
   },
 });
