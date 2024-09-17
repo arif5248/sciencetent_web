@@ -28,12 +28,21 @@ export const fetchAllPendingStudents = createAsyncThunk("student/fetchAllPending
   return data;
 });
 
-export const fetchApproveStudent= createAsyncThunk("student/fetchApproveStudent", async (studentID) => {
-  const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
-  const { data } = await axios.put(`${baseUrl}/api/v1/admin/approve/students/${studentID}`, config);
-  return data;
-});
-
+export const fetchApproveStudent = createAsyncThunk(
+  "student/fetchApproveStudent",
+  async (studentID, { rejectWithValue }) => {
+    try {
+      const config = { withCredentials: true };
+      const { data } = await axios.put(`${baseUrl}/api/v1/admin/approve/students/${studentID}`, config);
+      return data;
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      }
+      return rejectWithValue(error.message);
+    }
+  }
+);
 
 const studentSlice = createSlice({
   name: "student",

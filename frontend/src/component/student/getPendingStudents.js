@@ -79,7 +79,7 @@ function AllPendingStudents() {
           <Loader />
         ) : (
           <Fragment>
-            {error && <p style={{ color: "red" }}>{error}</p>}
+            { error && <p style={{ color: "red" }}>{error}</p>}
             <table className="studentTable">
               <thead>
                 <tr>
