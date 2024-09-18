@@ -36,6 +36,6 @@ router
     getRejectedClassNotification
   );
   router
-    .route("//cron-birthday-notification").post(birthdayNotification);
+    .route("/cron-birthday-notification").post(birthdayNotification);
 
 module.exports = router;
