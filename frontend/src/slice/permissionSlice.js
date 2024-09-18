@@ -2,8 +2,8 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { fetchSingleUser } from "./userSlice"; // Import the thunk from userSlice
 
-const baseUrl= process.env.base_url ? process.env.base_url : "http://localhost:5000"
-// const baseUrl = "https://sciencetent-backend.vercel.app";
+// const baseUrl= "http://localhost:5000"
+const baseUrl = "https://sciencetent-backend.vercel.app";
 
 // Thunk for fetching all permissions
 export const fetchAllPermissions = createAsyncThunk(

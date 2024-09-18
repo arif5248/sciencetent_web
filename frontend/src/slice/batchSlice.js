@@ -1,8 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const baseUrl= process.env.base_url ? process.env.base_url : "http://localhost:5000"
-// const baseUrl = "https://sciencetent-backend.vercel.app";
+// const baseUrl= "http://localhost:5000"
+const baseUrl = "https://sciencetent-backend.vercel.app";
 
 // Thunk for creating a new batch
 export const fetchCreateBatch = createAsyncThunk(
