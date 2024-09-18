@@ -66,6 +66,10 @@ exports.birthdayNotification = async () => {
       await sendSMS({ number: user.whatsappNumber, message });
       console.log(`Birthday wish sent to ${user.name}`);
     }
+    res.status(200).json({
+      success: true,
+      message: "Birthday notification sent",
+    });
   } catch (error) {
     console.error("Error sending birthday wishes:", error);
   }
