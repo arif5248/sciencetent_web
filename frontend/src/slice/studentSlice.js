@@ -1,8 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// const baseUrl= "http://localhost:5000"
-const baseUrl= "https://sciencetent-backend.vercel.app"
+const baseUrl= process.env.base_url ? process.env.base_url : "http://localhost:5000"
+// const baseUrl= "https://sciencetent-backend.vercel.app"
 
 
 export const fetchRegisterStudent = createAsyncThunk(
@@ -33,7 +33,7 @@ export const fetchApproveStudent = createAsyncThunk(
   async (studentID, { rejectWithValue }) => {
     try {
       const config = { withCredentials: true };
-      const { data } = await axios.put(`${baseUrl}/api/v1/admin/approve/students/${studentID}`, config);
+      const { data } = await axios.put(`${baseUrl}/api/v1/admin/approve/students/${studentID}`, {}, config);
       return data;
     } catch (error) {
       if (error.response && error.response.data.message) {
