@@ -113,12 +113,20 @@ function PopupForEditDetailsDelete({ content, onClose }) {
                 value={courseName}
                 onChange={(e) => setCourseName(e.target.value)}
                 />
-                <label>Payment Type : </label>
-                <input
-                type="text"
-                value={paymentType}
-                onChange={(e) => setPaymentType(e.target.value)}
-                />
+                <label htmlFor="paymentType">Payment Type</label>
+                <select
+                  id="paymentType"
+                  className="form-control"
+                  value={paymentType}
+                  onChange={(e) => setPaymentType(e.target.value)}
+                  required
+                >
+                  <option value="">Select Payment Type</option>
+                  <option value="perClass">Per Class</option>
+                  <option value="perMonth">Per Month</option>
+                  <option value="perCourse">Per Course</option>
+                </select>
+
                 <label>Payment Amount : </label>
                 <input
                 type="text"
