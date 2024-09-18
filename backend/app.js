@@ -61,14 +61,14 @@ app.get("/api/v1/cron-birthday-notification", (req, res) => {
 app.use(errorMiddleware);
 
 // Schedule Tasks
-cron.schedule(
-  "0 0 * * *",
-  () => {
-    birthdayNotification();
-  },
-  {
-    timezone: "Asia/Dhaka",
-  }
-);
+// cron.schedule(
+//   "0 0 * * *",
+//   () => {
+//     birthdayNotification();
+//   },
+//   {
+//     timezone: "Asia/Dhaka",
+//   }
+// );
 
 module.exports = app;
