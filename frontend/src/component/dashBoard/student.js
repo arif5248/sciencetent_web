@@ -10,6 +10,7 @@ import createBatchIcon from "../../images/icons/createBatch.png";
 
 import "./student.css";
 import AllPendingStudents from "../student/getPendingStudents";
+import AllApproveStudents from "../student/getApproveStudents";
 
 function Student() {
   const navigate = useNavigate();
@@ -18,7 +19,8 @@ function Student() {
 
   const allButtons = [
     { id: "btn1", title:"All Students", content: ""},
-    { id: "btn2", title:"Pending Students", content: <AllPendingStudents /> }
+    { id: "btn2", title:"Pending Students", content: <AllPendingStudents /> },
+    { id: "btn3", title:"Approve Students", content: <AllApproveStudents /> }
   ];
   
 

@@ -27,6 +27,11 @@ export const fetchAllPendingStudents = createAsyncThunk("student/fetchAllPending
   const { data } = await axios.get(`${baseUrl}/api/v1/admin/pending-students`, config);
   return data;
 });
+export const fetchAllApproveStudents = createAsyncThunk("student/fetchAllApproveStudents", async () => {
+  const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
+  const { data } = await axios.get(`${baseUrl}/api/v1/admin/approved-students`, config);
+  return data;
+});
 
 export const fetchApproveStudent = createAsyncThunk(
   "student/fetchApproveStudent",
@@ -51,6 +56,7 @@ const studentSlice = createSlice({
     isAuthenticated: false,
     student : null,
     allPendingStudents : null,
+    allApproveStudents : null,
     error: null,
   },
   extraReducers: (builder) => {
@@ -92,6 +98,25 @@ const studentSlice = createSlice({
       state.allBatch = null;
       state.error = action.error.message;
     })
+
+    .addCase(fetchAllApproveStudents.pending, (state) => {
+      state.isLoading = true;
+    })
+    .addCase(fetchAllApproveStudents.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isAuthenticated = true;
+      state.allApproveStudents = action.payload.students;
+      state.error = null;
+    })
+    .addCase(fetchAllApproveStudents.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isAuthenticated = false;
+      state.allBatch = null;
+      state.error = action.error.message;
+    })
+
+
+
 
     .addCase(fetchApproveStudent.pending, (state) => {
       state.isLoading = true;
