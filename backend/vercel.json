@@ -11,5 +11,14 @@
       "src": "/(.*)",
       "dest": "server.js"
     }
-  ]
+  ],
+  "cron": {
+    "jobs": [
+      {
+        "path": "/api/v1/cron-birthday-notification",
+        "schedule": "0 0 * * *",
+        "timezone": "Asia/Dhaka"
+      }
+    ]
+  }
 }
