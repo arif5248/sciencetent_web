@@ -19,15 +19,18 @@ function Header() {
   const [showDropdown, setShowDropdown] = useState(false);
   const [message, setMessage] = useState("");
   const [isError, setIsError] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const onMouseOver = () => {
     setShowDropdown(true);
   };
 
   const userLogout = async () => {
+    // setLoading(true)
     try {
       const resultAction = await dispatch(fetchUserLogout()).unwrap();
-      setMessage(resultAction.message); // Assuming the backend sends a success message
+      setMessage(resultAction.message);
+      // setLoading(false) // Assuming the backend sends a success message
       navigate("/");
     } catch (error) {
       setMessage(error.message); // Display the error message from the backend
@@ -41,7 +44,7 @@ function Header() {
 
   return (
     <Fragment>
-      {isLoading ? (
+      {isLoading || loading ? (
         <Loader />
       ) : (
         <Fragment>
