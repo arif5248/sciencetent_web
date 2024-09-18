@@ -1,8 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// const baseUrl= "http://localhost:5000"
-const baseUrl= "https://sciencetent-backend.vercel.app"
+const baseUrl= process.env.base_url ? process.env.base_url : "http://localhost:5000"
+// const baseUrl= "https://sciencetent-backend.vercel.app"
 
 export const fetchUserUpdateProfile = createAsyncThunk(
   "user/fetchUserProfile",
