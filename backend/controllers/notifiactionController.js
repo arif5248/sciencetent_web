@@ -43,6 +43,10 @@ exports.getRejectedClassNotification = catchAsyncError(
   }
 );
 
+const sendSMS = async ({ number, message }) => {
+  // Logic for sending the SMS (assuming it returns a promise)
+};
+
 exports.birthdayNotification = async () => {
   try {
     // Get today's date
@@ -60,17 +64,23 @@ exports.birthdayNotification = async () => {
       },
     });
 
-    // Send birthday wishes to users
-    for (const user of usersWithBirthdayToday) {
-      const message = `Dear ${user.name}\nHappy birthday🎉🎂...!!! Wishing you best of luck.\nStay with us \n\nScience Tent\nAn Ultimate Education Care for Science.`;
-      sendSMS({ number: user.whatsappNumber, message });
-      console.log(`Birthday wish sent to ${user.name}`);
+    if (usersWithBirthdayToday.length === 0) {
+      console.log("No birthdays today.");
+      return;
     }
-    res.status(200).json({
-      success: true,
-      message: "Birthday notification sent",
-    });
+
+    // Send birthday wishes to all users asynchronously
+    await Promise.all(
+      usersWithBirthdayToday.map(async (user) => {
+        const message = `Dear ${user.name}\nHappy birthday🎉🎂...!!! Wishing you best of luck.\nStay with us \n\nScience Tent\nAn Ultimate Education Care for Science.`;
+        await sendSMS({ number: user.whatsappNumber, message });
+        console.log(`Birthday wish sent to ${user.name}`);
+      })
+    );
+
+    console.log("All birthday notifications sent successfully.");
   } catch (error) {
     console.error("Error sending birthday wishes:", error);
   }
 };
+
