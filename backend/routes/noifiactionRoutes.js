@@ -6,6 +6,7 @@ const {
   deleteClassNotification,
   getPendingClassNotification,
   getRejectedClassNotification,
+  birthdayNotification,
 } = require("../controllers/notifiactionController");
 
 const router = express.Router();
@@ -34,5 +35,7 @@ router
     isAuthorizeRoles("admin"),
     getRejectedClassNotification
   );
+  router
+    .route("//cron-birthday-notification").post(birthdayNotification);
 
 module.exports = router;

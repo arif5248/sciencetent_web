@@ -11,7 +11,6 @@ const {
 } = require("../controllers/studentController");
 const { isAuthenticatedUser, isAuthorizeRoles, isPermitted } = require("../middleware/auth");
 const { generateUniqueID } = require("../utils/generateUniqueID");
-
 const router = express.Router();
 
 router.route("/student/register").post(isAuthenticatedUser, registerStudent);
@@ -39,6 +38,6 @@ router
     generateUniqueID
   );
 
-router.route("/test").get(isAuthenticatedUser, test);
+
 
 module.exports = router;

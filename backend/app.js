@@ -52,10 +52,7 @@ app.use("/api/v1", student);
 app.use("/api/v1", classDetails);
 app.use("/api/v1", notification);
 app.use("/api/v1", permission);
-app.post("/api/v1/cron-birthday-notification", (req, res) => {
-  birthdayNotification();
-  res.status(200).json({ message: "Birthday notifications sent." });
-});
+
 
 // Error Middleware
 app.use(errorMiddleware);
