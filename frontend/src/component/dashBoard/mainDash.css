@@ -79,7 +79,7 @@
     height: 35px; /* Height of the list item */
     width: 35px; /* Width of the curve effect */
     background-color: #2166D1; /* Color of the curve effect */
-    border-radius: 50%;
+    border-radius: 150px 0px 80px 0px;
     box-shadow: 10px 10px 5px -2px #fff;
 }
 .leftBox ul li.active::after{
@@ -90,7 +90,7 @@
     height: 35px;
     width: 35px;
     background-color: #2166D1;
-    border-radius: 50%;
+    border-radius: 0px 80px 0px 150px;
     box-shadow: 10px -10px 5px -2px #fff;
 }
 .icon{
@@ -162,7 +162,7 @@
         padding-left: 5px;
     }
     .arrowIcon{
-        width: 18px;
+        width: 15px;
     }
     .middle > h1 {
         font-size: 16px;
