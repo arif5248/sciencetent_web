@@ -43,9 +43,6 @@ exports.getRejectedClassNotification = catchAsyncError(
   }
 );
 
-const sendSMS = async ({ number, message }) => {
-  // Logic for sending the SMS (assuming it returns a promise)
-};
 
 exports.birthdayNotification = async () => {
   try {
