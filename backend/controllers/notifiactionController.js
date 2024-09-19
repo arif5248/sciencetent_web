@@ -70,7 +70,7 @@ exports.birthdayNotification = async () => {
     await Promise.all(
       usersWithBirthdayToday.map(async (user) => {
         const message = `Dear ${user.name}\nHappy birthday🎉🎂...!!! Wishing you best of luck.\nStay with us \n\nScience Tent\nAn Ultimate Education Care for Science.`;
-        await sendSMS({ number: user.whatsappNumber, message });
+         sendSMS({ number: user.whatsappNumber, message });
         console.log(`Birthday wish sent to ${user.name}`);
       })
     );
