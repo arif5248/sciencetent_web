@@ -12,7 +12,7 @@ const LoginSignUp = () => {
   const dispatch = useDispatch();
   const alert = useAlert();
   const navigate = useNavigate();
-  const location = useLocation();
+  const location = useLocation(); // Use the useLocation hook
 
   const { error, isAuthenticated } = useSelector((state) => state.user);
 
@@ -32,52 +32,59 @@ const LoginSignUp = () => {
 
   const { name, email, password } = user;
 
-  const loginSubmit = async (e) => {
+  const loginSubmit =async (e) => {
     e.preventDefault();
 
     try {
-      setLoading(true);
-      const result = await dispatch(
-        fetchUserLogin({ email: loginEmail, password: loginPassword })
-      ).unwrap();
-      console.log(result);
+      setLoading(true); // Set loading to true while processing
+      
+      const result = await dispatch(fetchUserLogin({ email: loginEmail, password: loginPassword })).unwrap(); // Dispatch the delete batch action
+      console.log(result)
       console.log("Successfully Logged In");
-      navigate("/account");
+      navigate("/account"); 
     } catch (error) {
       console.error("Error Log In:", error);
-      setError(error);
+      setError(error) // Handle any errors during deletion
     } finally {
-      setLoading(false);
+      setLoading(false); // Set loading to false after deletion completes
     }
+
+    
   };
 
-  const registerSubmit = async (e) => {
+  const registerSubmit = async(e) => {
     e.preventDefault();
 
+
     try {
-      setLoading(true);
+      setLoading(true); // Set loading to true while processing
       const myForm = new FormData();
       myForm.set("name", name);
       myForm.set("email", email);
       myForm.set("password", password);
 
-      const result = await dispatch(fetchUserRegister(myForm)).unwrap();
-      console.log(result);
-      console.log("Registered successfully");
-      navigate("/account");
+      const result = await dispatch(fetchUserRegister(myForm)).unwrap(); // Dispatch the delete batch action
+      console.log(result)
+      console.log("Registered  successfully");
+      navigate("/account"); 
     } catch (error) {
       console.error("Error in Registration:", error);
-      setError(error);
+      setError(error) // Handle any errors during deletion
     } finally {
-      setLoading(false);
+      setLoading(false); // Set loading to false after deletion completes
+      // Close the popup after deletion
     }
+
+
   };
 
   const registerDataChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
   };
 
-  const redirect = location?.search ? location.search.split("=")[1] : "/account";
+  const redirect = location?.search
+    ? location.search.split("=")[1]
+    : "/account";
 
   useEffect(() => {
     if (error) {
@@ -89,46 +96,22 @@ const LoginSignUp = () => {
     }
   }, [dispatch, error, alert, navigate, isAuthenticated, redirect]);
 
-  // Automatically switch to the login tab on initial load
-  useEffect(() => {
-    // Ensure login tab is active when page loads
-    if (loginTab.current && registerTab.current) {
-      switcherTab.current.classList.add("shiftToNeutral");
-      switcherTab.current.classList.remove("shiftToRight");
-      
-      loginTab.current.style.display = "block";
-      registerTab.current.style.display = "none";
-    }
-  }, []);
-
   const switchTabs = (e, tab) => {
-    const loginTabElem = e.target.parentElement.children[0];
-    const registerTabElem = e.target.parentElement.children[1];
-  
     if (tab === "login") {
       switcherTab.current.classList.add("shiftToNeutral");
       switcherTab.current.classList.remove("shiftToRight");
-  
-      registerTab.current.style.display = "none";
-      loginTab.current.style.display = "block";
-  
-      // Add active class to login tab and remove from register tab
-      loginTabElem.classList.add("active");
-      registerTabElem.classList.remove("active");
+
+      registerTab.current.classList.remove("shiftToNeutralForm");
+      loginTab.current.classList.remove("shiftToLeft");
     }
     if (tab === "register") {
       switcherTab.current.classList.add("shiftToRight");
       switcherTab.current.classList.remove("shiftToNeutral");
-  
-      registerTab.current.style.display = "block";
-      loginTab.current.style.display = "none";
-  
-      // Add active class to register tab and remove from login tab
-      registerTabElem.classList.add("active");
-      loginTabElem.classList.remove("active");
+
+      registerTab.current.classList.add("shiftToNeutralForm");
+      loginTab.current.classList.add("shiftToLeft");
     }
   };
-  
 
   return (
     <Fragment>
