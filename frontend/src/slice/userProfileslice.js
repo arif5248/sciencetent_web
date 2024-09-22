@@ -14,6 +14,22 @@ export const fetchUserUpdateProfile = createAsyncThunk(
   }
 );
 
+export const fetchUpdatePass = createAsyncThunk(
+  "user/fetchUpdatePass",
+  async (myForm, { rejectWithValue }) => {
+    try {
+      const config = { withCredentials: true };
+      const { data } = await axios.put(`${baseUrl}/api/v1/password/update`, myForm, config);
+      return data;
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      }
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 
 const userProfileSlice = createSlice({
   name: "user",
@@ -40,6 +56,18 @@ const userProfileSlice = createSlice({
     builder.addCase(fetchUserUpdateProfile.rejected, (state, action) => {
       state.isLoading = false;
       state.error = action.error.message;
+    });
+
+    builder.addCase(fetchUpdatePass.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(fetchUpdatePass.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.error = null;
+    });
+    builder.addCase(fetchUpdatePass.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload || action.error.message;
     });
     // builder.addCase(fetchUserUpdateProfile.reset, (state) => {
     //   state.isUpdated = false;

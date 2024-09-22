@@ -167,6 +167,11 @@ function StudentRegistration() {
             </div>
 
             <div className="form-group animated">
+              <label>Address</label>
+              <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} required />
+            </div>
+
+            <div className="form-group animated">
               <label>College Name</label>
               <input type="text" value={collegeName} onChange={(e) => setCollegeName(e.target.value)} required />
             </div>

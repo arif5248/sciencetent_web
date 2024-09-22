@@ -15,6 +15,7 @@ import Loader from "./component/layout/loader/loader";
 import "./App.css"
 import MainDashBoard from "./component/dashBoard/mainDash.js";
 import UserDashBoard from "./component/userDashBoard/userDashBoard.js";
+import UpdatePassword from "./component/user/updatePassword.js";
 
 function App() {
   const dispatch = useDispatch();
@@ -75,6 +76,15 @@ function App() {
           element={
             <ProtectedRoute>
               <UpdateProfile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          exact
+          path="/password/update"
+          element={
+            <ProtectedRoute>
+              <UpdatePassword />
             </ProtectedRoute>
           }
         />
