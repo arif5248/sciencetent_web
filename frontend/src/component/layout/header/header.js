@@ -29,9 +29,9 @@ function Header() {
     // setLoading(true)
     try {
       const resultAction = await dispatch(fetchUserLogout()).unwrap();
-      setMessage(resultAction.message);
+      // setMessage(resultAction.message);
       // setLoading(false) // Assuming the backend sends a success message
-      navigate("/");
+      navigate("/login");
     } catch (error) {
       setMessage(error.message); // Display the error message from the backend
       setIsError(true);

@@ -40,6 +40,7 @@ const UpdatePassword = () => {
         const myForm = new FormData();
         myForm.append("oldPassword", oldPassword);
         myForm.append("newPassword", newPassword);
+        myForm.append("confirmPassword", confirmPassword);
         const result = await dispatch(fetchUpdatePass(myForm)).unwrap(); // Dispatch the delete batch action
         console.log(result)
         console.log("Password updated successfully");
