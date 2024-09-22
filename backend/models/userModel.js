@@ -92,6 +92,7 @@ userSchema.methods.getJWTToken = function () {
 
 //compare password
 userSchema.methods.comparePassword = async function (enteredPassword) {
+  console.log("hey, I am here mother fucker")
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
