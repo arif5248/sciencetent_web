@@ -239,8 +239,9 @@
   .guardian-signature-container {
     margin-top: 15px;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
   }
   
   .guardian-signature-container p {
@@ -375,6 +376,7 @@
       width: 35px;
       height: 35px;
       font-size: 22px;
+      line-height: unset;
     }
   }
   

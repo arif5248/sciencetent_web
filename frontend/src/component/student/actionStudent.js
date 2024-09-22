@@ -7,6 +7,7 @@ function PopupForDetailsApproveReject({ content, onClose }) {
   const [loading, setLoading] = useState(false); // Add loading state
   const dispatch = useDispatch(); // Add useDispatch hook
 
+  console.log(content.student)
   const handleApprove = async () => {
     try {
       setLoading(true); // Set loading to true while processing
@@ -106,7 +107,7 @@ function PopupForDetailsApproveReject({ content, onClose }) {
                 <span className="value">{content.student.admisionFeeRef}</span>
               </div>
 
-              {/* Approve and Reject Buttons */}
+              {content.student.status === 'pending' && (
               <div className="button-group">
                 <button
                   className="btn-approve"
@@ -122,8 +123,9 @@ function PopupForDetailsApproveReject({ content, onClose }) {
                 >
                   {loading ? "Processing..." : "Reject"}
                 </button>
-              </div>
+              </div>)}
             </div>
+             
           </Fragment>
         )}
 
