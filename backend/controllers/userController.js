@@ -85,19 +85,19 @@ exports.forgotPassword = catchAsyncError(async (req, res, next) => {
 
   await user.save({ validateBeforeSave: false });
 
-  const protocol = req.protocol; // 'http' or 'https'
+  // const protocol = req.protocol; // 'http' or 'https'
   const host = req.get('origin') || req.get('referrer');  // 'sciencetent.vercel.app' or localhost:5000
-  const resetUrl = `${protocol}://${host}/password/reset/${resetToken}`;
+  const resetUrl = `${host}/password/reset/${resetToken}`;
 
   const message = `Your password reset token is :- \n\n\n ${resetUrl} \n\n if you have not request this email then, please ignore it`;
   console.log(message)
   // console.log(req)
   try {
-    // await sendEmail({
-    //   email: user.email,
-    //   subject: `Password Recovery`,
-    //   message,
-    // });
+    await sendEmail({
+      email: user.email,
+      subject: `Password Recovery`,
+      message,
+    });
 
     res.status(200).json({
       success: true,
