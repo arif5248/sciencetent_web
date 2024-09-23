@@ -47,6 +47,22 @@ export const fetchSingleUser = createAsyncThunk("user/fetchSingleUser", async (u
   const { data } = await axios.get(`${baseUrl}/api/v1/admin/getSingleUser/${userName}`, config);
   return data;
 });
+export const fetchForgotPass = createAsyncThunk(
+  "user/fetchForgotPass",
+  async (userData, { rejectWithValue }) => {
+    try {
+      const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
+      const { data } = await axios.post(`${baseUrl}/api/v1/password/forgot`, userData, config);
+      return data;
+    } catch (error) {
+      // Handle error response, including HTTP 409 Conflict
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message); // Provide custom error message from backend
+      }
+      return rejectWithValue(error.message); // Fallback for other errors
+    }
+  }
+);
 
 const userSlice = createSlice({
   name: "user",
@@ -128,6 +144,19 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.singleUser = null;
         state.error = action.error.message;
+      })
+
+      .addCase(fetchForgotPass.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;  // Reset error state
+      })
+      .addCase(fetchForgotPass.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;  // Clear any previous errors
+      })
+      .addCase(fetchForgotPass.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload || action.error.message;  // Use custom error message if available
       })
   },
 });

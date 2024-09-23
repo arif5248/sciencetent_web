@@ -16,6 +16,7 @@ import "./App.css"
 import MainDashBoard from "./component/dashBoard/mainDash.js";
 import UserDashBoard from "./component/userDashBoard/userDashBoard.js";
 import UpdatePassword from "./component/user/updatePassword.js";
+import ForgotPassword from "./component/user/forgotPassword.js";
 
 function App() {
   const dispatch = useDispatch();
@@ -88,6 +89,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route exact path="password/forgot" Component={ForgotPassword}/>
         <Route exact path="/login" Component={LoginSignUp} />
       </Routes>
     </Router>
