@@ -51,8 +51,8 @@ export const fetchForgotPass = createAsyncThunk(
   "user/fetchForgotPass",
   async (userData, { rejectWithValue }) => {
     try {
-      const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
-      const { data } = await axios.post(`${baseUrl}/api/v1/password/forgot`, userData, config);
+      // const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
+      const { data } = await axios.post(`${baseUrl}/api/v1/password/forgot`, userData);
       return data;
     } catch (error) {
       // Handle error response, including HTTP 409 Conflict

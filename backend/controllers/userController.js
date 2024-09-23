@@ -74,13 +74,14 @@ exports.logout = catchAsyncError(async (req, res, next) => {
 //forgot password
 exports.forgotPassword = catchAsyncError(async (req, res, next) => {
   const user = await User.findOne({ email: req.body.email });
-
+  console.log("========user======", user)
   if (!user) {
     return next(new ErrorHandler("User not found", 404));
   }
 
   //Get ResetPasword Token
   const resetToken = user.getResetPasswordToken();
+  console.log("========resetToken======", resetToken)
 
   await user.save({ validateBeforeSave: false });
 
