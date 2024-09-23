@@ -4,7 +4,7 @@ import Loader from "../layout/loader/loader";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import MetaData from "../layout/metaData/metaData";
-import { fetchUpdatePass } from "../../slice/userProfileslice";
+import { fetchForgotPass } from "../../slice/userSlice";
 
 const ForgotPassword = () => {
   const { isLoading } = useSelector((state) => state.user);
@@ -12,6 +12,7 @@ const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   
   const [error, setError] = useState(""); // For error message if passwords don't match
+  const [showsuccess, setShowSuccess] = useState("");
   
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -20,12 +21,14 @@ const ForgotPassword = () => {
     e.preventDefault();
 
     setError("");
+    setShowSuccess("");
 
     try {
         setLoading(true); // Set loading to true while processing
-        const result = await dispatch(fetchUpdatePass({"email" : email})).unwrap(); // Dispatch the delete batch action
+        const result = await dispatch(fetchForgotPass({"email" : email})).unwrap(); // Dispatch the delete batch action
         console.log(result)
         console.log("Reset Email sent successfully");
+        setShowSuccess(result.message)
         // navigate("/account"); 
       } catch (error) {
         console.error("Error :", error);
@@ -68,6 +71,7 @@ const ForgotPassword = () => {
 
                 {/* Error message if passwords don't match */}
                 {error && <p className="errorMessage">{error}</p>}
+                {showsuccess && <p className="successMessage">{showsuccess}</p>}
 
                 <button type="submit" className="updatePasswordBtn">
                   Submit

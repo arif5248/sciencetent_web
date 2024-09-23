@@ -74,29 +74,30 @@ exports.logout = catchAsyncError(async (req, res, next) => {
 //forgot password
 exports.forgotPassword = catchAsyncError(async (req, res, next) => {
   const user = await User.findOne({ email: req.body.email });
-  console.log("========user======", user)
+  // console.log("========user======", user)
   if (!user) {
     return next(new ErrorHandler("User not found", 404));
   }
 
   //Get ResetPasword Token
   const resetToken = user.getResetPasswordToken();
-  console.log("========resetToken======", resetToken)
+  // console.log("========resetToken======", resetToken)
 
   await user.save({ validateBeforeSave: false });
 
-  const resetPasswordUrl = `${req.protocol}://${req.get(
-    "host"
-  )}/api/v1/password/reset/${resetToken}`;
+  const protocol = req.protocol; // 'http' or 'https'
+  const host = req.get('host');  // 'sciencetent.vercel.app' or localhost:5000
+  const resetUrl = `${protocol}://${host}/password/reset/${resetToken}`;
 
-  const message = `Your password reset token is :- \n\n\n ${resetPasswordUrl} \n\n if you have not request this email then, please ignore it`;
+  const message = `Your password reset token is :- \n\n\n ${resetUrl} \n\n if you have not request this email then, please ignore it`;
   console.log(message)
+  // console.log(req)
   try {
-    await sendEmail({
-      email: user.email,
-      subject: `Password Recovery`,
-      message,
-    });
+    // await sendEmail({
+    //   email: user.email,
+    //   subject: `Password Recovery`,
+    //   message,
+    // });
 
     res.status(200).json({
       success: true,
@@ -104,7 +105,7 @@ exports.forgotPassword = catchAsyncError(async (req, res, next) => {
     });
   } catch (error) {
     user.resetPasswordToken = undefined;
-    user.resetPaswordExpire = undefined;
+    user.resetPasswordExpire = undefined;
 
     await user.save({ validateBeforeSave: false });
 
