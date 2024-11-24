@@ -12,6 +12,7 @@ import "./index.css";
 
 const setAppHeight = () => {
   document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`);
+  document.documentElement.style.setProperty('--app-width', `${window.innerWidth}px`);
 };
 
 window.addEventListener('resize', setAppHeight);

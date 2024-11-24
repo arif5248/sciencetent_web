@@ -13,11 +13,13 @@ code {
 }
 :root{
   --app-height : 100vh
+  --app-width : 100vw
 }
 #root{
   display: flex;
   flex-direction: column;
   /* height: 100vh */
   height: var(--app-height);
+  width: var(--app-width);
 }
 
