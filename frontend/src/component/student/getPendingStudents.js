@@ -92,7 +92,7 @@ function AllPendingStudents() {
               <tbody>
                 {filteredStudents.length > 0 ? (
                   filteredStudents.map((student) => (
-                    <tr key={student._id}>
+                    <tr key={student._id} onClick={() => handleDetails(student)}>
                       <td>{student.name}</td>
                       <td>{student.batchDetails.batchCode}</td>
                       <td>{student.enrolledCourses.map(course =>( course.name+","))}</td>
