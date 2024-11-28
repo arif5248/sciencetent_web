@@ -16,10 +16,11 @@ export const fetchUserUpdateProfile = createAsyncThunk(
 
 export const fetchUpdatePass = createAsyncThunk(
   "user/fetchUpdatePass",
-  async (myForm, { rejectWithValue }) => {
+  async (apiData, { rejectWithValue }) => {
+    
     try {
       const config = { withCredentials: true };
-      const { data } = await axios.put(`${baseUrl}/api/v1/password/update`, myForm, config);
+      const { data } = await axios.put(`${baseUrl}/api/v1/password/reset/:${apiData.token}`, apiData.myForm, config);
       return data;
     } catch (error) {
       if (error.response && error.response.data.message) {

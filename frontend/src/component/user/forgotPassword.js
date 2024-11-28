@@ -12,7 +12,7 @@ const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   
   const [error, setError] = useState(""); // For error message if passwords don't match
-  const [showsuccess, setShowSuccess] = useState("");
+  const [showSuccess, setShowSuccess] = useState("");
   
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -52,10 +52,9 @@ const ForgotPassword = () => {
               <h2 className="updatePasswordHeading">Forgot Password</h2>
               <form className="updatePasswordForm" onSubmit={handleSubmit}>
                 
-                {/* Old Password */}
+                
                 <div className="inputGroup">
                   <label htmlFor="email">Enter your Email</label>
-                  <div className="passwordWrapper">
                     <input
                       type= "email"
                       id="email"
@@ -64,14 +63,13 @@ const ForgotPassword = () => {
                       onChange={(e) => setEmail(e.target.value)}
                       required
                     />
-                  </div>
                 </div>
 
                 
 
                 {/* Error message if passwords don't match */}
                 {error && <p className="errorMessage">{error}</p>}
-                {showsuccess && <p className="successMessage">{showsuccess}</p>}
+                {showSuccess && <p className="successMessage">{showSuccess}</p>}
 
                 <button type="submit" className="updatePasswordBtn">
                   Submit
