@@ -205,7 +205,7 @@ exports.rejectStudent = catchAsyncError(async (req, res, next) => {
   const session = await mongoose.startSession()
   session.startTransaction()
   try {
-    const student = await Students.findById(req.params.id).session(session);
+    let student = await Students.findById(req.params.id).session(session);
     if (!student) {
       return next(new ErrorHandler("Student not found", 400));
     }
