@@ -37,7 +37,7 @@ const ResetPassword = () => {
     try {
         setLoading(true); // Set loading to true while processing
         const myForm = new FormData();
-        myForm.append("newPassword", newPassword);
+        myForm.append("password", newPassword);
         myForm.append("confirmPassword", confirmPassword);
         const result = await dispatch(fetchUpdatePass({token, myForm})).unwrap(); // Dispatch the delete batch action
         console.log(result)
