@@ -7,7 +7,19 @@ function PopupForDetailsApproveReject({ content, onClose }) {
   const [loading, setLoading] = useState(false); // Add loading state
   const [note, setNote] = useState("");
   const dispatch = useDispatch(); // Add useDispatch hook
-
+  const [rejectPopUp, setRejectPopUp] = useState(0)
+  
+ 
+  const handleRejectPopUp = async () => {
+    setRejectPopUp((prev) => prev + 1);
+    // setRejectPopUp(false)
+    content.type = 'reject'
+  };
+  const handleApprovePopUp = async () => {
+    setRejectPopUp((prev) => prev + 1);
+    // setRejectPopUp(false)
+    content.type = 'approve'
+  };
   // console.log(content.student)
   const handleApprove = async () => {
     try {
@@ -121,14 +133,14 @@ function PopupForDetailsApproveReject({ content, onClose }) {
               <div className="button-group">
                 <button
                   className="btn-approve"
-                  onClick={handleApprove}
+                  onClick={handleApprovePopUp}
                   disabled={loading}
                 >
                   {loading ? "Processing..." : "Approve"}
                 </button>
                 <button
                   className="btn-reject"
-                  onClick={handleReject}
+                  onClick={handleRejectPopUp}
                   disabled={loading}
                 >
                   {loading ? "Processing..." : "Reject"}
@@ -198,6 +210,8 @@ function PopupForDetailsApproveReject({ content, onClose }) {
             </div>
           </Fragment>
         )}
+
+        
       </div>
     </div>
   );

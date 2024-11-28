@@ -4,7 +4,8 @@ const Students = require("../models/studentModel");
 const Batches = require("../models/batchModel");
 const Courses = require("../models/courseModel");
 const cloudinary = require("cloudinary")
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
+const sendSMS = require("../utils/sendSms");
 
 exports.registerStudent = catchAsyncError(async (req, res, next) => {
   const registeredStudent = await Students.find({ user: req.user._id });

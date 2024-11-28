@@ -59,7 +59,7 @@ exports.generateUniqueID = catchAsyncError(async (req, res, next) => {
 
     await sendSMS({
       number: student.whatsappNumber,
-      message: `Dear ${student.name}, Your Registration is Approved. Your Student ID is ${student.studentID} From: Science Tent( ${batch.branch} Branch )`,
+      message: `Dear ${student.name}, Your Registration is Approved. Your Student ID is ${student.studentID} From: Science Tent( ${batch.branch} )`,
     });
 
     await session.commitTransaction()
