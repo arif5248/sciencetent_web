@@ -38,6 +38,7 @@ router
     approveStudent,
     generateUniqueID
   )
+router
   .route("/admin/reject/students/:id")
   .put(
     isAuthenticatedUser,
