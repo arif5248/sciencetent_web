@@ -12,7 +12,7 @@ exports.registerStudent = catchAsyncError(async (req, res, next) => {
   
   if(registeredStudent.length !== 0 && registeredStudent.status === 'rejected'){
     const isDeleted = await Students.findByIdAndDelete(registeredStudent._id)
-    console.log(isDeleted)
+    console.log("======++++++++++++=======",isDeleted)
 }
   if (registeredStudent.length !== 0) {
     return next(new ErrorHandler("You are already registered for this form", 400));
