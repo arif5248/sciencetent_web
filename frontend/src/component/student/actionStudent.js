@@ -8,6 +8,7 @@ function PopupForDetailsApproveReject({ content, onClose }) {
   const [note, setNote] = useState("");
   const dispatch = useDispatch(); // Add useDispatch hook
   const [rejectPopUp, setRejectPopUp] = useState(0)
+  const [successMessage, setSuccessMessage] = useState(null);
   
  
   const handleRejectPopUp = async () => {
@@ -39,11 +40,13 @@ function PopupForDetailsApproveReject({ content, onClose }) {
       setLoading(true); // Set loading to true while processing
       await dispatch(fetchRejectStudent({studentID : content.student._id, correctionNote : {note : note}})).unwrap(); // Dispatch the delete batch action
       // console.log("Batch deleted successfully:", content.batch._id);
+
     } catch (error) {
       console.error("Error deleting batch:", error); // Handle any errors during deletion
     } finally {
       setLoading(false); // Set loading to false after deletion completes
       onClose(); // Close the popup after deletion
+      setSuccessMessage("Successfully rejected the form")
     }
   };
 

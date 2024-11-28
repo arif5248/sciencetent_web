@@ -16,6 +16,7 @@ function AllPendingStudents() {
   const [filteredStudents, setFilteredStudents] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [popupContent, setPopupContent] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
 
   useEffect(() => {
     setLoading(true);
@@ -80,6 +81,7 @@ function AllPendingStudents() {
         ) : (
           <Fragment>
             { error && <p style={{ color: "red" }}>{error}</p>}
+            {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
             <table className="studentTable">
               <thead>
                 <tr>

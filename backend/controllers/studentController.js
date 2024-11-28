@@ -226,10 +226,10 @@ exports.rejectStudent = catchAsyncError(async (req, res, next) => {
         }
       ).session(session);
 
-      // await sendSMS({
-      //   number: student.whatsappNumber,
-      //   message: `Dear ${student.name}, Your Registration is Rejected. ${req.body.note}. For more details contact with Admin. From: Science Tent`,
-      // });
+      await sendSMS({
+        number: student.whatsappNumber,
+        message: `Dear ${student.name}, Your Registration is Rejected. ${req.body.note}. For more details contact with Admin. From: Science Tent`,
+      });
   
       await session.commitTransaction()
       session.endSession()
