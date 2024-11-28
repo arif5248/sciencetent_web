@@ -153,6 +153,7 @@ const studentSlice = createSlice({
       state.error = null;
     })
     .addCase(fetchRejectStudent.fulfilled, (state, action) => {
+      console.log(action.meta.arg)
       state.isLoading = false;
       state.allPendingStudents = state.allPendingStudents.filter(student => student._id !== action.meta.arg);
       state.error = null;
