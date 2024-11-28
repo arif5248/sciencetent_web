@@ -36,6 +36,12 @@ router
     isPermitted(process.env.APPROVE_STUDENT),
     approveStudent,
     generateUniqueID
+  )
+  .route("/admin/reject/students/:id")
+  .put(
+    isAuthenticatedUser,
+    isPermitted(process.env.REJECT_STUDENT),
+    approveStudent
   );
 
 

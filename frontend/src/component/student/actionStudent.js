@@ -1,13 +1,14 @@
 import React, { Fragment, useState } from "react";
 import { useDispatch } from "react-redux";
 import "./actionStudent.css";
-import { fetchApproveStudent } from "../../slice/studentSlice";
+import { fetchApproveStudent, fetchRejectStudent } from "../../slice/studentSlice";
 
 function PopupForDetailsApproveReject({ content, onClose }) {
   const [loading, setLoading] = useState(false); // Add loading state
+  const [note, setNote] = useState("");
   const dispatch = useDispatch(); // Add useDispatch hook
 
-  console.log(content.student)
+  // console.log(content.student)
   const handleApprove = async () => {
     try {
       setLoading(true); // Set loading to true while processing
@@ -22,7 +23,16 @@ function PopupForDetailsApproveReject({ content, onClose }) {
   };
 
   const handleReject = async () => {
-    // Logic for Reject
+    try {
+      setLoading(true); // Set loading to true while processing
+      await dispatch(fetchRejectStudent({studentID : content.student._id, correctionNote : {note : note}})).unwrap(); // Dispatch the delete batch action
+      // console.log("Batch deleted successfully:", content.batch._id);
+    } catch (error) {
+      console.error("Error deleting batch:", error); // Handle any errors during deletion
+    } finally {
+      setLoading(false); // Set loading to false after deletion completes
+      onClose(); // Close the popup after deletion
+    }
   };
 
   return (
@@ -160,6 +170,14 @@ function PopupForDetailsApproveReject({ content, onClose }) {
             <h3 style={{ fontSize: "20px" }}>
               Are you sure to reject "{content.student.name}"?
             </h3>
+            <div className="detail-row">
+                <span className="label">Note:</span>
+                <input
+                  type="text"
+                  value={note}
+                  onChange={(e) => setNote(e.target.value)}
+                />
+              </div>
             <div className="deleteBtnGroup">
               <button
                 style={{ width: "45%" }}

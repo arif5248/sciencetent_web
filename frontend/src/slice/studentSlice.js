@@ -49,6 +49,22 @@ export const fetchApproveStudent = createAsyncThunk(
   }
 );
 
+export const fetchRejectStudent = createAsyncThunk(
+  "student/fetchRejectStudent",
+  async (apiData, { rejectWithValue }) => {
+    try {
+      const config = { withCredentials: true };
+      const { data } = await axios.put(`${baseUrl}/api/v1/admin/reject/students/${apiData.studentID}`, apiData.correctionNote, config);
+      return data;
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      }
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 const studentSlice = createSlice({
   name: "student",
   initialState: {
@@ -128,6 +144,20 @@ const studentSlice = createSlice({
       state.error = null;
     })
     .addCase(fetchApproveStudent.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload || action.error.message;
+    })
+    
+    .addCase(fetchRejectStudent.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    })
+    .addCase(fetchRejectStudent.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.allPendingStudents = state.allPendingStudents.filter(student => student._id !== action.meta.arg);
+      state.error = null;
+    })
+    .addCase(fetchRejectStudent.rejected, (state, action) => {
       state.isLoading = false;
       state.error = action.payload || action.error.message;
     })

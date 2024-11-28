@@ -8,6 +8,9 @@ const mongoose = require('mongoose')
 
 exports.registerStudent = catchAsyncError(async (req, res, next) => {
   const registeredStudent = await Students.find({ user: req.user._id });
+  if(registeredStudent.length !== 0 && registeredStudent.status === 'rejected')[
+    await Students.findByIdAndDelete(registeredStudent._id)
+  ]
   if (registeredStudent.length !== 0) {
     return next(new ErrorHandler("You are already registered for this form", 400));
   }
@@ -192,6 +195,51 @@ exports.approveStudent = catchAsyncError(async (req, res, next) => {
     await session.abortTransaction()
     session.endSession()
     res.status(500).json({ success: false, message: 'Student Approve failed' })
+  
+  }
+  
+});
+exports.rejectStudent = catchAsyncError(async (req, res, next) => {
+  const session = await mongoose.startSession()
+  session.startTransaction()
+  try {
+    const student = await Students.findById(req.params.id).session(session);
+    if (!student) {
+      return next(new ErrorHandler("Student not found", 400));
+    }
+    if (student.status === "rejected") {
+      return next(new ErrorHandler("Status is already rejected", 400));
+    } else {
+      const newStatus = {
+        status: "rejected",
+      };
+
+      const rejectStudent = await Students.findByIdAndUpdate(
+        student._id,
+        newStatus,
+        {
+          new: true,
+          runValidators: true,
+          useFindAndModify: false,
+        }
+      ).session(session);
+
+      await sendSMS({
+        number: student.whatsappNumber,
+        message: `Dear ${student.name}, Your Registration is Rejected. ${req.body.note}. For more details contact with Admin. From: Science Tent`,
+      });
+  
+      await session.commitTransaction()
+      session.endSession()
+  
+      res.status(200).json({ success: true, rejectStudent });
+
+  }
+  } catch (error) {
+    console.error(error)
+    await session.abortTransaction()
+    session.endSession()
+    res.status(500).json({ success: false, message: 'Student Reject failed' })
   
   }
   
