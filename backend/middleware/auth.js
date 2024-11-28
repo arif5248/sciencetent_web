@@ -1,4 +1,4 @@
-const ErrorHander = require("../utils/errorhander");
+const ErrorHandler = require("../utils/errorhander");
 const catchAsyncError = require("./catchAsyncError");
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
@@ -7,28 +7,43 @@ const { updatePassword } = require("../controllers/userController");
 
 exports.isAuthenticatedUser = catchAsyncError(async (req, res, next) => {
   const { token } = req.cookies;
-  console.log("==========================")
+  // console.log("==========================")
   console.log(req)
-  console.log("==========================")
+  // console.log("==========================")
 
   if (!token) {
-    return next(new ErrorHander("Please Login to access this resource", 401));
+    return next(new ErrorHandler("Please Login to access this resource", 401));
   }
 
   const decodedData = jwt.verify(token, process.env.JWT_SECRET);
 
   req.user = await User.findById(decodedData.id);
   if(req.user === null){
-    return next(new ErrorHander("User not found. Please Login first", 401));
+    return next(new ErrorHandler("User not found. Please Login first", 401));
   }
   next();
+});
+exports.isUserLoaded = catchAsyncError(async (req, res, next) => {
+  const { token } = req.cookies;
+  // console.log("==========================")
+  console.log(req)
+  // console.log("==========================")
+
+  if (!token) {
+    return next(new ErrorHandler("Please Login to access this resource", 401));
+  }
+
+  const decodedData = jwt.verify(token, process.env.JWT_SECRET);
+
+  req.user = await User.findById(decodedData.id);
+    next();
 });
 
 exports.isAuthorizeRoles = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
       return next(
-        new ErrorHander(
+        new ErrorHandler(
           `Role: ${req.user.role} is not allowed to access this resource`,
           403
         )
@@ -46,12 +61,12 @@ exports.isPermitted =  (permissionCode) => {
     }else{
       const existPermission = await Permission.findOne({"permissionCode": permissionCode})
       if(!existPermission){
-        return next(new ErrorHander("Permission not found", 401));
+        return next(new ErrorHandler("Permission not found", 401));
       }
       if(req.user.permissions.includes(existPermission._id)){
         next()
       }else{
-        return next(new ErrorHander("You don't have permission to access this", 401));
+        return next(new ErrorHandler("You don't have permission to access this", 401));
       }
     }
     

@@ -3,9 +3,12 @@ import "./loader.css";
 
 const Loader = () => {
   return (
-    <div className="loading">
-      <div></div>
+    <div className="loader-overlay">
+      <div className="loading">
+        <div></div>
+      </div>
     </div>
+    
   );
 };
 

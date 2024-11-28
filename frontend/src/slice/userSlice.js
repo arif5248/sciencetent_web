@@ -3,12 +3,17 @@ import axios from "axios";
 
 // const baseUrl= "http://localhost:5000"
 const baseUrl= "https://sciencetent-backend.vercel.app"
+
 export const fetchUserRegister = createAsyncThunk(
   "user/fetchUserRegistration",
   async (userData) => {
-    const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
-    const { data } = await axios.post(`${baseUrl}/api/v1/register`, userData, config);
-    return data;
+    try {
+      const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
+      const { data } = await axios.post(`${baseUrl}/api/v1/register`, userData, config);
+      return data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
   }
 );
 
