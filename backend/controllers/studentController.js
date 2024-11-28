@@ -9,10 +9,11 @@ const sendSMS = require("../utils/sendSms");
 
 exports.registerStudent = catchAsyncError(async (req, res, next) => {
   const registeredStudent = await Students.find({ user: req.user._id });
-  console.log(registeredStudent)
-  if(registeredStudent.length !== 0 && registeredStudent.status === 'rejected')[
-    await Students.findByIdAndDelete(registeredStudent._id)
-  ]
+  
+  if(registeredStudent.length !== 0 && registeredStudent.status === 'rejected'){
+    const isDeleted = await Students.findByIdAndDelete(registeredStudent._id)
+    console.log(isDeleted)
+}
   if (registeredStudent.length !== 0) {
     return next(new ErrorHandler("You are already registered for this form", 400));
   }
