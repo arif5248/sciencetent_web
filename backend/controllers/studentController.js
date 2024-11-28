@@ -9,10 +9,10 @@ const sendSMS = require("../utils/sendSms");
 
 exports.registerStudent = catchAsyncError(async (req, res, next) => {
   const registeredStudent = await Students.findOne({ user: req.user._id });
-  console.log("======++++++++++++=======",registeredStudent)
+  // console.log("======++++++++++++=======",registeredStudent)
   if(registeredStudent && registeredStudent.status === 'rejected'){
     const isDeleted = await Students.findByIdAndDelete(registeredStudent._id)
-    console.log("======++++++++++++=======",isDeleted)
+    // console.log("======++++++++++++=======",isDeleted)
   }else {
     return next(new ErrorHandler("You are already registered for this form", 400));
   }
@@ -216,7 +216,7 @@ exports.rejectStudent = catchAsyncError(async (req, res, next) => {
         status: "rejected",
       };
 
-      const rejectStudent = await Students.findByIdAndUpdate(
+      const student = await Students.findByIdAndUpdate(
         student._id,
         newStatus,
         {
@@ -234,7 +234,7 @@ exports.rejectStudent = catchAsyncError(async (req, res, next) => {
       await session.commitTransaction()
       session.endSession()
   
-      res.status(200).json({ success: true, rejectStudent });
+      res.status(200).json({ success: true, student });
 
   }
   } catch (error) {
