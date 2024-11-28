@@ -8,6 +8,7 @@ const {
   getAllRejectedStudents,
   test,
   getAllBatchStudents,
+  rejectStudent,
 } = require("../controllers/studentController");
 const { isAuthenticatedUser, isAuthorizeRoles, isPermitted } = require("../middleware/auth");
 const { generateUniqueID } = require("../utils/generateUniqueID");
@@ -41,7 +42,7 @@ router
   .put(
     isAuthenticatedUser,
     isPermitted(process.env.REJECT_STUDENT),
-    approveStudent
+    rejectStudent
   );
 
 
