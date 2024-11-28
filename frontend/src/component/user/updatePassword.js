@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import MetaData from "../layout/metaData/metaData";
 import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import eye icons from react-icons
-import { fetchUpdatePass } from "../../slice/userProfileslice";
+import { fetchChangePass } from "../../slice/userProfileslice";
 
 const UpdatePassword = () => {
   const { isLoading } = useSelector((state) => state.user);
@@ -41,7 +41,7 @@ const UpdatePassword = () => {
         myForm.append("oldPassword", oldPassword);
         myForm.append("newPassword", newPassword);
         myForm.append("confirmPassword", confirmPassword);
-        const result = await dispatch(fetchUpdatePass(myForm)).unwrap(); // Dispatch the delete batch action
+        const result = await dispatch(fetchChangePass(myForm)).unwrap(); // Dispatch the delete batch action
         console.log(result)
         console.log("Password updated successfully");
         navigate("/account"); 
