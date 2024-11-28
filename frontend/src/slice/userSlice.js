@@ -43,9 +43,14 @@ export const fetchUserLogout = createAsyncThunk(
 );
 
 export const fetchLoadUser = createAsyncThunk("user/fetchUser", async () => {
-  const config = { withCredentials: true };
-  const { data } = await axios.get(`${baseUrl}/api/v1/me`, config);
-  return data;
+  try {
+    const config = { withCredentials: true };
+    const { data } = await axios.get(`${baseUrl}/api/v1/me`, config);
+    return data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+  
 });
 export const fetchSingleUser = createAsyncThunk("user/fetchSingleUser", async (userName) => {
   const config =  { withCredentials: true };

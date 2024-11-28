@@ -26,17 +26,18 @@ exports.isAuthenticatedUser = catchAsyncError(async (req, res, next) => {
 exports.isUserLoaded = catchAsyncError(async (req, res, next) => {
   const { token } = req.cookies;
   // console.log("==========================")
-  console.log(req)
+  // console.log(req)
   // console.log("==========================")
 
   if (!token) {
-    return next(new ErrorHandler("Please Login to access this resource", 401));
-  }
-
-  const decodedData = jwt.verify(token, process.env.JWT_SECRET);
-
-  req.user = await User.findById(decodedData.id);
+    // return next(new ErrorHandler("Please Login to access this resource", 401));
+    req.user = null;
+    next()
+  }else{
+    const decodedData = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = await User.findById(decodedData.id);
     next();
+  }
 });
 
 exports.isAuthorizeRoles = (...roles) => {
