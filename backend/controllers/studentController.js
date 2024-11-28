@@ -216,7 +216,7 @@ exports.rejectStudent = catchAsyncError(async (req, res, next) => {
         status: "rejected",
       };
 
-      const student = await Students.findByIdAndUpdate(
+       student = await Students.findByIdAndUpdate(
         student._id,
         newStatus,
         {
