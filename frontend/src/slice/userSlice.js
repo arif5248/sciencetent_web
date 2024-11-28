@@ -116,7 +116,7 @@ const userSlice = createSlice({
       })
       .addCase(fetchLoadUser.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.isAuthenticated = true;
+        state.isAuthenticated = action.payload.user === null ? false: true;
         state.user = action.payload.user;
         state.error = null;
       })

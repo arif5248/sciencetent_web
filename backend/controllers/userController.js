@@ -149,7 +149,7 @@ exports.resetPassword = catchAsyncError(async (req, res, next) => {
 //Get User Details
 exports.getUserDetails = catchAsyncError(async (req, res, next) => {
   if(req.user === null){
-    res.status(200).json({ success: false, message:"No logged in user ", user:{} });
+    res.status(200).json({ success: false, message:"No logged in user ", user: null });
   }else{
     const user = req.user;
     res.status(200).json({ success: true, user });
