@@ -9,6 +9,7 @@ const sendSMS = require("../utils/sendSms");
 
 exports.registerStudent = catchAsyncError(async (req, res, next) => {
   const registeredStudent = await Students.find({ user: req.user._id });
+  console.log(registeredStudent)
   if(registeredStudent.length !== 0 && registeredStudent.status === 'rejected')[
     await Students.findByIdAndDelete(registeredStudent._id)
   ]
