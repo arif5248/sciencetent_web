@@ -83,29 +83,29 @@ function AllApproveStudents() {
             <table className="studentTable">
               <thead>
                 <tr>
+                  <th>Sl</th>
                   <th>Name</th>
                   <th>Batch</th>
                   <th>Enrolled Course</th>
-                  <th>Actions</th>
+                  {/* <th>Actions</th> */}
                 </tr>
               </thead>
               <tbody>
                 {filteredStudents.length > 0 ? (
-                  filteredStudents.map((student) => (
-                    <tr key={student._id}>
+                  filteredStudents.map((student, index) => (
+                    <tr key={student._id} onClick={() => handleDetails(student)}>
+                      <td>{index + 1}</td>
                       <td>{student.name}</td>
                       <td>{student.batchDetails.batchCode}</td>
                       <td>{student.enrolledCourses.map(course =>( course.name+","))}</td>
-                      <td>
+                      {/* <td>
                         <div className="three-dot-container">
                           <button className="three-dot-btn">...</button>
                           <div className="action-popup">
                             <button onClick={() => handleDetails(student)}>Details</button>
-                            {/* <button onClick={() => handleApprove(student)}>Approve</button>
-                            <button onClick={() => handleReject(student)}>Reject</button> */}
                           </div>
                         </div>
-                      </td>
+                      </td> */}
                     </tr>
                   ))
                 ) : (
