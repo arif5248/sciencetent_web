@@ -170,25 +170,25 @@ exports.approveStudent = catchAsyncError(async (req, res, next) => {
     if (student.status === "approved") {
       return next(new ErrorHandler("Status is already approved", 400));
     } else {
-      const newStatus = {
-        status: "approved",
-      };
+      // const newStatus = {
+      //   status: "approved",
+      // };
 
-      const approvedStudent = await Students.findByIdAndUpdate(
-        student._id,
-        newStatus,
-        {
-          new: true,
-          runValidators: true,
-          useFindAndModify: false,
-        }
-      ).session(session);
+      // const approvedStudent = await Students.findByIdAndUpdate(
+      //   student._id,
+      //   newStatus,
+      //   {
+      //     new: true,
+      //     runValidators: true,
+      //     useFindAndModify: false,
+      //   }
+      // ).session(session);
 
     if (!student) {
       return next(new ErrorHandler("Student not found", 400));
     }
 
-    req.student = approvedStudent;
+    req.student = student;
     req.session = session
     next();
   }

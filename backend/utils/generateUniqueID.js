@@ -26,13 +26,14 @@ exports.generateUniqueID = catchAsyncError(async (req, res, next) => {
     // console.log(paddedCount)
     const uniqueID = `${batchCode}${paddedCount}`;
     // console.log(uniqueID)
-    const setUniqueID = {
+    const setUniqueIdAndStatus = {
       studentID: uniqueID,
+      status: "approved"
     };
 
     const student = await Students.findByIdAndUpdate(
       req.student.id,
-      setUniqueID,
+      setUniqueIdAndStatus,
       {
         new: true,
         runValidators: true,
