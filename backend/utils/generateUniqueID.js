@@ -9,18 +9,19 @@ exports.generateUniqueID = catchAsyncError(async (req, res, next) => {
   const { session } = req
   try {
     const batch = await Batches.findOne({ _id: req.student.batchDetails.batchId }).session(session);
-
     if (!batch) {
       return next(new ErrorHandler("Batch not found", 400));
     }
     const batchCode = batch.batchCode;
-
+    
     let count = await Students.countDocuments({
       status: "approved",
-      batch: batch._id,
+      "batchDetails.batchId": batch._id,
     }).session(session);
+    
     count = count +  1
     const paddedCount = count.toString().padStart(2, "0");
+    
     
     // console.log(paddedCount)
     const uniqueID = `${batchCode}${paddedCount}`;

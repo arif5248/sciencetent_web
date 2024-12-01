@@ -8,7 +8,7 @@ const { updatePassword } = require("../controllers/userController");
 exports.isAuthenticatedUser = catchAsyncError(async (req, res, next) => {
   const { token } = req.cookies;
   // console.log("==========================")
-  console.log(req)
+  // console.log(req)
   // console.log("==========================")
 
   if (!token) {
