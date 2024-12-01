@@ -84,6 +84,7 @@ function AllApproveStudents() {
               <thead>
                 <tr>
                   <th>Sl</th>
+                  <th>Student ID</th>
                   <th>Name</th>
                   <th>Batch</th>
                   <th>Enrolled Course</th>
@@ -95,6 +96,7 @@ function AllApproveStudents() {
                   filteredStudents.map((student, index) => (
                     <tr key={student._id} onClick={() => handleDetails(student)}>
                       <td>{index + 1}</td>
+                      <td>{student.studentID}</td>
                       <td>{student.name}</td>
                       <td>{student.batchDetails.batchCode}</td>
                       <td>{student.enrolledCourses.map(course =>( course.name+","))}</td>
