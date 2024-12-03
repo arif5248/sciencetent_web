@@ -51,14 +51,14 @@ exports.getRejectedClassNotification = catchAsyncError(
 //     const todayDay = today.getDate();
 
 //     // Find users with today's birthday
-//     // const usersWithBirthdayToday = await Students.find({
-//     //   $expr: {
-//     //     $and: [
-//     //       { $eq: [{ $month: "$dateOfBirth" }, todayMonth] },
-//     //       { $eq: [{ $dayOfMonth: "$dateOfBirth" }, todayDay] },
-//     //     ],
-//     //   },
-//     // });
+//     const usersWithBirthdayToday = await Students.find({
+//       $expr: {
+//         $and: [
+//           { $eq: [{ $month: "$dateOfBirth" }, todayMonth] },
+//           { $eq: [{ $dayOfMonth: "$dateOfBirth" }, todayDay] },
+//         ],
+//       },
+//     });
     
 
 //     const usersWithBirthdayToday = [
@@ -118,27 +118,37 @@ exports.birthdayNotification = async (req, res, next) => {
   const todayMonth = today.getMonth() + 1;
   const todayDay = today.getDate();
 
-  const usersWithBirthdayToday = [
-    { name: "arif", whatsappNumber: "01825269227" },
-    { name: "Tasi", whatsappNumber: "01825269227" },
-    { name: "Mrs Fish", whatsappNumber: "01825269227" },
-  ];
+  // const usersWithBirthdayToday = [
+  //   { name: "arif", whatsappNumber: "01825269227" },
+  //   { name: "Tasi", whatsappNumber: "01825269227" },
+  //   { name: "Mrs Fish", whatsappNumber: "01825269227" },
+  // ];
+
+  // find users with today's birthday
+    const usersWithBirthdayToday = await Students.find({
+      $expr: {
+        $and: [
+          { $eq: [{ $month: "$dateOfBirth" }, todayMonth] },
+          { $eq: [{ $dayOfMonth: "$dateOfBirth" }, todayDay] },
+        ],
+      },
+    });
 
   if (usersWithBirthdayToday.length === 0) {
     console.log("No birthdays today.");
     return res.status(200).json({ success: true, message: "No Birthday today" });
   }
 
-  console.log(`${usersWithBirthdayToday.length} birthday(s) found today.`);
+  // console.log(`${usersWithBirthdayToday.length} birthday(s) found today.`);
 
   try {
     const promises = usersWithBirthdayToday.map((user) => {
-      const message = `Dear ${user.name}\nHappy birthday🎉🎂...!!!`;
+      const message = `Dear ${user.name}\nHappy birthday🎉🎂...!!! Wishing you best of luck.\nStay with us \n\nScience Tent\nAn Ultimate Education Care for Science.`;
       return sendSMS({ number: user.whatsappNumber, message });
     });
 
     await Promise.all(promises);
-    console.log("All birthday notifications sent successfully.");
+    // console.log("All birthday notifications sent successfully.");
     res.status(200).json({
       success: true,
       message: `${usersWithBirthdayToday.length} birthday(s) notifications sent.`,
