@@ -51,15 +51,32 @@ exports.birthdayNotification = async (req, res, next) => {
     const todayDay = today.getDate();
 
     // Find users with today's birthday
-    const usersWithBirthdayToday = await Students.find({
-      $expr: {
-        $and: [
-          { $eq: [{ $month: "$dateOfBirth" }, todayMonth] },
-          { $eq: [{ $dayOfMonth: "$dateOfBirth" }, todayDay] },
-        ],
-      },
-    });
+    // const usersWithBirthdayToday = await Students.find({
+    //   $expr: {
+    //     $and: [
+    //       { $eq: [{ $month: "$dateOfBirth" }, todayMonth] },
+    //       { $eq: [{ $dayOfMonth: "$dateOfBirth" }, todayDay] },
+    //     ],
+    //   },
+    // });
     
+
+    const usersWithBirthdayToday = [
+      {
+        name: "arif",
+        whatsappNumber: "01825269227",
+      },
+      {
+        name: "Tasi",
+        whatsappNumber: "01825269227",
+      },
+      {
+        name: "Mrs Fish",
+        whatsappNumber: "01825269227",
+      },
+    ];
+
+
     if (usersWithBirthdayToday.length === 0) {
       console.log("No birthdays today.");
       res.status(200).json({ success: true, message:"No Birthday today" });
