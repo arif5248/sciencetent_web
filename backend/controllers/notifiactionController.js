@@ -67,13 +67,13 @@ exports.birthdayNotification = async () => {
     }
 
     // Send birthday wishes to all users asynchronously
-    await Promise.all(
+    // await Promise.all(
       usersWithBirthdayToday.map(async (user) => {
         const message = `Dear ${user.name}\nHappy birthday🎉🎂...!!! Wishing you best of luck.\nStay with us \n\nScience Tent\nAn Ultimate Education Care for Science.`;
          sendSMS({ number: user.whatsappNumber, message });
         console.log(`Birthday wish sent to ${user.name}`);
       })
-    );
+    // );
 
     console.log("All birthday notifications sent successfully.");
   } catch (error) {
