@@ -89,7 +89,7 @@ exports.birthdayNotification = async () => {
       // Move to the next user
       index++;
     }, 3000); // 3 seconds interval
-  
+    res.status(200).json({ success: true, message:"birthday noti is working" });
 };
 
 
