@@ -45,7 +45,6 @@ exports.getRejectedClassNotification = catchAsyncError(
 
 
 exports.birthdayNotification = async () => {
-  try {
     // Get today's date
     const today = new Date();
     const todayMonth = today.getMonth() + 1; // Months are zero-indexed
@@ -66,18 +65,31 @@ exports.birthdayNotification = async () => {
       return;
     }
 
-    // Send birthday wishes to all users asynchronously
-    // await Promise.all(
-      usersWithBirthdayToday.map(async (user) => {
-        const message = `Dear ${user.name}\nHappy birthday🎉🎂...!!! Wishing you best of luck.\nStay with us \n\nScience Tent\nAn Ultimate Education Care for Science.`;
-         sendSMS({ number: user.whatsappNumber, message });
-        console.log(`Birthday wish sent to ${user.name}`);
-      })
-    // );
+    console.log(`${usersWithBirthdayToday.length} birthday(s) found today.`);
 
-    console.log("All birthday notifications sent successfully.");
-  } catch (error) {
-    console.error("Error sending birthday wishes:", error);
-  }
+    // Initialize index to keep track of current user
+    let index = 0;
+
+    // Set up interval to send SMS every 3 seconds
+    const intervalId = setInterval(() => {
+      if (index >= usersWithBirthdayToday.length) {
+        // Stop the interval once all users have been processed
+        clearInterval(intervalId);
+        console.log("All birthday notifications sent successfully.");
+        return;
+      }
+
+      // Send SMS to the current user
+      const user = usersWithBirthdayToday[index];
+      const message = `Dear ${user.name}\nHappy birthday🎉🎂...!!! Wishing you best of luck.\nStay with us \n\nScience Tent\nAn Ultimate Education Care for Science.`;
+
+      sendSMS({ number: user.whatsappNumber, message });
+      console.log(`Birthday wish sent to ${user.name}`);
+
+      // Move to the next user
+      index++;
+    }, 3000); // 3 seconds interval
+  
 };
+
 
