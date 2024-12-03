@@ -21,7 +21,9 @@ function AllApproveStudents() {
     setLoading(true);
     dispatch(fetchAllApproveStudents())
       .unwrap()
-      .catch((err) => console.error("Error fetching students:", err))
+      .catch((err) => {console.error("Error fetching students:", err);
+    })
+      
       .finally(() => setLoading(false));
   }, [dispatch]);
 

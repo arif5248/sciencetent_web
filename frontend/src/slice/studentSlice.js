@@ -27,11 +27,25 @@ export const fetchAllPendingStudents = createAsyncThunk("student/fetchAllPending
   const { data } = await axios.get(`${baseUrl}/api/v1/admin/pending-students`, config);
   return data;
 });
-export const fetchAllApproveStudents = createAsyncThunk("student/fetchAllApproveStudents", async () => {
-  const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
-  const { data } = await axios.get(`${baseUrl}/api/v1/admin/approved-students`, config);
-  return data;
-});
+
+export const fetchAllApproveStudents = createAsyncThunk(
+  "student/fetchAllApproveStudents",
+  async (_, { rejectWithValue }) => {
+    try {
+      const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
+      const { data } = await axios.get(`${baseUrl}/api/v1/admin/approved-students`, config);
+      return data;
+    } catch (error) {
+      // Check if the error response exists and throw the backend message
+      if (error.response && error.response.data && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      }
+      // For other unexpected errors
+      return rejectWithValue(error.message || "Something went wrong");
+    }
+  }
+);
+
 
 export const fetchApproveStudent = createAsyncThunk(
   "student/fetchApproveStudent",
@@ -44,6 +58,7 @@ export const fetchApproveStudent = createAsyncThunk(
       if (error.response && error.response.data.message) {
         return rejectWithValue(error.response.data.message);
       }
+      
       return rejectWithValue(error.message);
     }
   }
@@ -127,8 +142,8 @@ const studentSlice = createSlice({
     .addCase(fetchAllApproveStudents.rejected, (state, action) => {
       state.isLoading = false;
       state.isAuthenticated = false;
-      state.allBatch = null;
-      state.error = action.error.message;
+      state.allApproveStudents = null;
+      state.error = action.payload || "An unexpected error occurred";
     })
 
 
