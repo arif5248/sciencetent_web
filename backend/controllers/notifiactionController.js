@@ -87,7 +87,7 @@ exports.birthdayNotification = async (req, res, next) => {
       let index = 0;
   
       // Set up interval to send SMS every 3 seconds
-      const intervalId = setInterval(() => {
+      const intervalId = setInterval(async () => {
         if (index >= usersWithBirthdayToday.length) {
           // Stop the interval once all users have been processed
           clearInterval(intervalId);
@@ -99,7 +99,7 @@ exports.birthdayNotification = async (req, res, next) => {
         const user = usersWithBirthdayToday[index];
         const message = `Dear ${user.name}\nHappy birthday🎉🎂...!!! Wishing you best of luck.\nStay with us \n\nScience Tent\nAn Ultimate Education Care for Science.`;
   
-        sendSMS({ number: user.whatsappNumber, message });
+        await sendSMS({ number: user.whatsappNumber, message });
         console.log(`Birthday wish sent to ${user.name}`);
   
         // Move to the next user
