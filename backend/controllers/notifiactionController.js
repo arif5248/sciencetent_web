@@ -134,7 +134,7 @@ exports.birthdayNotification = async (req, res, next) => {
         ],
       },
     });
-
+    console.log("==========",usersWithBirthdayToday)
   if (usersWithBirthdayToday.length === 0) {
     console.log("No birthdays today.");
     await sendEmail({
