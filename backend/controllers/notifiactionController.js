@@ -115,52 +115,51 @@ exports.getRejectedClassNotification = catchAsyncError(
 
 
 exports.birthdayNotification = async (req, res, next) => {
+  // Get today's date in UTC
   const today = new Date();
-  const todayMonth = today.getMonth() + 1;
-  const todayDay = today.getDate();
+  const todayMonth = today.getUTCMonth() + 1; // Months are zero-indexed
+  const todayDay = today.getUTCDate();
 
-  // const usersWithBirthdayToday = [
-  //   { name: "arif", whatsappNumber: "01825269227" },
-  //   { name: "Tasi", whatsappNumber: "01825269227" },
-  //   { name: "Mrs Fish", whatsappNumber: "01825269227" },
-  // ];
-
-  // find users with today's birthday
+  try {
+    // Find users with today's birthday
     const usersWithBirthdayToday = await Students.find({
       $expr: {
         $and: [
-          { $eq: [{ $month: "$dateOfBirth" }, todayMonth] },
-          { $eq: [{ $dayOfMonth: "$dateOfBirth" }, todayDay] },
+          { $eq: [{ $month: { $toDate: "$dateOfBirth" } }, todayMonth] },
+          { $eq: [{ $dayOfMonth: { $toDate: "$dateOfBirth" } }, todayDay] },
         ],
       },
     });
-    console.log("==========",usersWithBirthdayToday)
-  if (usersWithBirthdayToday.length === 0) {
-    console.log("No birthdays today.");
-    await sendEmail({
-      email: 'arifislam11ctg@gmail.com',
-      subject: `Birthday Alert`,
-      message: 'No Birthday today',
-    });
-    return res.status(200).json({ success: true, message: "No Birthday today" });
-  }
 
-  // console.log(`${usersWithBirthdayToday.length} birthday(s) found today.`);
-  let emailMessage = `Today's Birthdays:\n`
-  try {
+    console.log("Users with birthdays today:", usersWithBirthdayToday);
+
+    if (usersWithBirthdayToday.length === 0) {
+      console.log("No birthdays today.");
+      await sendEmail({
+        email: "arifislam11ctg@gmail.com",
+        subject: `Birthday Alert`,
+        message: "No Birthday today",
+      });
+      return res.status(200).json({ success: true, message: "No Birthday today" });
+    }
+
+    // Compose email message
+    let emailMessage = `Today's Birthdays:\n`;
     const promises = usersWithBirthdayToday.map((user) => {
-      emailMessage = `${emailMessage}+${user.name} ${user.batchDetails.batchCode}`
+      emailMessage += `${user.name} ${user.batchDetails.batchCode}\n`;
       const message = `Dear ${user.name}\nHappy birthday🎉🎂...!!! Wishing you best of luck.\nStay with us \n\nScience Tent\nAn Ultimate Education Care for Science.`;
       return sendSMS({ number: user.whatsappNumber, message });
     });
 
     await Promise.all(promises);
-    // console.log("All birthday notifications sent successfully.");
+
+    // Send summary email
     await sendEmail({
       email: "arifislam11ctg@gmail.com",
       subject: `Birthday Alert`,
       message: emailMessage,
     });
+
     res.status(200).json({
       success: true,
       message: `${usersWithBirthdayToday.length} birthday(s) notifications sent.`,
@@ -170,4 +169,5 @@ exports.birthdayNotification = async (req, res, next) => {
     res.status(500).json({ success: false, message: "Failed to send notifications." });
   }
 };
+
 
