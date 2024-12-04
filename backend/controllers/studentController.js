@@ -10,71 +10,71 @@ const sendSMS = require("../utils/sendSms");
 exports.registerStudent = catchAsyncError(async (req, res, next) => {
   const registeredStudent = await Students.findOne({ user: req.user._id });
   // console.log("======++++++++++++=======",registeredStudent)
-  if(registeredStudent && registeredStudent.status === 'rejected'){
-    const isDeleted = await Students.findByIdAndDelete(registeredStudent._id)
+  if(registeredStudent && (registeredStudent.status === 'pending' || registeredStudent.status === 'approved')){
+    return next(new ErrorHandler("You are already registered for this form", 400));
     // console.log("======++++++++++++=======",isDeleted)
   }else {
-    return next(new ErrorHandler("You are already registered for this form", 400));
-  }
+    if(registeredStudent && registeredStudent.status === 'rejected'){
+      const isDeleted = await Students.findByIdAndDelete(registeredStudent._id)
+    }
+    let guardianInfo = {};
+    let tempImageId;
+    const user = req.user.id;
+    const {
+      name,
+      fatherName,
+      motherName,
+      whatsappNumber,
+      dateOfBirth,
+      collegeName,
+      address,
+      batch,
+      enrolledCourses,
+      guardianName,
+      guardianMobile,
+      guardianRelationWithStudent,
+      admissionFeeRef
+    } = req.body;
 
-  let guardianInfo = {};
-  let tempImageId;
-  const user = req.user.id;
-  const {
-    name,
-    fatherName,
-    motherName,
-    whatsappNumber,
-    dateOfBirth,
-    collegeName,
-    address,
-    batch,
-    enrolledCourses,
-    guardianName,
-    guardianMobile,
-    guardianRelationWithStudent,
-    admissionFeeRef
-  } = req.body;
+    const enrolledCoursesArray = JSON.parse(enrolledCourses);
+    const courseDetails = await Promise.all(
+      enrolledCoursesArray.map(async (course) => {
+        const courseDetails = await Courses.findById(course.courseID);
+        return {
+          courseID: courseDetails._id,
+          name: courseDetails.name,
+        };
+      })
+    );
 
-  const enrolledCoursesArray = JSON.parse(enrolledCourses);
-  const courseDetails = await Promise.all(
-    enrolledCoursesArray.map(async (course) => {
-      const courseDetails = await Courses.findById(course.courseID);
-      return {
-        courseID: courseDetails._id,
-        name: courseDetails.name,
+    const getBatch = await Batches.findById(batch)
+    if(!getBatch){
+      return next(new ErrorHandler("Failed to get batch", 500));
+    }
+    const batchDetails = {
+      batchId : getBatch._id,
+      batchCode : getBatch.batchCode
+    }
+
+    if (req.files && req.files.guardianSignature) {
+      const signatureData = req.files.guardianSignature.data;
+
+      const uploadToCloudinary = (buffer) => {
+        return new Promise((resolve, reject) => {
+          const stream = cloudinary.v2.uploader.upload_stream(
+            {
+              folder: "SignatureOfGuardian",
+              width: 200,
+              crop: "scale",
+            },
+            (error, result) => {
+              if (error) return reject(error);
+              resolve(result);
+            }
+          );
+          require('stream').Readable.from(buffer).pipe(stream);
+        });
       };
-    })
-  );
-
-  const getBatch = await Batches.findById(batch)
-  if(!getBatch){
-    return next(new ErrorHandler("Failed to get batch", 500));
-  }
-  const batchDetails = {
-    batchId : getBatch._id,
-    batchCode : getBatch.batchCode
-  }
-
-  if (req.files && req.files.guardianSignature) {
-    const signatureData = req.files.guardianSignature.data;
-
-    const uploadToCloudinary = (buffer) => {
-      return new Promise((resolve, reject) => {
-        const stream = cloudinary.v2.uploader.upload_stream(
-          {
-            folder: "SignatureOfGuardian",
-            width: 200,
-            crop: "scale",
-          },
-          (error, result) => {
-            if (error) return reject(error);
-            resolve(result);
-          }
-        );
-        require('stream').Readable.from(buffer).pipe(stream);
-      });
-    };
 
     try {
       const myCloud = await uploadToCloudinary(signatureData);
@@ -122,7 +122,7 @@ exports.registerStudent = catchAsyncError(async (req, res, next) => {
       }
     }
     return next(new ErrorHandler(error, 500));
-  }
+  }}
 });
 
 
