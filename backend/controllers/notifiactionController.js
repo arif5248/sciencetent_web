@@ -3,6 +3,7 @@ const catchAsyncError = require("../middleware/catchAsyncError");
 const ClassNotifiactions = require("../models/classNotificationModel");
 const Students = require("../models/studentModel");
 const sendSMS = require("../utils/sendSms");
+const sendEmail = require("../utils/sendEmail");
 
 exports.deleteClassNotification = catchAsyncError(async (req, res, next) => {
   await ClassNotifiactions.deleteMany({ status: "approved" });
@@ -136,19 +137,30 @@ exports.birthdayNotification = async (req, res, next) => {
 
   if (usersWithBirthdayToday.length === 0) {
     console.log("No birthdays today.");
+    await sendEmail({
+      email: user.email,
+      subject: `Birthday Alert`,
+      message: emailMessage,
+    });
     return res.status(200).json({ success: true, message: "No Birthday today" });
   }
 
   // console.log(`${usersWithBirthdayToday.length} birthday(s) found today.`);
-
+  let emailMessage = `Today's Birthdays:\n`
   try {
     const promises = usersWithBirthdayToday.map((user) => {
+      emailMessage = `${emailMessage}+${user.name} ${user.batchDetails.batchCode}`
       const message = `Dear ${user.name}\nHappy birthday🎉🎂...!!! Wishing you best of luck.\nStay with us \n\nScience Tent\nAn Ultimate Education Care for Science.`;
       return sendSMS({ number: user.whatsappNumber, message });
     });
 
     await Promise.all(promises);
     // console.log("All birthday notifications sent successfully.");
+    await sendEmail({
+      email: user.email,
+      subject: `Birthday Alert`,
+      message: emailMessage,
+    });
     res.status(200).json({
       success: true,
       message: `${usersWithBirthdayToday.length} birthday(s) notifications sent.`,

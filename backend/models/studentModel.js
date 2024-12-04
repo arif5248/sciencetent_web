@@ -73,6 +73,7 @@ const studentsSchema = new mongoose.Schema({
         type: String,
         required: [true, "Please enroll atleast one subject"],
       },
+      
     },
   ],
   guardianInfo: {
