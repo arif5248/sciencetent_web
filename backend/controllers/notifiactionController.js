@@ -138,9 +138,9 @@ exports.birthdayNotification = async (req, res, next) => {
   if (usersWithBirthdayToday.length === 0) {
     console.log("No birthdays today.");
     await sendEmail({
-      email: user.email,
+      email: 'arifislam11ctg@gmail.com',
       subject: `Birthday Alert`,
-      message: emailMessage,
+      message: 'No Birthday today',
     });
     return res.status(200).json({ success: true, message: "No Birthday today" });
   }
@@ -157,7 +157,7 @@ exports.birthdayNotification = async (req, res, next) => {
     await Promise.all(promises);
     // console.log("All birthday notifications sent successfully.");
     await sendEmail({
-      email: user.email,
+      email: "arifislam11ctg@gmail.com",
       subject: `Birthday Alert`,
       message: emailMessage,
     });
