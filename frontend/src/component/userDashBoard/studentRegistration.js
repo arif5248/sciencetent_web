@@ -71,7 +71,7 @@ function StudentRegistration() {
       setErrorMessage(error);
       setTimeout(() => {
         setErrorMessage(null);
-      }, 10000);
+      }, 20000);
     }
 
     setLoading(isLoading);
@@ -141,6 +141,8 @@ function StudentRegistration() {
           <Loader />
         ) : (
           <form className="registration-form" onSubmit={handleSubmit}>
+            {errorMessage && <p className="error-message">{errorMessage}</p>}
+            {successMessage && <p className="success-message">{successMessage}</p>}
             <div className="form-group animated">
               <label>Name</label>
               <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
@@ -238,8 +240,7 @@ function StudentRegistration() {
               Register Student
             </button>
 
-            {errorMessage && <p className="error-message">{errorMessage}</p>}
-            {successMessage && <p className="success-message">{successMessage}</p>}
+            
           </form>
         )}
       </div>
