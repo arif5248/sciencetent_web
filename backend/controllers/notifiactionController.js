@@ -115,10 +115,13 @@ exports.getRejectedClassNotification = catchAsyncError(
 
 
 exports.birthdayNotification = async (req, res, next) => {
-  // Get today's date in UTC
+  // Get today's date in Bangladesh time (UTC+6)
   const today = new Date();
-  const todayMonth = today.getUTCMonth() + 1; // Months are zero-indexed
-  const todayDay = today.getUTCDate();
+  const bangladeshOffset = 6 * 60 * 60 * 1000; // Offset in milliseconds
+  const bangladeshTime = new Date(today.getTime() + bangladeshOffset);
+
+  const todayMonth = bangladeshTime.getMonth() + 1; // Months are zero-indexed
+  const todayDay = bangladeshTime.getDate();
 
   try {
     // Find users with today's birthday
@@ -169,5 +172,6 @@ exports.birthdayNotification = async (req, res, next) => {
     res.status(500).json({ success: false, message: "Failed to send notifications." });
   }
 };
+
 
 
