@@ -149,7 +149,7 @@ exports.birthdayNotification = async (req, res, next) => {
     // Compose email message
     let emailMessage = `Today's Birthdays:\n`;
     const promises = usersWithBirthdayToday.map((user) => {
-      emailMessage += `${user.name} ${user.batchDetails.batchCode}\n`;
+      emailMessage += `name: ${user.name}. Batch: ${user.batchDetails.batchCode}\n`;
       const message = `Dear ${user.name}\nHappy birthday🎉🎂...!!! Wishing you best of luck.\nStay with us \n\nScience Tent\nAn Ultimate Education Care for Science.`;
       return sendSMS({ number: user.whatsappNumber, message });
     });
