@@ -22,7 +22,7 @@ function AllApproveStudents() {
     dispatch(fetchAllApproveStudents())
       .unwrap()
       .catch((err) => {console.error("Error fetching students:", err);
-    })
+      })
       
       .finally(() => setLoading(false));
   }, [dispatch]);

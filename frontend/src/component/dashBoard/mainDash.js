@@ -14,6 +14,7 @@ import Batch from "./batch";
 import Course from "./course";
 import AssignPermission from "./assignPermission";
 import Student from "./student";
+import Exam from "./exam";
 
 function MainDashBoard() {
   // const navigate = useNavigate();
@@ -31,9 +32,9 @@ function MainDashBoard() {
     { id: "list2", title: "Course", content: <Course /> },
     { id: "list3", title: "Class", content: "Content for Create Batch3" },
     { id: "list4", title: "Students", content: <Student /> },
+    { id: "list7", title: "Exam", content: <Exam/> },
     { id: "list5", title: "Permissions", content: <AssignPermission /> },
     { id: "list6", title: "Others", content: "Content for Create Batch6" },
-    { id: "list7", title: "Batch", content: "Content for Create Batch7" }
   ];
 
   if (isLoading) {
