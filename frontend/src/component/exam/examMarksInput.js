@@ -69,7 +69,7 @@ function ExamMarksInput() {
       .unwrap()
       .then((response) => {
         setSuccessMessage("All Exams fetched successfully!");
-        console.log(response)
+        
         setExamOptions(response.exams);
   
         if (response.success === true) {
@@ -82,6 +82,7 @@ function ExamMarksInput() {
       .then((studentResponse) => {
         setSuccessMessage("All Students fetched successfully!");
         setStudents(studentResponse.students); // Assuming you want to store students in state
+        console.log(studentResponse)
         setTimeout(() => {
           setSuccessMessage(null);
         }, 5000);
@@ -98,9 +99,9 @@ function ExamMarksInput() {
   const handleBatchAndExamData = (examId) => {
     setExam(examId);
     setCourses([]); // Clear courses first
-    console.log(examOptions)
+    
     const selectedExam = examOptions.find((exam) => exam._id === examId);
-    console.log(selectedExam);
+    
   
     // Use a temporary array to accumulate the updated courses
     const updatedCourses = selectedExam.courses.map((course) => ({

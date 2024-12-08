@@ -155,7 +155,7 @@ exports.getAllRejectedStudents = catchAsyncError(async (req, res, next) => {
 
 exports.getAllBatchStudents = catchAsyncError(async (req, res, next) => {
   const students = await Students.find({
-    batch: req.params.batchID,
+    "batchDetails.batchId": req.params.batchID,
     status: "approved",
   });
 
