@@ -109,6 +109,18 @@ const examSchema = new mongoose.Schema({
     },
   ],
   
+  isNotifiedGuard : {
+    type : Boolean,
+    default : false
+  },
+  isNotifiedStudents : {
+    type : Boolean,
+    default : false
+  },
+  isUpdatedResult : {
+    type : Boolean,
+    default : false
+  },
   createdBy: {
     user: {
       type: mongoose.Schema.Types.ObjectId,

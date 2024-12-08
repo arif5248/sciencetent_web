@@ -10,6 +10,7 @@ import createBatchIcon from "../../images/icons/createBatch.png";
 
 import "./exam.css";
 import CreateExam from "../exam/createExam";
+import ExamMarksInput from "../exam/examMarksInput";
 
 function Exam() {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ function Exam() {
 
   const allButtons = [
     { id: "btn1", title:"Create Exam", content: <CreateExam/>},
-    { id: "btn2", title:"All Exam", content: "will be added here" }
+    { id: "btn2", title:"Marks Input", content: <ExamMarksInput /> }
   ];
   
 

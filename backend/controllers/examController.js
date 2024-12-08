@@ -1,6 +1,7 @@
 const ErrorHandler = require("../utils/errorhander");
 const catchAsyncError = require("../middleware/catchAsyncError");
 const Exam = require("../models/examModel");
+const Batch = require("../models/batchModel")
 
 // exports.createExam = catchAsyncError(async (req, res, next) => {
 //     console.log("======================")
@@ -61,3 +62,32 @@ const Exam = require("../models/examModel");
       return next(new ErrorHandler(`Error creating exam = ${error}`, 500));
     }
   });
+
+  exports.getAllExamBatchWise = catchAsyncError(async (req, res, next) => {
+    const { batchId } = req.params;
+
+    // Validate batch ID
+    const batch = await Batch.findById(batchId);
+    if (!batch) {
+        return next(new ErrorHandler(`Batch not found`, 400));
+    }
+
+    // Fetch exams associated with the batch
+    const exams = await Exam.find({
+        'batches._id': batchId, // Match batchId in the batches array
+    }).populate('courses.course batches._id guards');
+
+    // Check if exams exist
+    if (exams.length === 0) {
+        return res.status(404).json({
+            success: false,
+            message: 'No exams found for the specified batch.',
+        });
+    }
+
+    // Send response
+    res.status(200).json({
+        success: true,
+        exams,
+    });
+});
