@@ -41,6 +41,7 @@ function CreateExam() {
           setBatchesError("Failed to load batches. Please try again.");
         } else {
           setBatchOptions(response.payload.batches);
+          console.log(response.payload.batches)
           setBatchesError(null);
         }
       })
@@ -52,6 +53,7 @@ function CreateExam() {
           setCoursesError("Failed to load courses. Please try again.");
         } else {
           setCourseOptions(response.payload.courses);
+          console.log(response.payload.courses)
           setCoursesError(null);
         }
       })
@@ -64,12 +66,40 @@ function CreateExam() {
         setErrorDuplicateCourse(null);
       }, 5000); // Hide error message after 3 seconds
     }
-  }, [errorMessage]);
+  }, [errorDuplicateCourse]);
   
   
+  // Adding a new course
   const addCourse = () => {
-    setSelectedCourses([...selectedCourses, { course: "", marks: "" }]);
+    setSelectedCourses([
+      ...selectedCourses,
+      { course: "", courseName: "", courseCode: "", marks: "" },
+    ]);
   };
+
+  // Updating a course when selected
+  const handleCourseChange = (index, courseId) => {
+    const selectedCourse = courseOptions.find((course) => course._id === courseId);
+    if (!selectedCourse) return;
+
+    // Check for duplicate courses
+    const isDuplicate = selectedCourses.some((course) => course.course === courseId);
+    if (isDuplicate) {
+      setErrorDuplicateCourse("This course has already been added.");
+      return;
+    }
+
+    const updatedCourses = [...selectedCourses];
+    updatedCourses[index] = {
+      course: selectedCourse._id,
+      courseName: selectedCourse.name,
+      courseCode: selectedCourse.courseCode,
+      marks: updatedCourses[index].marks, // Preserve existing marks if already entered
+    };
+    setSelectedCourses(updatedCourses);
+    console.log(updatedCourses)
+  };
+
 
   // const addCourse = () => {
   //   const newCourse = { course: "", marks: "" };
@@ -122,13 +152,13 @@ function CreateExam() {
     myForm.append("batches", JSON.stringify(selectedBatches));
     myForm.append("guards", JSON.stringify(guards));
 
-    console.log("date:",examDate)
-    console.log("time:",examTime)
-    console.log("totalMarks:",totalMarks)
-    console.log("courses:",JSON.stringify(selectedCourses))
-    console.log("batches:",JSON.stringify(selectedBatches))
-    console.log("guards:",JSON.stringify(guards))
-    // Replace with your exam creation dispatch function
+    // console.log("date:",examDate)
+    // console.log("time:",examTime)
+    // console.log("totalMarks:",totalMarks)
+    // console.log("courses:",JSON.stringify(selectedCourses))
+    // console.log("batches:",JSON.stringify(selectedBatches))
+    // console.log("guards:",JSON.stringify(guards))
+
     dispatch(fetchCreateExam(myForm))
       .unwrap()
       .then(() => {
@@ -188,52 +218,40 @@ function CreateExam() {
                 <div key={index} className="courseGroup">
                   <select
                     value={course.course}
-                    onChange={(e) => {
-                      const updatedCourses = [...selectedCourses];
-                      
-                      const isCourseAlreadySelected = updatedCourses.some((selectedCourse) => 
-                        selectedCourse.course === e.target.value
-                      );
-                    
-                      if (isCourseAlreadySelected) {
-                        // Optionally show an error message or return early
-                        setErrorDuplicateCourse("This course has already been added.");
-                      } else {
-                        updatedCourses[index].course = e.target.value;
-                        setSelectedCourses(updatedCourses);
-                      }
-
-                    }}
+                    onChange={(e) => handleCourseChange(index, e.target.value)}
                     required
                   >
                     <option value="">Select Course</option>
-                    {courseOptions.length > 0 ?(
+                    {courseOptions.length > 0 ? (
                       courseOptions.map((c) => (
-                        <option key={c.id} value={c._id}>
+                        <option key={c._id} value={c._id}>
                           {c.name}
                         </option>
                       ))
-                    ) :(
+                    ) : (
                       <option>Loading courses...</option>
                     )}
                   </select>
-                  
+
                   <input
                     type="number"
                     value={course.marks}
                     onChange={(e) => {
                       const updatedCourses = [...selectedCourses];
+                      
                       updatedCourses[index].marks = e.target.value;
                       setSelectedCourses(updatedCourses);
+                      console.log('updatedCourseForMarksChange', selectedCourses)
                     }}
                     placeholder="Marks"
                     required
                   />
                   <button type="button" onClick={() => removeCourse(index)}>
-                    <FaTrash/>
+                    <FaTrash />
                   </button>
                 </div>
               ))}
+
               <button className="addCourseBtn" type="button" onClick={addCourse}>
                 Add Course
               </button>
@@ -252,14 +270,25 @@ function CreateExam() {
                       type="checkbox"
                       id={`batch-${batch._id}`}
                       value={batch._id}
-                      checked={selectedBatches.includes(batch._id)}
+                      checked={selectedBatches.some((b) => b._id === batch._id)}
                       onChange={(e) => {
-                        const value = e.target.value;
-                        setSelectedBatches((prev) =>
-                          prev.includes(value)
-                            ? prev.filter((id) => id !== value) // Remove unselected batch
-                            : [...prev, value] // Add selected batch
-                        );
+                        if (e.target.checked) {
+                          // Add selected batch with details
+                          setSelectedBatches((prev) => [
+                            ...prev,
+                            {
+                              _id: batch._id,
+                              branch: batch.branch,
+                              name: batch.name,
+                              batchCode: batch.batchCode,
+                            },
+                          ]);
+                        } else {
+                          // Remove unselected batch
+                          setSelectedBatches((prev) =>
+                            prev.filter((b) => b._id !== batch._id)
+                          );
+                        }
                       }}
                     />
                     <label htmlFor={`batch-${batch._id}`}>{batch.name}</label>
@@ -268,6 +297,7 @@ function CreateExam() {
               </div>
               {batchesError && <p className="error">{batchesError}</p>}
             </div>
+
 
 
             {/* Guards */}

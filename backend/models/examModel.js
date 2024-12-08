@@ -3,46 +3,84 @@ const mongoose = require("mongoose");
 const examSchema = new mongoose.Schema({
   date: {
     type: Date,
-    required: true, // Ensures date is provided
+    required: true, // Ensures the date is provided
   },
   time: {
     type: String,
-    required: true, // Ensures time is provided
+    required: true, // Ensures the time is provided
   },
   totalMarks: {
     type: Number,
     required: true, // Ensures total marks are provided
     min: 0, // Validates that total marks cannot be negative
   },
-  courses: {
-    type: [String], // Array of strings to accommodate multiple courses
-    required: true, // Ensures at least one course is provided
-  },
-  batchName: {
-    type: String,
-    required: true, // Ensures batch name is provided
-    trim: true, // Removes unnecessary spaces
-  },
-  assignedGuard: {
-    name: {
-      type: String,
-      required: true, // Ensures guard name is provided
+  courses: [
+    {
+      course: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Courses", // Reference to the Courses collection
+        required: true,
+      },
+      courseName: {
+        type: String,
+        required: true,
+      },
+      courseCode: {
+        type: String,
+        required: true,
+      },
+      marks: {
+        type: Number,
+        required: true,
+      },
     },
-    userId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Users", // Reference to the Users collection
-      required: true, // Ensures a valid user ID is assigned
+  ],
+  batches: [
+    {
+      _id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Batches", // Reference to the Batches collection
+        required: true,
+      },
+      branch: {
+        type: String,
+        required: true,
+      },
+      name: {
+        type: String,
+        required: true,
+      },
+      batchCode: {
+        type: String,
+        required: true,
+      },
     },
-  },
+  ],
+  guards: [
+    {
+      name: {
+        type: String,
+        required: true,
+      },
+      mobile: {
+        type: String,
+        required: true,
+      },
+      center: {
+        type: String,
+        required: true,
+      },
+    },
+  ],
   createdBy: {
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Users", // Reference to the Users collection
-      required: true, // Ensures a valid user ID is set
+      required: true,
     },
     name: {
       type: String,
-      required: true, // Ensures the name of the creator is provided
+      required: true,
     },
   },
   createdAt: {
