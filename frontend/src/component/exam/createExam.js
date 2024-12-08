@@ -17,6 +17,8 @@ function CreateExam() {
   // const {  batchesLoading, batchesError } = useSelector((state) => state.batch);
   // const {  coursesLoading, coursesError } = useSelector((state) => state.course);
 
+  const [examName, setExamName] = useState("");
+  const [examCode, setExamCode] = useState("");
   const [examDate, setExamDate] = useState("");
   const [examTime, setExamTime] = useState("");
   const [totalMarks, setTotalMarks] = useState("");
@@ -145,6 +147,9 @@ function CreateExam() {
     }
 
     const myForm = new FormData();
+
+    myForm.append("name", examName);
+    myForm.append("examCode", examCode);
     myForm.append("date", examDate);
     myForm.append("time", examTime);
     myForm.append("totalMarks", totalMarks);
@@ -188,6 +193,29 @@ function CreateExam() {
             {errorMessage && <p className="error">{errorMessage}</p>}
             {successMessage && <p className="success">{successMessage}</p>}
             
+            {/* Exam name */}
+            <div className="formGroup">
+              <label>Exam Name</label>
+              <input
+                type="text"
+                value={examName}
+                onChange={(e) => setExamName(e.target.value)}
+                placeholder="e.g. Weekly/Monthly"
+                required
+              />
+            </div>
+
+            {/* exam code */}
+            <div className="formGroup">
+              <label>Exam Code</label>
+              <input
+                type="text"
+                value={examCode}
+                onChange={(e) => setExamCode(e.target.value)}
+                placeholder="e.g. weekly101/monthly101"
+                required
+              />
+            </div>
 
             {/* Date and Time */}
             <div className="formGroup">

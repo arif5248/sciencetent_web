@@ -1,6 +1,14 @@
 const mongoose = require("mongoose");
 
 const examSchema = new mongoose.Schema({
+  name:{
+    type: string,
+    required: true,
+  },
+  examCode:{
+    type: string,
+    required: true,
+  },
   date: {
     type: Date,
     required: true, // Ensures the date is provided

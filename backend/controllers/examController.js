@@ -39,6 +39,8 @@ const Exam = require("../models/examModel");
   exports.createExam = catchAsyncError(async (req, res, next) => {
     try {
       const examData = {
+        name: req.body.name,
+        examCode: req.body.examCode,
         date: req.body.date,
         time: req.body.time,
         totalMarks: req.body.totalMarks,
