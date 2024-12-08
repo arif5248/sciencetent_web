@@ -41,8 +41,8 @@ const Exam = require("../models/examModel");
       const examData = {
         name: req.body.name,
         examCode: req.body.examCode,
-        date: req.body.date,
-        time: req.body.time,
+        // date: req.body.date,
+        // time: req.body.time,
         totalMarks: req.body.totalMarks,
         courses: JSON.parse(req.body.courses),
         batches: JSON.parse(req.body.batches),

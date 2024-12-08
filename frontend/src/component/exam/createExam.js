@@ -19,8 +19,8 @@ function CreateExam() {
 
   const [examName, setExamName] = useState("");
   const [examCode, setExamCode] = useState("");
-  const [examDate, setExamDate] = useState("");
-  const [examTime, setExamTime] = useState("");
+  // const [examDate, setExamDate] = useState("");
+  // const [examTime, setExamTime] = useState("");
   const [totalMarks, setTotalMarks] = useState("");
   let [selectedCourses, setSelectedCourses] = useState([]);
   const [selectedBatches, setSelectedBatches] = useState([]);
@@ -73,7 +73,7 @@ function CreateExam() {
   const addCourse = () => {
     setSelectedCourses([
       ...selectedCourses,
-      { course: "", courseName: "", courseCode: "", marks: "" },
+      { course: "", courseName: "", courseCode: "", marks: "", date: "", time: ""  },
     ]);
   };
 
@@ -94,7 +94,9 @@ function CreateExam() {
       course: selectedCourse._id,
       courseName: selectedCourse.name,
       courseCode: selectedCourse.courseCode,
-      marks: updatedCourses[index].marks, // Preserve existing marks if already entered
+      marks: updatedCourses[index].marks,
+      date: updatedCourses[index].date,
+      time: updatedCourses[index].time,
     };
     setSelectedCourses(updatedCourses);
   };
@@ -127,8 +129,8 @@ function CreateExam() {
 
     myForm.append("name", examName);
     myForm.append("examCode", examCode);
-    myForm.append("date", examDate);
-    myForm.append("time", examTime);
+    // myForm.append("date", examDate);
+    // myForm.append("time", examTime);
     myForm.append("totalMarks", totalMarks);
     myForm.append("courses", JSON.stringify(selectedCourses));
     myForm.append("batches", JSON.stringify(selectedBatches));
@@ -188,14 +190,14 @@ function CreateExam() {
             </div>
 
             {/* Date and Time */}
-            <div className="formGroup">
+            {/* <div className="formGroup">
               <label>Date</label>
               <input type="date" value={examDate} onChange={(e) => setExamDate(e.target.value)} required />
             </div>
             <div className="formGroup">
               <label>Time</label>
               <input type="time" value={examTime} onChange={(e) => setExamTime(e.target.value)} required />
-            </div>
+            </div> */}
 
             {/* Total Marks */}
             <div className="formGroup">
@@ -241,6 +243,28 @@ function CreateExam() {
                       setSelectedCourses(updatedCourses);
                     }}
                     placeholder="Marks"
+                    required
+                  />
+                  <input
+                    type="date"
+                    value={course.date}
+                    onChange={(e) => {
+                      const updatedCourses = [...selectedCourses];
+                      
+                      updatedCourses[index].date = e.target.value;
+                      setSelectedCourses(updatedCourses);
+                    }}
+                    required
+                  />
+                  <input
+                    type="time"
+                    value={course.time}
+                    onChange={(e) => {
+                      const updatedCourses = [...selectedCourses];
+                      
+                      updatedCourses[index].time = e.target.value;
+                      setSelectedCourses(updatedCourses);
+                    }}
                     required
                   />
                   <button type="button" onClick={() => removeCourse(index)}>

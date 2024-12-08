@@ -9,14 +9,7 @@ const examSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  date: {
-    type: Date,
-    required: true, // Ensures the date is provided
-  },
-  time: {
-    type: String,
-    required: true, // Ensures the time is provided
-  },
+  
   totalMarks: {
     type: Number,
     required: true, // Ensures total marks are provided
@@ -41,6 +34,14 @@ const examSchema = new mongoose.Schema({
         type: Number,
         required: true,
       },
+      date: {
+        type: Date,
+        required: true, // Specific date for this course
+      },
+      time: {
+        type: String,
+        required: true, // Specific time for this course
+      }
     },
   ],
   batches: [
@@ -80,6 +81,34 @@ const examSchema = new mongoose.Schema({
       },
     },
   ],
+  Result: [
+    {
+      student: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Students", // Reference to the Students collection
+        required: true,
+      },
+      courses: [
+        {
+          course: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Courses", // Reference to the Courses collection
+            required: true,
+          },
+          marks: {
+            type: Number,
+            required: true, // Marks scored in this course
+          },
+        },
+      ],
+      batch: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Batches", // Reference to the Batches collection
+        required: true,
+      },
+    },
+  ],
+  
   createdBy: {
     user: {
       type: mongoose.Schema.Types.ObjectId,
