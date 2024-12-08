@@ -43,7 +43,6 @@ function CreateExam() {
           setBatchesError("Failed to load batches. Please try again.");
         } else {
           setBatchOptions(response.payload.batches);
-          console.log(response.payload.batches)
           setBatchesError(null);
         }
       })
@@ -55,7 +54,6 @@ function CreateExam() {
           setCoursesError("Failed to load courses. Please try again.");
         } else {
           setCourseOptions(response.payload.courses);
-          console.log(response.payload.courses)
           setCoursesError(null);
         }
       })
@@ -99,29 +97,8 @@ function CreateExam() {
       marks: updatedCourses[index].marks, // Preserve existing marks if already entered
     };
     setSelectedCourses(updatedCourses);
-    console.log(updatedCourses)
   };
 
-
-  // const addCourse = () => {
-  //   const newCourse = { course: "", marks: "" };
-    
-  
-  //   // Check if the course already exists in the selectedCourses array
-  //   const isCourseAlreadySelected = selectedCourses.some((selectedCourse) => 
-  //     selectedCourse.course === newCourse.course
-  //   );
-  
-  //   if (isCourseAlreadySelected) {
-  //     // Optionally show an error message or return early
-  //     setErrorMessage("This course has already been added.");
-  //   } else {
-  //     setSelectedCourses([...selectedCourses, newCourse]);
-  //   }
-
-  //   console.log(selectedCourses)
-  // };
-  
 
   const removeCourse = (index) => {
     setSelectedCourses(selectedCourses.filter((_, i) => i !== index));
@@ -156,13 +133,6 @@ function CreateExam() {
     myForm.append("courses", JSON.stringify(selectedCourses));
     myForm.append("batches", JSON.stringify(selectedBatches));
     myForm.append("guards", JSON.stringify(guards));
-
-    // console.log("date:",examDate)
-    // console.log("time:",examTime)
-    // console.log("totalMarks:",totalMarks)
-    // console.log("courses:",JSON.stringify(selectedCourses))
-    // console.log("batches:",JSON.stringify(selectedBatches))
-    // console.log("guards:",JSON.stringify(guards))
 
     dispatch(fetchCreateExam(myForm))
       .unwrap()
@@ -269,7 +239,6 @@ function CreateExam() {
                       
                       updatedCourses[index].marks = e.target.value;
                       setSelectedCourses(updatedCourses);
-                      console.log('updatedCourseForMarksChange', selectedCourses)
                     }}
                     placeholder="Marks"
                     required

@@ -2,11 +2,11 @@ const mongoose = require("mongoose");
 
 const examSchema = new mongoose.Schema({
   name:{
-    type: string,
+    type: String,
     required: true,
   },
   examCode:{
-    type: string,
+    type: String,
     required: true,
   },
   date: {
