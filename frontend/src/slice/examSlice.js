@@ -22,37 +22,24 @@ export const fetchCreateExam = createAsyncThunk(
   }
 );
 
+export const fetchGetAllExamBatchWise = createAsyncThunk(
+  "exam/fetchGetAllExamBatchWise",
+  async (batchId, { rejectWithValue }) => {
+    try {
+      const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
+      const { data } = await axios.get(`${baseUrl}/api/v1/admin/getAllExamBatchWise/${batchId}`, config);
+      return data;
+    } catch (error) {
+      // Handle error response, including HTTP 409 Conflict
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message); // Provide custom error message from backend
+      }
+      return rejectWithValue(error.message || "Something went wrong");
+    }
+  }
+);
 
-// export const fetchAllCourses = createAsyncThunk("course/fetchAllCourses", async () => {
-//   const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
-//   const { data } = await axios.get(`${baseUrl}/api/v1/admin/courses`, config);
-//   return data;
-// });
-// export const fetchAllCoursesForReg = createAsyncThunk("course/fetchAllCoursesForReg", async () => {
-//   const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
-//   const { data } = await axios.get(`${baseUrl}/api/v1/user/coursesForReg`, config);
-//   return data;
-// });
-// export const fetchDeleteCourse = createAsyncThunk("course/fetchDeleteCourse", async (courseId) => {
-//   const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
-//   const { data } = await axios.delete(`${baseUrl}/api/v1/admin/deleteCourse/${courseId}`, config);
-//   return data;
-// });
-// export const fetchEditCourse = createAsyncThunk(
-//   "course/fetchEditCourse",
-//   async ({ courseId, courseData }, { rejectWithValue }) => {
-//     try {
-//       const config = { withCredentials: true };
-//       const { data } = await axios.put(`${baseUrl}/api/v1/admin/editCourse/${courseId}`, courseData, config);
-//       return data;
-//     } catch (error) {
-//       if (error.response && error.response.data.message) {
-//         return rejectWithValue(error.response.data.message);
-//       }
-//       return rejectWithValue(error.message);
-//     }
-//   }
-// );
+
 
 
 // Course Slice
@@ -63,6 +50,7 @@ const examSlice = createSlice({
     isLoading: false,
     exam: null,  // Store the course data
     error: null,
+    allExamBatchWise: null
   },
   extraReducers: (builder) => {
     builder
@@ -71,16 +59,28 @@ const examSlice = createSlice({
         })
         .addCase(fetchCreateExam.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.isAuthenticated = true;
-        state.allApproveStudents = action.payload.students;
+        state.exam = action.payload.exam;
         state.error = null;
         })
         .addCase(fetchCreateExam.rejected, (state, action) => {
         state.isLoading = false;
-        state.isAuthenticated = false;
-        state.allApproveStudents = null;
+        state.exam = null;
         state.error = action.payload || "An unexpected error occurred";
         })
+
+        .addCase(fetchGetAllExamBatchWise.pending, (state) => {
+          state.isLoading = true;
+          })
+          .addCase(fetchGetAllExamBatchWise.fulfilled, (state, action) => {
+          state.isLoading = false;
+          state.allExamBatchWise = action.payload.exams;
+          state.error = null;
+          })
+          .addCase(fetchGetAllExamBatchWise.rejected, (state, action) => {
+          state.isLoading = false;
+          state.allExamBatchWise = null;
+          state.error = action.payload || "An unexpected error occurred";
+          })
     }
 });
 

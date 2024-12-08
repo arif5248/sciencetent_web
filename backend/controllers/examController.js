@@ -75,7 +75,7 @@ const Batch = require("../models/batchModel")
     // Fetch exams associated with the batch
     const exams = await Exam.find({
         'batches._id': batchId, // Match batchId in the batches array
-    }).populate('courses.course batches._id guards');
+    })
 
     // Check if exams exist
     if (exams.length === 0) {

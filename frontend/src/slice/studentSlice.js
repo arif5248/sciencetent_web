@@ -46,7 +46,6 @@ export const fetchAllApproveStudents = createAsyncThunk(
   }
 );
 
-
 export const fetchApproveStudent = createAsyncThunk(
   "student/fetchApproveStudent",
   async (studentID, { rejectWithValue }) => {
@@ -80,6 +79,24 @@ export const fetchRejectStudent = createAsyncThunk(
   }
 );
 
+export const fetchAllStudentsBatchWise = createAsyncThunk(
+  "student/fetchAllStudentsBatchWise",
+  async (batchId, { rejectWithValue }) => {
+    try {
+      const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
+      const { data } = await axios.get(`${baseUrl}/api/v1/admin/batch-students/${batchId}`, config);
+      return data;
+    } catch (error) {
+      // Check if the error response exists and throw the backend message
+      if (error.response && error.response.data && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      }
+      // For other unexpected errors
+      return rejectWithValue(error.message || "Something went wrong");
+    }
+  }
+);
+
 const studentSlice = createSlice({
   name: "student",
   initialState: {
@@ -88,25 +105,26 @@ const studentSlice = createSlice({
     student : null,
     allPendingStudents : null,
     allApproveStudents : null,
+    allStudentsBatchWise : null,
     error: null,
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchRegisterStudent.pending, (state) => {
-      console.log(2)
-
+    builder
+    .addCase(fetchRegisterStudent.pending, (state) => {
+      // console.log(2)
       state.isLoading = true;
       state.isAuthenticated = false;
-    });
-    builder.addCase(fetchRegisterStudent.fulfilled, (state, action) => {
-      console.log(1)
+    })
+    .addCase(fetchRegisterStudent.fulfilled, (state, action) => {
+      // console.log(1)
       state.isLoading = false;
       state.isAuthenticated = true;
       state.student = action.payload.student;
       state.message = action.payload.message ? action.payload.message  : ""
       state.error = null;
-    });
-    builder.addCase(fetchRegisterStudent.rejected, (state, action) => {
-      console.log(3)
+    })
+    .addCase(fetchRegisterStudent.rejected, (state, action) => {
+      // console.log(3)
 
       state.isLoading = false;
       
@@ -142,6 +160,20 @@ const studentSlice = createSlice({
     .addCase(fetchAllApproveStudents.rejected, (state, action) => {
       state.isLoading = false;
       state.isAuthenticated = false;
+      state.allApproveStudents = null;
+      state.error = action.payload || "An unexpected error occurred";
+    })
+
+    .addCase(fetchAllStudentsBatchWise.pending, (state) => {
+      state.isLoading = true;
+    })
+    .addCase(fetchAllStudentsBatchWise.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.allStudentsBatchWise = action.payload.students;
+      state.error = null;
+    })
+    .addCase(fetchAllStudentsBatchWise.rejected, (state, action) => {
+      state.isLoading = false;
       state.allApproveStudents = null;
       state.error = action.payload || "An unexpected error occurred";
     })
