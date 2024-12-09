@@ -44,7 +44,12 @@
     font-size: 14px;
     color: #555;
   }
-  
+  .outOfMarks{
+    margin: 0;
+    font-size: 10px;
+    font-style: italic;
+    color: #e8eb13;
+  }
   .numberInput {
     width: 80%;
     padding: 5px;
@@ -55,7 +60,7 @@
     text-align: center;
   }
   
-  input[type="number"]:focus {
+  .numberInput:focus {
     border-color: #016c81;
   }
   

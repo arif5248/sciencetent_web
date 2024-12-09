@@ -22,6 +22,7 @@ function ExamMarksInput() {
 
   const [courses, setCourses] = useState([])
   const [students, setStudents] = useState([])
+  const [marks, setMarks] = useState([])
   
   const [batch, setBatch] = useState("");
   const [exam, setExam] = useState("");
@@ -32,30 +33,6 @@ function ExamMarksInput() {
   //   { id: "s3", name: "Jane Smith" },
   //   { id: "s4", name: "Jane Smith" },
   //   { id: "s5", name: "Jane Smith" },
-  //   { id: "s6", name: "Jane Smith" },
-  //   { id: "s7", name: "Jane Smith" },
-  //   { id: "s8", name: "Jane Smith" },
-  //   { id: "s9", name: "Jane Smith" },
-  //   { id: "s10", name: "Jane Smith" },
-  //   { id: "s11", name: "Jane Smith" },
-  //   { id: "s12", name: "Jane Smith" },
-  //   { id: "s13", name: "Jane Smith" },
-  //   { id: "s14", name: "Jane Smith" },
-  //   { id: "s15", name: "Jane Smith" },
-  //   { id: "s16", name: "Jane Smith" },
-  //   { id: "s17", name: "Jane Smith" },
-  //   { id: "s18", name: "Jane Smith" },
-  //   { id: "s19", name: "Jane Smith" },
-  //   { id: "s20", name: "Jane Smith" },
-  //   { id: "s21", name: "Jane Smith" },
-  //   { id: "s22", name: "Jane Smith" },
-  //   { id: "s23", name: "Jane Smith" },
-  //   { id: "s24", name: "Jane Smith" },
-  //   { id: "s25", name: "Jane Smith" },
-  //   { id: "s26", name: "Jane Smith" },
-  //   { id: "s27", name: "Jane Smith" },
-  //   { id: "s28", name: "Jane Smith" },
-  //   { id: "s29", name: "Jane Smith" },
   // ]);
 
  
@@ -64,7 +41,7 @@ function ExamMarksInput() {
     setLoading(true);
     setBatch(batchId);
     setShowExamSelectBox(false);
-  
+    setMarks([])
     dispatch(fetchGetAllExamBatchWise(batchId))
       .unwrap()
       .then((response) => {
@@ -80,9 +57,16 @@ function ExamMarksInput() {
         return dispatch(fetchAllStudentsBatchWise(batchId)).unwrap();
       })
       .then((studentResponse) => {
+        setStudents([])
         setSuccessMessage("All Students fetched successfully!");
-        setStudents(studentResponse.students); // Assuming you want to store students in state
-        console.log(studentResponse)
+        const allStudents = studentResponse.students;
+        const updatedStudents = allStudents.map((student) => ({
+          id: student._id,
+          name: student.name,
+          studentID: student.studentID
+        })); // Assuming you want to store students in state
+        setStudents(updatedStudents)
+        console.log(updatedStudents)
         setTimeout(() => {
           setSuccessMessage(null);
         }, 5000);
@@ -107,7 +91,7 @@ function ExamMarksInput() {
     const updatedCourses = selectedExam.courses.map((course) => ({
       id: course._id,
       name: course.courseName,
-      mark: course.marks,
+      marks: course.marks,
     }));
   
     // Set the accumulated courses to state
@@ -141,17 +125,26 @@ function ExamMarksInput() {
   }, [dispatch]);
 
   // State to hold marks
-  const [marks, setMarks] = useState(
-    students.map((student) => ({
-      studentId: student.id,
-      studentName: student.name,
-      courseMarks: courses.reduce((acc, course) => {
-        acc[course.id] = "";
-        return acc;
-      }, {}),
-      total: 0,
-    }))
-  );
+  useEffect(() => {
+    // Perform actions dependent on students state
+    if (students.length > 0) {
+      setMarks([])
+      setMarks(
+        students.map((student) => ({
+          id: student.id,
+          studentId: student.studentID,
+          studentName: student.name,
+          courseMarks: courses.reduce((acc, course) => {
+            acc[course.id] = "";
+            return acc;
+          }, {}),
+          total: 0,
+        }))
+      );
+    }else{
+      setMarks([])
+    }
+  }, [students, courses]); // Trigger when students or courses change
 
   // Handle input change
   const handleInputChange = (studentId, courseId, value) => {
@@ -215,17 +208,18 @@ function ExamMarksInput() {
               <table border="1" style={{ width: "100%", borderCollapse: "collapse" }}>
                 <thead>
                   <tr style={{ position: "sticky", top: "0" }}>
-                    <th>Student Name</th>
+                    <th>Student ID</th>
                     {courses.map((course) => (
-                      <th key={course.id}>{course.name}</th>
+                      <th key={course.id}>{course.name} <p className="outOfMarks">(out of {course.marks})</p></th>
                     ))}
                     <th>Total Marks</th>
                   </tr>
                 </thead>
                 <tbody>
+                {console.log(marks)}
                   {marks.map((mark) => (
                     <tr key={mark.studentId}>
-                      <td>{mark.studentName}</td>
+                      <td>{mark.studentId}</td>
                       {courses.map((course) => (
                         <td key={course.id}>
                           <input
