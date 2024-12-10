@@ -92,8 +92,47 @@ const Batch = require("../models/batchModel")
     });
 });
 
+// exports.batchWiseMarksInput = catchAsyncError(async (req, res, next) => {
+//   const { allMarks } = req.body;
+
+//   // Check if the exam exists
+//   const exam = await Exam.findById(req.params.examId);
+//   if (!exam) {
+//     return next(new ErrorHandler(`Exam not found`, 400));
+//   }
+
+//   // Validate allMarks structure
+//   if (!Array.isArray(allMarks) || allMarks.length === 0) {
+//     return next(new ErrorHandler(`Invalid data for marks`, 400));
+//   }
+
+//   // Prepare data for insertion into the Result array
+//   const resultEntries = allMarks.map((mark) => ({
+//     student: mark.student,
+//     courses: mark.courses.map((course) => ({
+//       course: course.courseId, // Ensure you send courseId in the request
+//       marks: course.marks,
+//     })),
+//     batch: mark.batch,
+//   }));
+
+//   // Update the Result array
+//   await Exam.findByIdAndUpdate(
+//     req.params.examId,
+//     { $push: { result: { $each: resultEntries } } }, // Push multiple entries
+//     { new: true, runValidators: true }
+//   );
+
+//   res.status(200).json({
+//     success: true,
+//     message: "Marks input successfully...",
+//   });
+// });
+
 exports.batchWiseMarksInput = catchAsyncError(async (req, res, next) => {
   const { allMarks } = req.body;
+
+  console.log("Received allMarks: ", allMarks);
 
   // Check if the exam exists
   const exam = await Exam.findById(req.params.examId);
@@ -116,15 +155,26 @@ exports.batchWiseMarksInput = catchAsyncError(async (req, res, next) => {
     batch: mark.batch,
   }));
 
-  // Update the Result array
-  await Exam.findByIdAndUpdate(
-    req.params.examId,
-    { $push: { Result: { $each: resultEntries } } }, // Push multiple entries
-    { new: true, runValidators: true }
-  );
+  console.log("Prepared resultEntries: ", resultEntries);
 
-  res.status(200).json({
-    success: true,
-    message: "Marks input successfully...",
-  });
+  // Update the Result array
+  try {
+    const updatedExam = await Exam.findByIdAndUpdate(
+      req.params.examId,
+      { $push: { Result: { $each: resultEntries } } }, // Push multiple entries
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedExam) {
+      return next(new ErrorHandler(`Exam update failed`, 500));
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Marks input successfully",
+    });
+  } catch (err) {
+    console.error("Update error:", err);
+    return next(new ErrorHandler(`Failed to update Result`, 500));
+  }
 });

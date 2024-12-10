@@ -81,7 +81,7 @@ const examSchema = new mongoose.Schema({
       },
     },
   ],
-  Result: [
+  result: [
     {
       student: {
         type: mongoose.Schema.Types.ObjectId,
