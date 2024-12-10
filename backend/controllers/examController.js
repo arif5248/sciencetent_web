@@ -91,3 +91,12 @@ const Batch = require("../models/batchModel")
         exams,
     });
 });
+
+exports.batchWiseMarksInput = catchAsyncError(async (req, res, next) => {
+  console.log(req.body)
+  // Send response
+  res.status(200).json({
+      success: true,
+      message: "working",
+  });
+});

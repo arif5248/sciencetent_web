@@ -39,7 +39,22 @@ export const fetchGetAllExamBatchWise = createAsyncThunk(
   }
 );
 
-
+export const fetchBatchWiseMarksInput = createAsyncThunk(
+  "exam/fetchBatchWiseMarksInput",
+  async (marksData, { rejectWithValue }) => {
+    try {
+      const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
+      const { data } = await axios.put(`${baseUrl}/api/v1/admin/bachWiseMarksInput`, marksData, config);
+      return data;
+    } catch (error) {
+      // Handle error response, including HTTP 409 Conflict
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message); // Provide custom error message from backend
+      }
+      return rejectWithValue(error.message || "Something went wrong");
+    }
+  }
+);
 
 
 // Course Slice
@@ -81,6 +96,19 @@ const examSlice = createSlice({
           state.allExamBatchWise = null;
           state.error = action.payload || "An unexpected error occurred";
           })
+
+          .addCase(fetchBatchWiseMarksInput.pending, (state) => {
+            state.isLoading = true;
+            })
+            .addCase(fetchBatchWiseMarksInput.fulfilled, (state, action) => {
+            state.isLoading = false;
+            state.error = null;
+            })
+            .addCase(fetchBatchWiseMarksInput.rejected, (state, action) => {
+            state.isLoading = false;
+            state.exam = null;
+            state.error = action.payload || "An unexpected error occurred";
+            })
     }
 });
 

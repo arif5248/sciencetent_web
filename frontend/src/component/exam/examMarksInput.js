@@ -5,7 +5,7 @@ import Loader from "../layout/loader/loader";
 import { useNavigate } from "react-router-dom";
 import "./examMarksInput.css";
 import { fetchAllBatchForReg } from "../../slice/batchSlice";
-import { fetchGetAllExamBatchWise } from "../../slice/examSlice";
+import { fetchBatchWiseMarksInput, fetchGetAllExamBatchWise } from "../../slice/examSlice";
 import { fetchAllStudentsBatchWise } from "../../slice/studentSlice";
 
 function ExamMarksInput() {
@@ -26,16 +26,6 @@ function ExamMarksInput() {
   
   const [batch, setBatch] = useState("");
   const [exam, setExam] = useState("");
-  
-  // const [students, setStudents] = useState([
-  //   { id: "s1", name: "John Doe" },
-  //   { id: "s2", name: "Jane Smith" },
-  //   { id: "s3", name: "Jane Smith" },
-  //   { id: "s4", name: "Jane Smith" },
-  //   { id: "s5", name: "Jane Smith" },
-  // ]);
-
- 
 
   const handleBatch = (batchId) => {
     setLoading(true);
@@ -66,7 +56,6 @@ function ExamMarksInput() {
           studentID: student.studentID
         })); // Assuming you want to store students in state
         setStudents(updatedStudents)
-        console.log(updatedStudents)
         setTimeout(() => {
           setSuccessMessage(null);
         }, 5000);
@@ -88,8 +77,10 @@ function ExamMarksInput() {
     
   
     // Use a temporary array to accumulate the updated courses
+    // console.log(selectedExam.courses)
     const updatedCourses = selectedExam.courses.map((course) => ({
-      id: course._id,
+      
+      id: course.course,
       name: course.courseName,
       marks: course.marks,
     }));
@@ -164,8 +155,42 @@ function ExamMarksInput() {
 
   // Handle submit
   const handleSubmit = () => {
-    console.log("Marks Submitted: ", marks);
-    // Replace with API call
+    
+    const transformedData = marks.map((mark) => ({
+      student: mark.id, // Student ID (ObjectId)
+      courses: courses.map((course) => ({
+        course: course.id, // Course ID (ObjectId)
+        // marks: parseFloat(mark.courseMarks[course.id]) || 0,
+        marks: mark.courseMarks[course.id],
+      })),
+      batch, // Batch ID (ObjectId)
+    }));
+  
+    const marksData= {
+      examId: exam,
+      allMarks : transformedData
+    }
+    // console.log("Transformed Data for Submission:", marksData);
+
+    dispatch(fetchBatchWiseMarksInput(marksData))
+      .unwrap()
+      .then((responseFromMarksInput) => {
+        console.log(responseFromMarksInput)
+        setStudents([])
+        setSuccessMessage("Marks are inputted successfully!");
+        setTimeout(() => {
+          setSuccessMessage(null);
+        }, 5000);
+      })
+      .catch((err) => {
+        setErrorMessage(err);
+        setTimeout(() => {
+          setErrorMessage(null);
+        }, 20000);
+      })
+      .finally(() => setLoading(false));
+  
+    
   };
   return (
     <Fragment>
@@ -205,7 +230,7 @@ function ExamMarksInput() {
               {successMessage && <p className="success">{successMessage}</p>}
               {errorMessage && <p className="error">{errorMessage}</p>}
               {showMarksShit && <div style={{ padding: "20px 10px" }}>
-              <table border="1" style={{ width: "100%", borderCollapse: "collapse" }}>
+              <table className="marksInputTable" border="1" style={{ width: "100%", borderCollapse: "collapse" }}>
                 <thead>
                   <tr style={{ position: "sticky", top: "0" }}>
                     <th>Student ID</th>
@@ -216,7 +241,6 @@ function ExamMarksInput() {
                   </tr>
                 </thead>
                 <tbody>
-                {console.log(marks)}
                   {marks.map((mark) => (
                     <tr key={mark.studentId}>
                       <td>{mark.studentId}</td>
@@ -224,7 +248,7 @@ function ExamMarksInput() {
                         <td key={course.id}>
                           <input
                           className="numberInput"
-                            type="number"
+                            type="text"
                             value={mark.courseMarks[course.id]}
                             onChange={(e) =>
                               handleInputChange(mark.studentId, course.id, e.target.value)
