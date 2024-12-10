@@ -11,8 +11,8 @@ router
   .route("/admin/getAllExamBatchWise/:batchId")  
   .get(isAuthenticatedUser, isPermitted(process.env.GET_ALL_EXAM_BATCH_WISE), getAllExamBatchWise);
 router
-  .route("/admin/getAllExamBatchWise/:batchId")  
-  .get(isAuthenticatedUser, isPermitted(process.env.MARKS_INPUT_BATCH_WISE), batchWiseMarksInput);
+  .route("/admin/getAllExamBatchWise/:examId")  
+  .put(isAuthenticatedUser, isPermitted(process.env.MARKS_INPUT_BATCH_WISE), batchWiseMarksInput);
 
 
 module.exports = router;

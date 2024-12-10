@@ -94,6 +94,12 @@ const Batch = require("../models/batchModel")
 
 exports.batchWiseMarksInput = catchAsyncError(async (req, res, next) => {
   console.log(req.body)
+  const exam = await Exam.findById(req.params.examId)
+  if(!exam){
+    return next(new ErrorHandler(`Exam not found`, 400));
+  }
+
+  // const marksData = req.body.
   // Send response
   res.status(200).json({
       success: true,
