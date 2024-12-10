@@ -74,11 +74,7 @@ exports.batchWiseMarksInput = catchAsyncError(async (req, res, next) => {
     return next(new ErrorHandler(`Invalid data for marks`, 400));
   }
    
-  //  exam = await Exam.findByIdAndUpdate(req.params.examId, {result: JSON.parse(req.body.allMarks)}, {
-  //   new: true,
-  //   runValidators: true,
-  //   useFindAndModify: false,
-  // });
+  
   // Prepare data for insertion into the Result array
   const resultEntries = allMarks.map((mark) => ({
     student: mark.student,
@@ -88,6 +84,7 @@ exports.batchWiseMarksInput = catchAsyncError(async (req, res, next) => {
     })),
     batch: mark.batch,
   }));
+  console.log(resultEntries)
 
   // Update the Result array
   await Exam.findByIdAndUpdate(
