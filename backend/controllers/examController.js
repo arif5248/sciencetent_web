@@ -74,7 +74,7 @@ exports.batchWiseMarksInput = catchAsyncError(async (req, res, next) => {
     return next(new ErrorHandler(`Invalid data for marks`, 400));
   }
    
-   exam = await Exam.findByIdAndUpdate(req.user.id, {result: JSON.parse(allMarks)}, {
+   exam = await Exam.findByIdAndUpdate(req.params.examId, {result: JSON.parse(allMarks)}, {
     new: true,
     runValidators: true,
     useFindAndModify: false,
