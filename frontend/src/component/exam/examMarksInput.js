@@ -171,7 +171,7 @@ function ExamMarksInput() {
       allMarks : transformedData
     }
     // console.log("Transformed Data for Submission:", marksData);
-
+    setLoading(true)
     dispatch(fetchBatchWiseMarksInput(marksData))
       .unwrap()
       .then((responseFromMarksInput) => {
