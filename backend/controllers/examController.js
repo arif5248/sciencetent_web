@@ -96,7 +96,9 @@ exports.batchWiseMarksInput = catchAsyncError(async (req, res, next) => {
       {
         $push: {
           result: {
-            resultEntry
+            student: resultEntry.student,
+            courses: resultEntry.courses,
+            batch: resultEntry.batch
           },
         },
       },
