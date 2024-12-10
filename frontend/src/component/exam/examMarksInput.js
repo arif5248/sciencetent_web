@@ -174,10 +174,10 @@ function ExamMarksInput() {
     setLoading(true)
     dispatch(fetchBatchWiseMarksInput(marksData))
       .unwrap()
-      .then((responseFromMarksInput) => {
-        console.log(responseFromMarksInput)
+      .then((response) => {
+        // console.log()
         setStudents([])
-        setSuccessMessage("Marks are inputted successfully!");
+        setSuccessMessage(response.message ? response.message : "Marks are inputted successfully!");
         setTimeout(() => {
           setSuccessMessage(null);
         }, 5000);

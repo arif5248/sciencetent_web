@@ -93,16 +93,38 @@ const Batch = require("../models/batchModel")
 });
 
 exports.batchWiseMarksInput = catchAsyncError(async (req, res, next) => {
-  console.log(req.body)
-  const exam = await Exam.findById(req.params.examId)
-  if(!exam){
+  const { allMarks } = req.body;
+
+  // Check if the exam exists
+  const exam = await Exam.findById(req.params.examId);
+  if (!exam) {
     return next(new ErrorHandler(`Exam not found`, 400));
   }
 
-  // const marksData = req.body.
-  // Send response
+  // Validate allMarks structure
+  if (!Array.isArray(allMarks) || allMarks.length === 0) {
+    return next(new ErrorHandler(`Invalid data for marks`, 400));
+  }
+
+  // Prepare data for insertion into the Result array
+  const resultEntries = allMarks.map((mark) => ({
+    student: mark.student,
+    courses: mark.courses.map((course) => ({
+      course: course.courseId, // Ensure you send courseId in the request
+      marks: course.marks,
+    })),
+    batch: mark.batch,
+  }));
+
+  // Update the Result array
+  await Exam.findByIdAndUpdate(
+    req.params.examId,
+    { $push: { Result: { $each: resultEntries } } }, // Push multiple entries
+    { new: true, runValidators: true }
+  );
+
   res.status(200).json({
-      success: true,
-      message: "working",
+    success: true,
+    message: "Marks input successfully...",
   });
 });
