@@ -77,7 +77,7 @@ exports.batchWiseMarksInput = catchAsyncError(async (req, res, next) => {
    
   
   // Prepare data for insertion into the Result array
-  const mongoose = require("mongoose");
+  
 
   const resultEntries = allMarks.map((mark) => ({
     student: mongoose.Types.ObjectId(mark.student),
