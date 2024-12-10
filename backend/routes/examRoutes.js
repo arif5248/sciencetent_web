@@ -1,6 +1,6 @@
 const express = require("express");
 const { isAuthenticatedUser, isPermitted } = require("../middleware/auth");
-const { createExam, getAllExamBatchWise } = require("../controllers/examController");
+const { createExam, getAllExamBatchWise, batchWiseMarksInput } = require("../controllers/examController");
 
 const router = express.Router();
 
