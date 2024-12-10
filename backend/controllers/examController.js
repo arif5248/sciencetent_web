@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const ErrorHandler = require("../utils/errorhander");
 const catchAsyncError = require("../middleware/catchAsyncError");
 const Exam = require("../models/examModel");
