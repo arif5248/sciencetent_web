@@ -96,7 +96,7 @@ const examSchema = new mongoose.Schema({
             required: true,
           },
           marks: {
-            type: Number,
+            type: String,
             required: true, // Marks scored in this course
           },
         },
