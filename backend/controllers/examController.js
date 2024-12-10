@@ -61,49 +61,66 @@ const Batch = require("../models/batchModel")
     });
 });
 
-// exports.batchWiseMarksInput = catchAsyncError(async (req, res, next) => {
-//   const { allMarks } = req.body;
+exports.batchWiseMarksInput = catchAsyncError(async (req, res, next) => {
+  const { allMarks } = req.body;
 
-//   // Check if the exam exists
-//   const exam = await Exam.findById(req.params.examId);
-//   if (!exam) {
-//     return next(new ErrorHandler(`Exam not found`, 400));
-//   }
+  // Check if the exam exists
+  const exam = await Exam.findById(req.params.examId);
+  if (!exam) {
+    return next(new ErrorHandler(`Exam not found`, 400));
+  }
 
-//   // Validate allMarks structure
-//   if (!Array.isArray(allMarks) || allMarks.length === 0) {
-//     return next(new ErrorHandler(`Invalid data for marks`, 400));
-//   }
+  // Validate allMarks structure
+  if (!Array.isArray(allMarks) || allMarks.length === 0) {
+    return next(new ErrorHandler(`Invalid data for marks`, 400));
+  }
    
   
-//   // Prepare data for insertion into the Result array
+  // Prepare data for insertion into the Result array
   
 
-//   const resultEntries = allMarks.map((mark) => ({
-//     student: mongoose.Types.ObjectId(mark.student),
-//     courses: mark.courses.map((course) => ({
-//       course: mongoose.Types.ObjectId(course.courseId),
-//       marks: course.marks,
-//     })),
-//     batch: mongoose.Types.ObjectId(mark.batch),
-//   }));
+  const resultEntries = allMarks.map((mark) => ({
+    student: mark.student,
+    courses: mark.courses.map((course) => ({
+      course: course.courseId,
+      marks: course.marks,
+    })),
+    batch: mark.batch,
+  }));
 
-//   console.log(JSON.stringify(resultEntries, null, 2));
+  console.log(JSON.stringify(resultEntries, null, 2));
+
+  for (const resultEntry of resultEntries) {
+    const updatedExam = await Exam.findByIdAndUpdate(
+      req.params.examId,
+      {
+        $push: {
+          result: {
+            resultEntry
+          },
+        },
+      },
+      { new: true, useFindAndModify: false }
+    );
+  }
 
 
-//   // Update the Result array
-//   await Exam.findByIdAndUpdate(
-//     req.params.examId,
-//     { $push: { result: { $each: resultEntries } } },
-//     { new: true, runValidators: true }
-//   );
+  // Update the Result array
+  // await Exam.findByIdAndUpdate(
+  //   req.params.examId,
+  //   { $push: { result: { $each: resultEntries } } },
+  //   { new: true, runValidators: true }
+  // );
   
 
-//   res.status(200).json({
-//     success: true,
-//     message: "Marks input successfully...",
-//   });
-// });
+  res.status(200).json({
+    success: true,
+    message: "Marks input successfully...",
+  });
+});
+
+
+
 
 // exports.batchWiseMarksInput = catchAsyncError(async (req, res, next) => {
 //   const { allMarks } = req.body;
@@ -155,52 +172,52 @@ const Batch = require("../models/batchModel")
 //   }
 // });
 
-exports.batchWiseMarksInput = catchAsyncError(async (req, res, next) => {
-  const { allMarks } = req.body;
+// exports.batchWiseMarksInput = catchAsyncError(async (req, res, next) => {
+//   const { allMarks } = req.body;
 
-  // Check if the exam exists
-  const exam = await Exam.findById(req.params.examId);
-  if (!exam) {
-    return next(new ErrorHandler(`Exam not found`, 400));
-  }
+//   // Check if the exam exists
+//   const exam = await Exam.findById(req.params.examId);
+//   if (!exam) {
+//     return next(new ErrorHandler(`Exam not found`, 400));
+//   }
 
-  // Validate allMarks structure
-  if (!Array.isArray(allMarks) || allMarks.length === 0) {
-    return next(new ErrorHandler(`Invalid data for marks`, 400));
-  }
+//   // Validate allMarks structure
+//   if (!Array.isArray(allMarks) || allMarks.length === 0) {
+//     return next(new ErrorHandler(`Invalid data for marks`, 400));
+//   }
 
-  // Prepare data for insertion into the Result array
-  const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
+//   // Prepare data for insertion into the Result array
+//   const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
 
-  if (!allMarks.every(mark => 
-      isValidObjectId(mark.student) && 
-      isValidObjectId(mark.batch) && 
-      mark.courses.every(course => isValidObjectId(course.courseId))
-  )) {
-    return next(new ErrorHandler(`Invalid data provided`, 400));
-  }
+//   if (!allMarks.every(mark => 
+//       isValidObjectId(mark.student) && 
+//       isValidObjectId(mark.batch) && 
+//       mark.courses.every(course => isValidObjectId(course.courseId))
+//   )) {
+//     return next(new ErrorHandler(`Invalid data provided`, 400));
+//   }
 
-  const resultEntries = allMarks.map((mark) => ({
-    student: mongoose.Types.ObjectId(mark.student),
-    courses: mark.courses.map((course) => ({
-      course: mongoose.Types.ObjectId(course.courseId),
-      marks: course.marks,
-    })),
-    batch: mongoose.Types.ObjectId(mark.batch),
-  }));
+//   const resultEntries = allMarks.map((mark) => ({
+//     student: mongoose.Types.ObjectId(mark.student),
+//     courses: mark.courses.map((course) => ({
+//       course: mongoose.Types.ObjectId(course.courseId),
+//       marks: course.marks,
+//     })),
+//     batch: mongoose.Types.ObjectId(mark.batch),
+//   }));
 
-  // Update the Result array
-  await Exam.findByIdAndUpdate(
-    req.params.examId,
-    { $push: { result: { $each: resultEntries } } }, // Push multiple entries
-    { new: true, runValidators: true }
-  );
+//   // Update the Result array
+//   await Exam.findByIdAndUpdate(
+//     req.params.examId,
+//     { $push: { result: { $each: resultEntries } } }, // Push multiple entries
+//     { new: true, runValidators: true }
+//   );
 
-  res.status(200).json({
-    success: true,
-    message: "Marks input successfully...",
-  });
-});
+//   res.status(200).json({
+//     success: true,
+//     message: "Marks input successfully...",
+//   });
+// });
 
 
  
