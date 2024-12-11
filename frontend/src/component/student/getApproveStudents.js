@@ -84,7 +84,7 @@ function AllApproveStudents() {
             { error && <p style={{ color: "red" }}>{error}</p>}
             <table className="studentTable">
               <thead>
-                <tr>
+                <tr style={{position: "sticky", top: "0"}}>
                   <th>Sl</th>
                   <th>Student ID</th>
                   <th>Name</th>

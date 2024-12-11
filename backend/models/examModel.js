@@ -90,7 +90,7 @@ const examSchema = new mongoose.Schema({
       },
       courses: [
         {
-          course: {
+          courseId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Courses", // Reference to the Courses collection
             required: true,
