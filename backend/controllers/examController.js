@@ -80,7 +80,7 @@ exports.batchWiseMarksInput = catchAsyncError(async (req, res, next) => {
   }
 
   exam.result.map(async (item)=>{
-    if(resultData.batchId === item.batchId){
+    if(mongoose.Types.ObjectId(resultData.batchId) === item.batchId){
       console.log("1", resultData.batchId,"=======",item.batchId)
       res.status(200).json({
         success: true,
