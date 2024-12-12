@@ -74,7 +74,10 @@ function ExamMarksInput() {
     setExam(examId);
     setShowMarksSheet(false);
     const selectedExam = examOptions.find((exam) => exam._id === examId);
-    if (selectedExam) {
+    const isExist = selectedExam.result.filter((item) => batch === item.batchId.toString());
+
+    console.log(isExist)
+    if (selectedExam && isExist.length ===0) {
       const courseData = selectedExam.courses.map((course) => ({
         id: course.course,
         name: course.courseName,
@@ -82,6 +85,8 @@ function ExamMarksInput() {
       }));
       setCourses(courseData);
       setShowMarksSheet(true);
+    }else{
+      setErrorMessage("The marks are inputted already for this batch.")
     }
   };
 
