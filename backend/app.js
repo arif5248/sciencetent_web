@@ -32,7 +32,7 @@ app.use(fileUpload());
 // This setup handles CORS preflight requests manually
 // CORS Configuration using cors middleware
 const corsOptions = {
-  origin: ["https://sciencetent.vercel.app", "http://localhost:3000"],
+  origin: "*",
   methods: "GET, POST, PUT, DELETE, OPTIONS",
   allowedHeaders: ["Content-Type", "Authorization", "cookie"],
   credentials: true,
