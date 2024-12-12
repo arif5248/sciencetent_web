@@ -74,7 +74,7 @@ exports.batchWiseMarksInput = catchAsyncError(async (req, res, next) => {
   }
 
   // Validate allMarks structure
-  if (!Array.isArray(resultData) || resultData === 0) {
+  if (resultData.batchId === '' || resultData.batchWiseResult.length === 0) {
     return next(new ErrorHandler(`Invalid data for marks`, 400));
   }
 
