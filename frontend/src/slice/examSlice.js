@@ -44,8 +44,9 @@ export const fetchBatchWiseMarksInput = createAsyncThunk(
   async (marksData, { rejectWithValue }) => {
     try {
       const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
-      const { data } = await axios.put(`${baseUrl}/api/v1/admin/bachWiseMarksInput/${marksData.examId}`, {allMarks:marksData.allMarks}, config);
-      return data;
+      console.log(marksData.allMarks)
+      const { data } = await axios.put(`${baseUrl}/api/v1/admin/bachWiseMarksInput/${marksData.examId}`, {resultData:marksData.allMarks}, config);
+      // return data;
     } catch (error) {
       // Handle error response, including HTTP 409 Conflict
       if (error.response && error.response.data.message) {

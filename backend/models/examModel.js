@@ -83,29 +83,33 @@ const examSchema = new mongoose.Schema({
   ],
   result: [
     {
-      student: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Students", // Reference to the Students collection
-        required: true,
-      },
-      courses: [
-        {
-          courseId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Courses", // Reference to the Courses collection
-            required: true,
-          },
-          marks: {
-            type: String,
-            required: true, // Marks scored in this course
-          },
-        },
-      ],
-      batch: {
+      batchId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Batches", // Reference to the Batches collection
         required: true,
       },
+      batchWiseResult: [
+        {
+          student: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Students", // Reference to the Students collection
+            required: true,
+          },
+          courses: [
+            {
+              courseId: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Courses", // Reference to the Courses collection
+                required: true,
+              },
+              marks: {
+                type: String,
+                required: true, // Marks scored in this course
+              },
+            },
+          ],
+        }
+      ]
     },
   ],
   
