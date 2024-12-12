@@ -43,7 +43,7 @@ export const fetchBatchWiseMarksInput = createAsyncThunk(
   "exam/fetchBatchWiseMarksInput",
   async (marksData, { rejectWithValue }) => {
     try {
-      const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
+      const config = { withCredentials: true };
       console.log(marksData.allMarks)
       const { data } = await axios.put(`${baseUrl}/api/v1/admin/bachWiseMarksInput/${marksData.examId}`, {resultData:marksData.allMarks}, config);
       return data;
