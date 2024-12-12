@@ -69,26 +69,22 @@ function ExamMarksInput() {
       .finally(() => setLoading(false));
   };
   
-  const handleBatchAndExamData = (examId) => {
+  const handleBatchAndExamData = async (examId) => {
     setExam(examId);
     setCourses([]); // Clear courses first
     
     const selectedExam = examOptions.find((exam) => exam._id === examId);
-    
-    console.log(selectedExam)
-    if(selectedExam && selectedExam.result.length !== 0){
+    console.log(selectedExam.result)
+     if(selectedExam && selectedExam.result.length !== 0){
       selectedExam.result.map((exam)=>{
         exam.courses.map((course)=>{
-          console.log("asi gechi")
-          handleInputChange(exam.student, course._id, course.marks)
+          handleInputChange(exam.student, course.courseId, course.marks)
         })
       })
-      console.log("baaaaaaal",marks)
+      console.log("loaded",marks)
     }
     // Use a temporary array to accumulate the updated courses
-    // console.log(selectedExam.courses)
     const updatedCourses = selectedExam.courses.map((course) => ({
-      
       id: course.course,
       name: course.courseName,
       marks: course.marks,
@@ -139,7 +135,7 @@ function ExamMarksInput() {
 
   // Handle input change
   const handleInputChange = (studentId, courseId, value) => {
-    
+    // console.log(studentId, courseId, value)
     const updatedMarks = marks.map((mark) => {
       if (mark.studentId === studentId) {
         const updatedCourseMarks = { ...mark.courseMarks, [courseId]: value };
@@ -149,6 +145,7 @@ function ExamMarksInput() {
         );
         return { ...mark, courseMarks: updatedCourseMarks, total };
       }
+      
       return mark;
     });
     setMarks(updatedMarks);
@@ -156,27 +153,23 @@ function ExamMarksInput() {
 
   // Handle submit
   const handleSubmit = () => {
-    
     const transformedData = marks.map((mark) => ({
       student: mark.id, // Student ID (ObjectId)
       courses: courses.map((course) => ({
-        course: course.course, // Course ID (ObjectId)
+        courseId: course.id, // Course ID (ObjectId)
         // marks: parseFloat(mark.courseMarks[course.id]) || 0,
         marks: mark.courseMarks[course.id],
       })),
       batch, // Batch ID (ObjectId)
     }));
-  
     const marksData= {
       examId: exam,
       allMarks : transformedData
     }
-    // console.log("Transformed Data for Submission:", marksData);
     setLoading(true)
     dispatch(fetchBatchWiseMarksInput(marksData))
       .unwrap()
       .then((response) => {
-        // console.log()
         setStudents([])
         setSuccessMessage(response.message ? response.message : "Marks are inputted successfully!");
         setTimeout(() => {
@@ -242,6 +235,7 @@ function ExamMarksInput() {
                   </tr>
                 </thead>
                 <tbody>
+                {console.log(marks)}
                   {marks.map((mark) => (
                     <tr key={mark.studentId}>
                       <td>{mark.studentId}</td>

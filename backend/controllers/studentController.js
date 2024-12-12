@@ -11,7 +11,7 @@ exports.registerStudent = catchAsyncError(async (req, res, next) => {
   const registeredStudent = await Students.findOne({ user: req.user._id });
   // console.log("======++++++++++++=======",registeredStudent)
   if(registeredStudent && (registeredStudent.status === 'pending' || registeredStudent.status === 'approved')){
-    return next(new ErrorHandler("You are already registered for this form", 400));
+    return next(new ErrorHandler("You are already registered for this form. Please wait for the Admin's Approval.\n Thank You", 400));
     // console.log("======++++++++++++=======",isDeleted)
   }else {
     if(registeredStudent && registeredStudent.status === 'rejected'){

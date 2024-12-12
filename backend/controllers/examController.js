@@ -141,7 +141,6 @@ exports.batchWiseMarksInput = catchAsyncError(async (req, res, next) => {
   if (!Array.isArray(allMarks) || allMarks.length === 0) {
     return next(new ErrorHandler(`Invalid data for marks`, 400));
   }
-  console.log("all marks are:::::::::::",allMarks[0].courses)
   // Prepare data for insertion into the Result array
   const resultEntries = allMarks.map((mark) => ({
     student: mark.student,
