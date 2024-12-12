@@ -73,7 +73,7 @@ console.log(req.body.resultData)
   }
 
   // Validate allMarks structure
-  if (!Array.isArray(allMarks) || resultData.length === 0) {
+  if (!Array.isArray(resultData) || resultData== 0) {
     return next(new ErrorHandler(`Invalid data for marks`, 400));
   }
 
