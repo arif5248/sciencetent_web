@@ -95,6 +95,11 @@ exports.batchWiseMarksInput = catchAsyncError(async (req, res, next) => {
         },
         { new: true, useFindAndModify: false }
       );
+
+      res.status(200).json({
+        success: true,
+        message: "Marks input successfully, result array updated!",
+      });
     }
   })
   // Prepare data for insertion into the Result array
@@ -117,8 +122,5 @@ exports.batchWiseMarksInput = catchAsyncError(async (req, res, next) => {
 
   
 
-  res.status(200).json({
-    success: true,
-    message: "Marks input successfully, result array updated!",
-  });
+  
 });
