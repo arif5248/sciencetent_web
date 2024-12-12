@@ -64,8 +64,9 @@ const Batch = require("../models/batchModel")
 
 exports.batchWiseMarksInput = catchAsyncError(async (req, res, next) => {
   const { resultData } = req.body;
-console.log(typeof(req.body.resultData))
-console.log(req.body.resultData)
+  console.log(typeof(resultData))
+  console.log(typeof(req.body.resultData))
+  console.log(req.body.resultData)
   // Check if the exam exists
   const exam = await Exam.findById(req.params.examId);
   if (!exam) {
@@ -73,7 +74,7 @@ console.log(req.body.resultData)
   }
 
   // Validate allMarks structure
-  if (!Array.isArray(resultData) || resultData== 0) {
+  if (!Array.isArray(resultData) || resultData === 0) {
     return next(new ErrorHandler(`Invalid data for marks`, 400));
   }
 
