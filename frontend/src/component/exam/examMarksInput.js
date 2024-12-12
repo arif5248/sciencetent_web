@@ -33,7 +33,8 @@ function ExamMarksInput() {
       .then((response) => {
         setBatchOptions(response.batches || []);
       })
-      .catch(() => {
+      .catch((err) => {
+        console.log(err)
         setErrorMessage("Failed to load batches. Please try again.");
       });
   }, [dispatch]);
@@ -152,7 +153,8 @@ function ExamMarksInput() {
         setTimeout(() => setSuccessMessage(null), 5000);
       })
       .catch((err) => {
-        setErrorMessage(err.message || "Failed to submit marks.");
+        console.log(err)
+        setErrorMessage(err.message || err || "Failed to submit marks.");
         setTimeout(() => setErrorMessage(null), 5000);
       })
       .finally(() => setLoading(false));
