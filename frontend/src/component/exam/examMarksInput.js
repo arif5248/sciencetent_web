@@ -46,6 +46,8 @@ function ExamMarksInput() {
     setStudents([]);
     setCourses([]);
     setMarks([]);
+    setExamOptions([]);
+    setExam("");
 
     if (!batchId) return;
 
@@ -77,8 +79,9 @@ function ExamMarksInput() {
     const selectedExam = examOptions.find((exam) => exam._id === examId);
     console.log(selectedExam.result)
     let isExist =[]
-    if(selectedExam.result.length === 0){
+    if(selectedExam.result.length !== 0){
       isExist = selectedExam.result.filter((item) => batch === item.batchId.toString());
+      console.log("is Exist", isExist)
     }
     if (selectedExam && isExist.length === 0) {
       const courseData = selectedExam.courses.map((course) => ({
@@ -90,6 +93,8 @@ function ExamMarksInput() {
       setShowMarksSheet(true);
     }else{
       setErrorMessage("The marks are inputted already for this batch.")
+      setTimeout(() => setErrorMessage(null), 5000);
+
     }
   };
 
@@ -133,7 +138,7 @@ function ExamMarksInput() {
       student: mark.id,
       courses: courses.map((course) => ({
         courseId: course.id,
-        marks: mark.courseMarks[course.id],
+        marks: mark.courseMarks[course.id] === '' ? "0" :mark.courseMarks[course.id],
       })),
     }));
 
@@ -196,7 +201,7 @@ function ExamMarksInput() {
             {successMessage && <p className="success">{successMessage}</p>}
             {showMarksSheet && (
               <div>
-                <table>
+                <table className="marksInputTable">
                   <thead>
                     <tr>
                       <th>Student ID</th>
@@ -213,6 +218,7 @@ function ExamMarksInput() {
                         {courses.map((course) => (
                           <td key={course.id}>
                             <input
+                              className="numberInput"
                               type="text"
                               value={mark.courseMarks[course.id]}
                               onChange={(e) =>
