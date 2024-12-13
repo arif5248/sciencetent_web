@@ -63,67 +63,40 @@ const Batch = require("../models/batchModel")
 
 
 exports.batchWiseMarksInput = catchAsyncError(async (req, res, next) => {
-  console.log(req)
-  const { resultData } = req.body;
-  // console.log(typeof(resultData))
-  // console.log(typeof(req.body.resultData))
-  // console.log(req.body.resultData)
+  const { resultData } = req.body; // Extracting resultData from the request body
+
+  // Validate input data
+  if (!resultData || !resultData.batchId || resultData.batchWiseResult.length === 0) {
+    return next(new ErrorHandler(`Invalid data for marks`, 400));
+  }
+
   // Check if the exam exists
   const exam = await Exam.findById(req.params.examId);
   if (!exam) {
-    return next(new ErrorHandler(`Exam not found`, 400));
+    return next(new ErrorHandler(`Exam not found`, 404));
   }
 
-  // Validate allMarks structure
-  // console.log(resultData.batchId,'==========',resultData.batchWiseResult.length)
-  // if (resultData.batchId === '' || resultData.batchWiseResult.length === 0) {
-  //   return next(new ErrorHandler(`Invalid data for marks`, 400));
-  // }
+  // Check if batchId already exists in the result array
+  const existingBatch = exam.result.find(item => 
+    item.batchId.equals(resultData.batchId)
+  );
 
-  exam.result.map(async (item)=>{
-    if (new mongoose.Types.ObjectId(resultData.batchId).equals(item.batchId)) {
-      console.log("1", resultData.batchId,"=======",item.batchId)
-      res.status(200).json({
-        success: true,
-        message: "Marks already inputted for this batch",
-      });
-    }else{
-      console.log("2", resultData.batchId,"=======",item.batchId)
-      await Exam.findByIdAndUpdate(
-        req.params.examId,
-        {
-          $push: {
-            result: req.body.resultData, // Replacing the entire result array
-          },
-        },
-        { new: true, useFindAndModify: false }
-      );
+  if (existingBatch) {
+    return res.status(200).json({
+      success: true,
+      message: "Marks already inputted for this batch",
+    });
+  }
 
-      res.status(200).json({
-        success: true,
-        message: "Marks input successfully, result array updated!",
-      });
-    }
-  })
-  // Prepare data for insertion into the Result array
+  // Push new resultData into the result array
+  exam.result.push(resultData);
 
-  // const resultEntries = allMarks.map((mark) => ({
-  //   batch: mark.batch,
-  //   batchWiseResult:{
-  //     student: mark.student,
-  //     courses: mark.courses.map((course) => ({
-  //       courseId: course.courseId,
-  //       marks: course.marks,
-  //     })),
-  //   }
-  // }));
+  // Save the updated exam document
+  await exam.save();
 
-  // console.log(JSON.stringify(resultEntries, null, 2));
-
-  // Overwrite the Result array with the new data
-
-
-  
-
-  
+  res.status(200).json({
+    success: true,
+    message: "Marks input successfully, result array updated!",
+  });
 });
+
