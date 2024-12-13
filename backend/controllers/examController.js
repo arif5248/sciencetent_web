@@ -63,6 +63,7 @@ const Batch = require("../models/batchModel")
 
 
 exports.batchWiseMarksInput = catchAsyncError(async (req, res, next) => {
+  console.log(req)
   const { resultData } = req.body;
   // console.log(typeof(resultData))
   // console.log(typeof(req.body.resultData))
