@@ -1,0 +1,20 @@
+.selectResultType{
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-evenly;
+
+    padding: 10px 5px;
+    background: linear-gradient(145deg, #e0eafc, #cfdef3);
+    border-radius: 15px;
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.8s ease-in-out;
+}
+.selectResultType > .animated{
+    width: 40%;
+}
+.selectResultType > button{
+    width: 15%;
+}
+.selectResultType > .form-group > select{
+    padding: 10px 5px;
+}

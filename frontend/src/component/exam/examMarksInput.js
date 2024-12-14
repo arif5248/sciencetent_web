@@ -134,10 +134,12 @@ function ExamMarksInput() {
   
 
   const handleSubmit = () => {
+    // console.log(courses)
     const transformedData = marks.map((mark) => ({
       student: mark.id,
       courses: courses.map((course) => ({
         courseId: course.id,
+        courseName : course.name,
         marks: mark.courseMarks[course.id] === '' ? "0" :mark.courseMarks[course.id],
       })),
     }));
@@ -200,7 +202,7 @@ function ExamMarksInput() {
             {errorMessage && <p className="error">{errorMessage}</p>}
             {successMessage && <p className="success">{successMessage}</p>}
             {showMarksSheet && (
-              <div>
+              <div className="marksInputSection">
                 <table className="marksInputTable">
                   <thead>
                     <tr>

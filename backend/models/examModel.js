@@ -102,6 +102,10 @@ const examSchema = new mongoose.Schema({
                 ref: "Courses", // Reference to the Courses collection
                 required: true,
               },
+              courseName : {
+                type: String,
+                required: true, // Marks scored in this course
+              },
               marks: {
                 type: String,
                 required: true, // Marks scored in this course

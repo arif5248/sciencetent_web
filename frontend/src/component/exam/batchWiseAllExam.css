@@ -1,0 +1,104 @@
+.batchWiseAllExamSection {
+    margin-top: 10px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  
+  .examListTitle {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #016c81;
+  }
+  
+  .examTableContainer {
+    overflow-x: auto;
+  }
+  
+  .examTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 auto;
+  }
+  
+  .examTable thead {
+    background-color: #016c81;
+    color: #fff;
+  }
+  
+  .examTable th,
+  .examTable td {
+    padding: 12px 16px;
+    text-align: left;
+    border: 1px solid #e0e0e0;
+  }
+  
+  .examTable th {
+    font-size: 16px;
+  }
+  
+  .examTable td {
+    font-size: 14px;
+    color: #333;
+  }
+  
+  .examRow:hover {
+    background-color: #f1f1f1;
+    transition: background-color 0.3s ease;
+  }
+  
+  .courseTag {
+    display: inline-block;
+    background-color: #f9bf29;
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 5px;
+    font-size: 12px;
+    margin: 2px;
+    animation: fadeInTag 0.5s ease-in-out;
+  }
+  
+  .courseTag:not(:last-child) {
+    margin-right: 5px;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .examTable th,
+    .examTable td {
+      font-size: 12px;
+      padding: 8px 10px;
+    }
+  
+    .examListTitle {
+      font-size: 20px;
+    }
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes fadeInTag {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
