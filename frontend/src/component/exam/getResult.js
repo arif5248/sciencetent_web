@@ -33,7 +33,7 @@ function GetResult() {
     { id : 6, name : "Batch-wise All Exam" },
   ]
   const handleResultType = (resultId) => {
-    setLoading(true)
+    
     setShowSelectBatch(false)
     setBatchOptions([])
     if(resultId === "1"){

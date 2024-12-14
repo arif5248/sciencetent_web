@@ -1,13 +1,14 @@
 .selectResultType{
     display: flex;
-    align-items: flex-end;
-    justify-content: space-evenly;
-
+    align-items: center;
     padding: 10px 5px;
     background: linear-gradient(145deg, #e0eafc, #cfdef3);
     border-radius: 15px;
     box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
     animation: fadeIn 0.8s ease-in-out;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: 5px;
 }
 .selectResultType > .animated{
     width: 40%;
