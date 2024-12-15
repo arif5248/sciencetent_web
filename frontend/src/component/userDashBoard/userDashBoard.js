@@ -1,6 +1,6 @@
-import React, { Fragment, useState, useRef } from "react";
+import React, { Fragment, useState, useRef, useEffect } from "react";
 import MetaData from "../layout/metaData/metaData";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Loader from "../layout/loader/loader";
 // import { useNavigate } from "react-router-dom";
 
@@ -12,21 +12,43 @@ import rightArrow from "../../images/icons/rightArrow.png";
 
 import "./userDashBoard.css";
 import StudentRegistration from "./studentRegistration";
+import { fetchAllPermissions } from "../../slice/permissionSlice";
 
 function UserDashBoard() {
+  
+  const dispatch = useDispatch();
+  const [permissionsList, setPermissionsList] = useState([]);
   const [activeItem, setActiveItem] = useState("list1");
   const [isThin, setIsThin] = useState(false);
   const { user, isLoading } = useSelector((state) => state.user);
+  const isStudent = user.studentRef
 
   // Refs for arrow images
   const leftArrowRef = useRef(null);
   const rightArrowRef = useRef(null);
 
+  useEffect(() => {
+      dispatch(fetchAllPermissions())
+        .unwrap()
+        .then((res) => {
+          console.log("Fetched permissions:", res.permissions);
+          setPermissionsList(res.permissions || []);
+        })
+        .catch((err) => console.error("Error fetching permissions:", err));
+    }, [dispatch]);
+
+    const filteredPermission = permissionsList.filter((permission)=>{
+      const temp =  user.permissions.map((item,index)=>(item === permission._id))
+      console.log(temp)
+    })
+    console.log(filteredPermission)
   // Array of items with their ids and display content
   const items = [
     { id: "list1",src: studentRegistration, title: "Student Registration", content: <StudentRegistration /> },
     { id: "list2",src: exStudentRegistration, title: "Ex-Student Registration", content: "" },
   ];
+  const filteredItems = items.filter(item => !((item.id === "list2" || item.id === "list1" )&& isStudent));
+  
 
   if (isLoading) {
     return <Loader />;
@@ -70,7 +92,7 @@ function UserDashBoard() {
       <section className="mainSection">
         <div className={`leftBox ${isThin ? 'thin' : ''}`}>
           <ul onMouseOver={handleMouseOver} onMouseLeave={handleMouseLeave}>
-            {items.map((item) => (
+            {filteredItems.map((item) => (
                 <li
                   key={item.id}
                   className={`list ${activeItem === item.id ? "active" : ""}`}
@@ -119,7 +141,7 @@ function UserDashBoard() {
           </div>
           <div className="container mainDiv">
             {/* Display content of the active item */}
-            {items.find((item) => item.id === activeItem)?.content ||
+            {filteredItems.find((item) => item.id === activeItem)?.content ||
               "Please select an item from the list."}
           </div>
         </div>

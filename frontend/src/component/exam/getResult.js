@@ -20,21 +20,25 @@ function GetResult() {
   const [showSelectBatch, setShowSelectBatch] = useState(false);
   const [showBatchWiseAllExamList, setShowBatchWiseAllExamList] = useState(false);
   const [batch, setBatch] = useState("");
+  const [resultType, setResultType] = useState("");
   const [batchOptions, setBatchOptions] = useState([]);
 
   const [batchWiseAllExam, setBatchWiseAllExam] = useState([])
 
   const resultOptions = [
-    { id : 1, name : "All Exam (Batch-wise)" },
-    { id : 2, name : "Single Exam Result For All Batch" },
-    { id : 3, name : "Single Exam Result For Specific Batch" },
-    { id : 4, name : "Batch-wise All Exam" },
-    { id : 5, name : "Batch-wise All Exam" },
-    { id : 6, name : "Batch-wise All Exam" },
+    { id : "1", name : "All Exam (Batch-wise)" },
+    { id : "2", name : "Single Exam Result For All Batch" },
+    { id : "3", name : "Single Exam Result For Specific Batch" },
+    { id : "4", name : "Batch-wise All Exam" },
+    { id : "5", name : "Batch-wise All Exam" },
+    { id : "6", name : "Batch-wise All Exam" },
   ]
   const handleResultType = (resultId) => {
-    
+    setResultType(resultId)
+
     setShowSelectBatch(false)
+    setShowBatchWiseAllExamList(false)
+    
     setBatchOptions([])
     if(resultId === "1"){
         setLoading(true)
@@ -78,7 +82,7 @@ function GetResult() {
                 {/* <h2>Create Exam</h2> */}
                 <div className="selectResultType">
                     <div className="form-group">
-                        <select value="" onChange={(e) => handleResultType(e.target.value)}>
+                        <select value={resultType} onChange={(e) => handleResultType(e.target.value)}>
                             <option value="">Select Result Type</option>
                             {resultOptions.map((type) => (
                             <option key={type.id} value={type.id}>

@@ -70,7 +70,7 @@ function AssignPermission() {
       permissionIds: selectedPermissions,
     };
 
-    console.log(assignData);
+    // console.log(assignData);
 
     dispatch(fetchAssignPermissions(assignData))
       .unwrap()
@@ -110,6 +110,7 @@ function AssignPermission() {
 
             {permissionsList.length > 0 ? (
               <div className="permissionsList">
+                {console.log(permissionsList)}
                 {permissionsList.map((permission) => (
                   <div key={permission._id}>
                     <input 

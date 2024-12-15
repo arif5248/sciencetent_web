@@ -17,6 +17,8 @@ exports.getAllPermissions = catchAsyncError(async (req, res, next) => {
 
   res.status(200).json({ success: true, permissions });
 });
+
+
 exports.assignPermission = catchAsyncError(async (req, res, next) => {
     const { userId, permissionIds } = req.body
     // const user = await User.findById(userId);

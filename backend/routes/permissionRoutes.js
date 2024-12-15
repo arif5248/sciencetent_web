@@ -10,7 +10,7 @@ router
   .post(isAuthenticatedUser, isAuthorizeRoles("masterAdmin"), createPermission );
 router
   .route("/masterAdmin/permissions")
-  .get(isAuthenticatedUser, isAuthorizeRoles("masterAdmin"), getAllPermissions);
+  .get(isAuthenticatedUser, getAllPermissions);
 router
   .route("/masterAdmin/permission/assign")
   .put(isAuthenticatedUser, isAuthorizeRoles("masterAdmin"), assignPermission )
