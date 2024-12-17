@@ -131,6 +131,7 @@
     line-height: 40px;
     box-shadow: 0 6px 15px rgba(255, 71, 87, 0.5);
     transition: all 0.3s ease;
+    z-index: 45;
   }
   
   .close-btn:hover {
