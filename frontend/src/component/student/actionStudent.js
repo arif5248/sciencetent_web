@@ -128,7 +128,7 @@ function PopupForDetailsApproveReject({ content, onClose }) {
                 </div>
               </div>
               <div className="detail-row">
-                <span className="label">Admission Fee Status:</span>
+                <span className="label">Admission Fee Reference:</span>
                 <span className="value">{content.student.admissionFeeRef}</span>
               </div>
 
