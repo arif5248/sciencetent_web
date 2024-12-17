@@ -77,7 +77,7 @@
     transition: background-color 0.3s ease;
   }
   
-  button:hover {
+  .marksInputSection button:hover {
     background-color: #014f61;
   }
   
@@ -96,7 +96,7 @@
       font-size: 12px;
     }
   
-    button {
+   .marksInputSection button {
       font-size: 14px;
       padding: 8px 16px;
     }

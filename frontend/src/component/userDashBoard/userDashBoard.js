@@ -26,27 +26,32 @@ function UserDashBoard() {
   // Refs for arrow images
   const leftArrowRef = useRef(null);
   const rightArrowRef = useRef(null);
-
+// Array of items with their ids and display content
+  const items = [
+    { id: "list1",src: studentRegistration, title: "Student Registration", content: <StudentRegistration /> },
+    { id: "list2",src: exStudentRegistration, title: "Ex-Student Registration", content: "" },
+  ];
   useEffect(() => {
       dispatch(fetchAllPermissions())
         .unwrap()
         .then((res) => {
-          console.log("Fetched permissions:", res.permissions);
+          // console.log("Fetched permissions:", res.permissions);
           setPermissionsList(res.permissions || []);
         })
         .catch((err) => console.error("Error fetching permissions:", err));
     }, [dispatch]);
 
-    const filteredPermission = permissionsList.filter((permission)=>{
-      const temp =  user.permissions.map((item,index)=>(item === permission._id))
-      console.log(temp)
+    useEffect(()=>{
+      const filteredPermission = permissionsList.filter((permission) =>
+        user.permissions.some((item) => item === permission._id)
+      );
+
+      
+      console.log(filteredPermission)
     })
-    console.log(filteredPermission)
-  // Array of items with their ids and display content
-  const items = [
-    { id: "list1",src: studentRegistration, title: "Student Registration", content: <StudentRegistration /> },
-    { id: "list2",src: exStudentRegistration, title: "Ex-Student Registration", content: "" },
-  ];
+
+    
+  
   const filteredItems = items.filter(item => !((item.id === "list2" || item.id === "list1" )&& isStudent));
   
 
