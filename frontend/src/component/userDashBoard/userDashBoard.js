@@ -2,7 +2,6 @@ import React, { Fragment, useState, useRef, useEffect } from "react";
 import MetaData from "../layout/metaData/metaData";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../layout/loader/loader";
-// import { useNavigate } from "react-router-dom";
 
 import ProfilePng from "../../images/user.png";
 import studentRegistration from "../../images/icons/studentRegistration.png";
@@ -13,47 +12,66 @@ import rightArrow from "../../images/icons/rightArrow.png";
 import "./userDashBoard.css";
 import StudentRegistration from "./studentRegistration";
 import { fetchAllPermissions } from "../../slice/permissionSlice";
+import Batch from "../dashBoard/batch";
+import Exam from "../dashBoard/exam";
 
 function UserDashBoard() {
-  
   const dispatch = useDispatch();
   const [permissionsList, setPermissionsList] = useState([]);
   const [activeItem, setActiveItem] = useState("list1");
   const [isThin, setIsThin] = useState(false);
-  const { user, isLoading } = useSelector((state) => state.user);
-  const isStudent = user.studentRef
+  const [dynamicItems, setDynamicItems] = useState([
+    { id: "list1", src: studentRegistration, title: "Student Registration", content: <StudentRegistration /> },
+    { id: "list2", src: exStudentRegistration, title: "Ex-Student Registration", content: "" },
+  ]);
 
-  // Refs for arrow images
+  const { user, isLoading } = useSelector((state) => state.user);
+  const isStudent = user.studentRef;
+
   const leftArrowRef = useRef(null);
   const rightArrowRef = useRef(null);
-// Array of items with their ids and display content
-  const items = [
-    { id: "list1",src: studentRegistration, title: "Student Registration", content: <StudentRegistration /> },
-    { id: "list2",src: exStudentRegistration, title: "Ex-Student Registration", content: "" },
-  ];
-  useEffect(() => {
-      dispatch(fetchAllPermissions())
-        .unwrap()
-        .then((res) => {
-          // console.log("Fetched permissions:", res.permissions);
-          setPermissionsList(res.permissions || []);
-        })
-        .catch((err) => console.error("Error fetching permissions:", err));
-    }, [dispatch]);
 
-    useEffect(()=>{
+  useEffect(() => {
+    dispatch(fetchAllPermissions())
+      .unwrap()
+      .then((res) => {
+        setPermissionsList(res.permissions || []);
+      })
+      .catch((err) => console.error("Error fetching permissions:", err));
+  }, [dispatch]);
+  
+  useEffect(() => {
+    if (permissionsList.length > 0) {
       const filteredPermission = permissionsList.filter((permission) =>
         user.permissions.some((item) => item === permission._id)
       );
-
-      
-      console.log(filteredPermission)
-    })
-
-    
   
-  const filteredItems = items.filter(item => !((item.id === "list2" || item.id === "list1" )&& isStudent));
+      const dashItems = Array.from(
+        new Set(
+          filteredPermission.map((permission) => permission.permissionCode.charAt(0))
+        )
+      ).map((code) => {
+        switch (code) {
+          case "1":
+            return { id: `dList${code}`, src: studentRegistration, title: "Batch", content: <Batch /> };
+          case "4":
+            return { id: `dList${code}`, src: studentRegistration, title: "Exam", content: <Exam /> };
+          default:
+            return null;
+        }
+      });
   
+      setDynamicItems((prevItems) => [
+        ...prevItems.filter((item) => item.id.startsWith("list")),
+        ...dashItems.filter((item) => item !== null),
+      ]);
+    }
+  }, [permissionsList, user.permissions]);
+  
+
+  const filteredItems = dynamicItems.filter(
+    (item) => !((item.id === "list2" || item.id === "list1") && isStudent)
+  );
 
   if (isLoading) {
     return <Loader />;
@@ -67,8 +85,8 @@ function UserDashBoard() {
     setIsThin(direction === "leftArrow");
 
     if (leftArrowRef.current && rightArrowRef.current) {
-      leftArrowRef.current.style.display = direction === "leftArrow" ? 'none' : 'block';
-      rightArrowRef.current.style.display = direction === "rightArrow" ? 'none' : 'block';
+      leftArrowRef.current.style.display = direction === "leftArrow" ? "none" : "block";
+      rightArrowRef.current.style.display = direction === "rightArrow" ? "none" : "block";
     }
   };
 
@@ -95,26 +113,22 @@ function UserDashBoard() {
       <MetaData title={`${user.name}'s DashBoard`} />
 
       <section className="mainSection">
-        <div className={`leftBox ${isThin ? 'thin' : ''}`}>
+        <div className={`leftBox ${isThin ? "thin" : ""}`}>
           <ul onMouseOver={handleMouseOver} onMouseLeave={handleMouseLeave}>
             {filteredItems.map((item) => (
-                <li
-                  key={item.id}
-                  className={`list ${activeItem === item.id ? "active" : ""}`}
-                  id={item.id}
-                  onClick={() => handleClick(item.id)}
-                >
-                  <img
-                    src={item.src}
-                    alt={item.title+"Icon"}
-                    className="icon"
-                  />
-                  <p>{item.title}</p>
-                </li>
+              <li
+                key={item.id}
+                className={`list ${activeItem === item.id ? "active" : ""}`}
+                id={item.id}
+                onClick={() => handleClick(item.id)}
+              >
+                <img src={item.src} alt={`${item.title} Icon`} className="icon" />
+                <p>{item.title}</p>
+              </li>
             ))}
           </ul>
         </div>
-        <div className={`rightBox ${isThin ? 'fat' : ''}`}>
+        <div className={`rightBox ${isThin ? "fat" : ""}`}>
           <div className="container firstRow">
             <div className="left">
               <img
@@ -145,7 +159,6 @@ function UserDashBoard() {
             </div>
           </div>
           <div className="container mainDiv">
-            {/* Display content of the active item */}
             {filteredItems.find((item) => item.id === activeItem)?.content ||
               "Please select an item from the list."}
           </div>

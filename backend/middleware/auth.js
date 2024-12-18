@@ -60,6 +60,7 @@ exports.isPermitted =  (permissionCode) => {
     if(req.user.role === "masterAdmin"){
       next()
     }else{
+      console.log(permissionCode,"=======permission code========")
       const existPermission = await Permission.findOne({"permissionCode": permissionCode})
       if(!existPermission){
         return next(new ErrorHandler("Permission not found", 401));
