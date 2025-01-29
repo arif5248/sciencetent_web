@@ -8,6 +8,7 @@ import ProfilePng from "../../images/user.png";
 import createBatchIcon from "../../images/icons/createBatch.png";
 import leftArrow from "../../images/icons/leftArrow.png";
 import rightArrow from "../../images/icons/rightArrow.png";
+import exam from "../../images/icons/exam.png";
 
 import "./mainDash.css";
 import Batch from "./batch";
@@ -15,6 +16,7 @@ import Course from "./course";
 import AssignPermission from "./assignPermission";
 import Student from "./student";
 import Exam from "./exam";
+import Class from "./class";
 
 function MainDashBoard() {
   // const navigate = useNavigate();
@@ -28,13 +30,13 @@ function MainDashBoard() {
 
   // Array of items with their ids and display content
   const items = [
-    { id: "list1", title: "Batch", content: <Batch /> },
-    { id: "list2", title: "Course", content: <Course /> },
-    { id: "list3", title: "Class", content: "Content for Create Batch3" },
-    { id: "list4", title: "Students", content: <Student /> },
-    { id: "list7", title: "Exam", content: <Exam/> },
-    { id: "list5", title: "Permissions", content: <AssignPermission /> },
-    { id: "list6", title: "Others", content: "Content for Create Batch6" },
+    { id: "list1", iconSrc : createBatchIcon, title: "Batch", content: <Batch /> },
+    { id: "list2", iconSrc : createBatchIcon, title: "Course", content: <Course /> },
+    { id: "list3", iconSrc : createBatchIcon, title: "Class", content: <Class /> },
+    { id: "list4", iconSrc : createBatchIcon, title: "Students", content: <Student /> },
+    { id: "list7", iconSrc : exam, title: "Exam", content: <Exam/> },
+    { id: "list5", iconSrc : createBatchIcon, title: "Permissions", content: <AssignPermission /> },
+    { id: "list6", iconSrc : createBatchIcon, title: "Others", content: "Content for Create Batch6" },
   ];
 
   if (isLoading) {
@@ -93,7 +95,7 @@ function MainDashBoard() {
                   onClick={() => handleClick(item.id)}
                 >
                   <img
-                    src={createBatchIcon}
+                    src={item.iconSrc}
                     alt="createBatchIcon"
                     className="icon"
                   />

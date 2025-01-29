@@ -1,7 +1,7 @@
 const ErrorHandler = require("./errorhander");
 const catchAsyncError = require("../middleware/catchAsyncError");
 const Students = require("../models/studentModel");
-const ClassNotifiactions = require("../models/classNotificationModel");
+const ClassNotifications = require("../models/classNotificationModel");
 const Batch = require("../models/batchModel");
 const Courses = require("../models/courseModel");
 
@@ -28,7 +28,7 @@ exports.setClassForStudents = catchAsyncError(async (req, res, next) => {
         },
         { new: true, useFindAndModify: false }
       );
-      const notifiedStudent = await ClassNotifiactions.findOne({
+      const notifiedStudent = await ClassNotifications.findOne({
         student: updatedStudent._id,
       });
 
@@ -47,9 +47,9 @@ exports.setClassForStudents = catchAsyncError(async (req, res, next) => {
           },
         };
 
-        await ClassNotifiactions.create(options);
+        await ClassNotifications.create(options);
       } else {
-        await ClassNotifiactions.findByIdAndUpdate(
+        await ClassNotifications.findByIdAndUpdate(
           notifiedStudent._id,
           {
             $push: {

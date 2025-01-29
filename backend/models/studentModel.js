@@ -13,19 +13,19 @@ const studentsSchema = new mongoose.Schema({
   name: {
     type: String,
     required: [true, "Please Provide your Full Name"],
-    maxLength: [30, "Name cna not excced 30 charaters"],
+    maxLength: [30, "Name cna not exceed 30 characters"],
     minLength: [2, "Name should have more then 2 characters long"],
   },
   fatherName: {
     type: String,
     required: [true, "Please Provide your Father Name"],
-    maxLength: [30, "Name cna not excced 30 charaters"],
+    maxLength: [30, "Name cna not exceed 30 characters"],
     minLength: [2, "Name should have more then 2 characters long"],
   },
   motherName: {
     type: String,
     required: [true, "Please Enter your Name"],
-    maxLength: [30, "Name cna not excced 30 charaters"],
+    maxLength: [30, "Name cna not exceed 30 characters"],
     minLength: [2, "Name should have more then 2 characters long"],
   },
   whatsappNumber: {
@@ -80,7 +80,7 @@ const studentsSchema = new mongoose.Schema({
     name: {
       type: String,
       required: [true, "Please Provide your Guardian Name"],
-      maxLength: [30, "Name cna not excced 30 charaters"],
+      maxLength: [30, "Name cna not exceed 30 characters"],
       minLength: [2, "Name should have more then 2 characters long"],
     },
     mobile: {
@@ -91,7 +91,7 @@ const studentsSchema = new mongoose.Schema({
         },
         message: (props) => `${props.value} is not a valid phone number!`,
       },
-      required: [true, "Please Enter your guardina mobile umber"],
+      required: [true, "Please Enter your guardian mobile umber"],
     },
     relationWithStudent: {
       type: String,

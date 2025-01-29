@@ -3,20 +3,27 @@ const {
   createClass,
   deleteClassNotification,
 } = require("../controllers/classController");
-const { isAuthenticatedUser, isAuthorizeRoles } = require("../middleware/auth");
-const { approvedClass } = require("../utils/approvedeClass");
+const { isAuthenticatedUser, isAuthorizeRoles, isPermitted } = require("../middleware/auth");
+const { approvedClass } = require("../utils/approvedClass");
 const { setClassForStudents } = require("../utils/setClassForStudents");
 
 const router = express.Router();
 
+// router
+//   .route("/admin/class/new")
+//   .post(
+//     isAuthenticatedUser,
+//     isPermitted(process.env.CREATE_CLASS),
+//     createClass,
+//     approvedClass,
+//     setClassForStudents
+//   );
 router
-  .route("/admin/class/new")
+  .route("/admin/newClass")
   .post(
     isAuthenticatedUser,
-    isAuthorizeRoles("admin"),
-    createClass,
-    approvedClass,
-    setClassForStudents
+    isPermitted(process.env.CREATE_CLASS),
+    createClass
   );
 
 module.exports = router;

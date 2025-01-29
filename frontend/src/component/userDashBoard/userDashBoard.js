@@ -8,6 +8,8 @@ import studentRegistration from "../../images/icons/studentRegistration.png";
 import exStudentRegistration from "../../images/icons/exstudents.png";
 import leftArrow from "../../images/icons/leftArrow.png";
 import rightArrow from "../../images/icons/rightArrow.png";
+import exam from "../../images/icons/exam.png";
+import batch from "../../images/icons/createBatch.png";
 
 import "./userDashBoard.css";
 import StudentRegistration from "./studentRegistration";
@@ -53,9 +55,9 @@ function UserDashBoard() {
       ).map((code) => {
         switch (code) {
           case "1":
-            return { id: `dList${code}`, src: studentRegistration, title: "Batch", content: <Batch /> };
+            return { id: `dList${code}`, src: batch, title: "Batch", content: <Batch /> };
           case "4":
-            return { id: `dList${code}`, src: studentRegistration, title: "Exam", content: <Exam /> };
+            return { id: `dList${code}`, src: exam, title: "Exam", content: <Exam /> };
           default:
             return null;
         }

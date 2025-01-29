@@ -1,0 +1,145 @@
+.createClassSection {
+  padding: 20px;
+  max-width: 800px;
+  margin: auto;
+  background: linear-gradient(145deg, #e0eafc, #cfdef3); /* Subtle gradient */
+  border-radius: 15px;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.8s ease-in-out; /* Fade-in animation */
+}
+
+.createClassSection h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 2rem;
+  color: #016c81;
+  font-weight: 700;
+}
+
+.createClassForm {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.createClassForm .formGroup {
+  margin-bottom: 15px;
+}
+
+.createClassForm .formGroup label {
+  display: block;
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+  color: #333;
+  font-weight: bold;
+}
+
+.createClassForm .formGroup input,
+.createClassForm .formGroup select {
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.createClassForm .formGroup input:focus,
+.createClassForm .formGroup select:focus {
+  border-color: #016c81;
+  box-shadow: 0 0 8px rgba(1, 108, 129, 0.3);
+}
+
+/* Flex layout for course and teacher selection */
+.courseTeacherGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.courseTeacherGroup select,
+.courseTeacherGroup input {
+  flex: 1;
+}
+
+/* Time and Duration styling */
+.timeGroup {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.timeGroup input {
+  flex: 1;
+  min-width: 120px;
+}
+
+/* Submit Button */
+.btnCreateClass {
+  width: 100%;
+  background: #016c81;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.btnCreateClass:hover {
+  background: #014d5b;
+  transform: scale(1.05);
+}
+
+/* Error & Success Messages */
+.createClassError {
+  color: red;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.createClassSuccess {
+  color: green;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .createClassSection {
+    padding: 15px;
+    margin: 10px;
+  }
+
+  .createClassForm .formGroup label {
+    font-size: 1rem;
+  }
+
+  .btnCreateClass {
+    font-size: 1rem;
+  }
+
+  .courseTeacherGroup {
+    flex-direction: column;
+  }
+
+  .timeGroup {
+    flex-direction: column;
+  }
+}

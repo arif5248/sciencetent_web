@@ -99,7 +99,7 @@ function CreateBatch() {
                   type="number"
                   id="year"
                   className="form-control"
-                  min={new Date().getFullYear()}
+                  // min={new Date().getFullYear()}
                   value={year}
                   onChange={(e) => setYear(e.target.value)}
                   required
