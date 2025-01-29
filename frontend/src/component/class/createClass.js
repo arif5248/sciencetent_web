@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchAllBatchForReg } from "../../slice/batchSlice";
 import { fetchAllCoursesForReg } from "../../slice/courseSlice";
 import "./createClass.css";
+import { fetchCreateClass } from "../../slice/classSlice";
 
 function CreateClass() {
   const dispatch = useDispatch();
@@ -20,6 +21,9 @@ function CreateClass() {
 
   const [coursesError, setCoursesError] = useState(null);
   const [batchesError, setBatchesError] = useState(null);
+
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
 
  useEffect(() => {
      dispatch(fetchAllBatchForReg())
@@ -56,9 +60,47 @@ function CreateClass() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setLoading(true)
+    const convertTo12HourFormat = (time) => {
+      const [hours, minutes] = time.split(":");
+      let hours12 = parseInt(hours, 10);
+      const period = hours12 >= 12 ? "pm" : "am";
+      hours12 = hours12 % 12 || 12; // Convert to 12-hour format, handling 12 as a special case
+      return `${hours12}:${minutes}${period}`;
+    };
+
+    const convertedStartingTime = convertTo12HourFormat(startingTime);
+    const convertedFinishingTime = convertTo12HourFormat(finishingTime);
+
+    const myForm = new FormData();
+
+    myForm.append("batch", batch);
+    myForm.append("course", course);
+    myForm.append("date", date);
+    myForm.append("startingTime", convertedStartingTime);
+    myForm.append("finishingTime", convertedFinishingTime);
+    myForm.append("teacherName", teacherName);
+    myForm.append("classDuration", classDuration);
+
     const classData = { batch, course, date, startingTime, finishingTime, teacherName, classDuration };
     console.log(classData);
-    console.log(typeof(classDuration))
+
+    dispatch(fetchCreateClass(myForm))
+      .unwrap()
+      .then(() => {
+        setSuccessMessage("Class created successfully!");
+        setTimeout(() => {
+          setSuccessMessage(null);
+        }, 20000);
+      })
+      .catch((err) => {
+        setErrorMessage(err);
+        setTimeout(() => {
+          setErrorMessage(null);
+        }, 20000);
+      })
+      .finally(() => setLoading(false));
+      
   };
 
   return (
@@ -109,6 +151,9 @@ function CreateClass() {
           <label>Class Duration (Hours)</label>
           <input type="Number" value={classDuration} readOnly />
         </div>
+
+        {successMessage && <p className="success">{successMessage}</p>}
+        {errorMessage && <p className="error">{errorMessage}</p>}
         <button type="submit" className="btnSubmit" disabled={loading}>
             {loading ? "Creating..." : "Create Class"}
         </button>
