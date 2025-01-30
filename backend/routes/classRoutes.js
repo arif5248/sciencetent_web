@@ -2,6 +2,7 @@ const express = require("express");
 const {
   createClass,
   deleteClassNotification,
+  getPendingClassesGroupedByDate,
 } = require("../controllers/classController");
 const { isAuthenticatedUser, isAuthorizeRoles, isPermitted } = require("../middleware/auth");
 const { approvedClass } = require("../utils/approvedClass");
@@ -24,6 +25,14 @@ router
     isAuthenticatedUser,
     isPermitted(process.env.CREATE_CLASS),
     createClass
+  );
+
+router
+  .route("/admin/getPendingClassesGroupedByDate")
+  .get(
+    isAuthenticatedUser,
+    isPermitted(process.env.Get_Pending_Classes_Grouped_By_Date),
+    getPendingClassesGroupedByDate
   );
 
 module.exports = router;

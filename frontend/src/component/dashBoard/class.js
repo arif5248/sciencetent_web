@@ -10,6 +10,7 @@ import createBatchIcon from "../../images/icons/createBatch.png";
 
 import "./class.css";
 import CreateClass from "../class/createClass";
+import PendingClasses from "../class/pendingClass";
 
 function Class() {
   const navigate = useNavigate();
@@ -18,7 +19,8 @@ function Class() {
 
   const allButtons = [
     { id: "btn1", title:"Create Class", content: <CreateClass/>},
-    { id: "btn2", title:"Get All Classes", content: "Get All Classes"},
+    { id: "btn2", title:"Pending Classes", content: <PendingClasses/>},
+    { id: "btn3", title:"Get All Classes", content: "Get All Classes"},
     // { id: "btn3", title:"Get Result", content: <GetResult /> }
   ];
   

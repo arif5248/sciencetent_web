@@ -5,12 +5,7 @@ const Classes = require("../models/classModel");
 exports.createClass = catchAsyncError(async (req, res, next) => {
   const { batch, date, startingTime, finishingTime, teacherName, classDuration, status } = req.body;
   const courseDetails = JSON.parse(req.body.courseDetails);
-  console.log(req.body.courseDetails)
-  console.log(courseDetails)
-  console.log(courseDetails.courseId)
-  console.log(courseDetails.courseName)
-  console.log(courseDetails.courseCode)
-  console.log(typeof(courseDetails))
+  
   if (!batch || !courseDetails || !date || !classDuration || !startingTime) {
       return next(new ErrorHandler("Missing required fields", 400));
   }
@@ -82,4 +77,47 @@ exports.createClass = catchAsyncError(async (req, res, next) => {
       return res.status(201).json({ success: true, message: "New class entry created", class: newClassEntry });
   }
 });
+
+exports.getPendingClassesGroupedByDate = catchAsyncError(async (req, res, next) => {
+    const pendingClasses = await Classes.aggregate([
+      { $unwind: "$classes" }, // Flatten the classes array
+      { $match: { "classes.status": "pending" } }, // Filter only pending classes
+      {
+        $lookup: {
+          from: "batches", // Joining with Batches collection
+          localField: "batch",
+          foreignField: "_id",
+          as: "batchDetails",
+        },
+      },
+      { $unwind: "$batchDetails" }, // Flatten batch details
+      {
+        $group: {
+          _id: {
+            date: "$classes.date",
+            batch: "$batch",
+          }, // Group by date & batch
+          date: { $first: "$classes.date" },
+          batchDetails: { $first: "$batchDetails" },
+          classes: { $push: "$classes" },
+        },
+      },
+      { $sort: { date: 1 } }, // Sort by date ascending
+      {
+        $project: {
+          _id: 0,
+          date: 1,
+          batchDetails: 1,
+          classes: {
+            $sortArray: { input: "$classes", sortBy: { courseCode: 1 } }, // Sort classes by courseCode
+          },
+        },
+      },
+    ]);
+  
+    console.log(pendingClasses);
+    res.status(200).json({ success: true, data: pendingClasses });
+  });
+  
+  
 
