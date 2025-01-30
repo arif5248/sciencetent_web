@@ -3,9 +3,9 @@ const catchAsyncError = require("../middleware/catchAsyncError");
 const Classes = require("../models/classModel");
 
 exports.createClass = catchAsyncError(async (req, res, next) => {
-    console.log(req.body)
   const { batch, courseDetails, date, startingTime, finishingTime, teacherName, classDuration, status } = req.body;
-  
+  console.log(courseDetails)
+  console.log(typeof(courseDetails))
   if (!batch || !courseDetails || !date || !classDuration || !startingTime) {
       return next(new ErrorHandler("Missing required fields", 400));
   }
