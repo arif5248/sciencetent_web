@@ -71,11 +71,18 @@ function CreateClass() {
 
     const convertedStartingTime = convertTo12HourFormat(startingTime);
     const convertedFinishingTime = convertTo12HourFormat(finishingTime);
+    
+    const selectedCourse = courseOptions.find(c => c._id === course)
+    const courseDetails = {
+      courseId: selectedCourse._id,
+      courseCode: selectedCourse.courseCode,
+      courseName: selectedCourse.name
+    }
 
     const myForm = new FormData();
 
     myForm.append("batch", batch);
-    myForm.append("course", course);
+    myForm.append("course", courseDetails);
     myForm.append("date", date);
     myForm.append("startingTime", convertedStartingTime);
     myForm.append("finishingTime", convertedFinishingTime);
