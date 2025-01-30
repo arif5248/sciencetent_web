@@ -3,10 +3,9 @@ const catchAsyncError = require("../middleware/catchAsyncError");
 const Classes = require("../models/classModel");
 
 exports.createClass = catchAsyncError(async (req, res, next) => {
-  const { batch, course, date, startingTime, finishingTime, teacherName, classDuration, status } = req.body;
-  console.log("=======",finishingTime)
+  const { batch, courseDetails, date, startingTime, finishingTime, teacherName, classDuration, status } = req.body;
   
-  if (!batch || !course || !date || !classDuration || !startingTime) {
+  if (!batch || !courseDetails || !date || !classDuration || !startingTime) {
       return next(new ErrorHandler("Missing required fields", 400));
   }
 
@@ -34,7 +33,11 @@ exports.createClass = catchAsyncError(async (req, res, next) => {
 
       // Add new class to the existing batch entry
       existingClass.classes.push({
-          course,
+          course:{
+            courseId: courseDetails.courseId,
+            courseCode: courseDetails.courseCode,
+            courseName: courseDetails.courseName
+          },
           date: classDate,
           startingTime,
           finishingTime,
@@ -55,17 +58,21 @@ exports.createClass = catchAsyncError(async (req, res, next) => {
           batch,
           monthAndYear,
           classes: [{
-              course,
-              date: classDate,
-              startingTime,
-              finishingTime,
-              teacherName: teacherName || "Not Set",
-              classDuration,
-              status: status || "pending",
-              createdBy: {
-                  user: req.user._id,
-                  name: req.user.name
-              }
+            course:{
+            courseId: courseDetails.courseId,
+            courseCode: courseDetails.courseCode,
+            courseName: courseDetails.courseName
+            },
+            date: classDate,
+            startingTime,
+            finishingTime,
+            teacherName: teacherName || "Not Set",
+            classDuration,
+            status: status || "pending",
+            createdBy: {
+                user: req.user._id,
+                name: req.user.name
+            }
           }]
       });
 

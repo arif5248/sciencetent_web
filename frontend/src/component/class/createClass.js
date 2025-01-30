@@ -82,14 +82,14 @@ function CreateClass() {
     const myForm = new FormData();
 
     myForm.append("batch", batch);
-    myForm.append("course", courseDetails);
+    myForm.append("courseDetails", courseDetails);
     myForm.append("date", date);
     myForm.append("startingTime", convertedStartingTime);
     myForm.append("finishingTime", convertedFinishingTime);
     myForm.append("teacherName", teacherName);
     myForm.append("classDuration", classDuration);
 
-    const classData = { batch, course, date, startingTime, finishingTime, teacherName, classDuration };
+    const classData = { batch, courseDetails, date, startingTime, finishingTime, teacherName, classDuration };
     console.log(classData);
 
     dispatch(fetchCreateClass(myForm))
