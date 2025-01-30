@@ -3,7 +3,8 @@ const catchAsyncError = require("../middleware/catchAsyncError");
 const Classes = require("../models/classModel");
 
 exports.createClass = catchAsyncError(async (req, res, next) => {
-  const { batch, courseDetails, date, startingTime, finishingTime, teacherName, classDuration, status } = req.body;
+  const { batch, date, startingTime, finishingTime, teacherName, classDuration, status } = req.body;
+  const courseDetails = JSON.parse(req.body.courseDetails);
   console.log(req.body.courseDetails)
   console.log(courseDetails)
   console.log(courseDetails.courseId)
