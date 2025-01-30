@@ -1,107 +1,107 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "./pendingClass.css"; // Importing the custom CSS file
+import { useDispatch, useSelector } from "react-redux";
 import { fetchPendingClasses } from "../../slice/classSlice";
+import "./pendingClass.css"; // Importing the custom CSS file
 
-function PendingClasses (){
-  const [batchData, setBatchData] = useState([]);
-  const [loading, setLoading] = useState(true);
+function PendingClasses() {
+  const dispatch = useDispatch();
+  const [PendingClasses, setPendingClasses] = useState([]); 
+  const [loading, setLoading] = useState(false);
+
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
+
+  const formattedDateString = (date)=>{
+    const formattedDate = new Date(date);
+
+    // Format the date using Intl.DateTimeFormat
+    const options = {
+      weekday: "long", // Day of the week (e.g., "Friday")
+      year: "numeric", // Full year (e.g., "2025")
+      month: "long", // Full month name (e.g., "January")
+      day: "numeric", // Day of the month (e.g., "31")
+    };
+    const formattedDateString = new Intl.DateTimeFormat("en-GB", options).format(formattedDate);
+    return(formattedDateString)
+  }
+    
+  
 
   useEffect(() => {
-        // Fetch data on component mount
-        dispatch(fetchPendingClasses)
-        .unwrap()
-        .then(() => {
-        // setSuccessMessage("Class created successfully!");
-        // setTimeout(() => {
-        //     setSuccessMessage(null);
-        // }, 20000);
-        })
-        .catch((err) => {
-        setErrorMessage(err);
-        setTimeout(() => {
+    setLoading(true)
+    dispatch(fetchPendingClasses())
+        .then((response) => {
+            if (response.error) {
+                setErrorMessage(response.error);
+            } else {
+            setPendingClasses(response.payload.data);
             setErrorMessage(null);
-        }, 20000);
-        })
-        .finally(() => setLoading(false));
-    }, []);
-
-  const handleStatusChange = (batchId, classId, status) => {
-    // Update the status of the class
-    axios
-      .patch(`/your-api-endpoint/${batchId}/class/${classId}`, {
-        status: status,
+            }
       })
-      .then((response) => {
-        // Update the batchData state after successful update
-        setBatchData((prevData) =>
-          prevData.map((batch) =>
-            batch.batchDetails._id === batchId
-              ? {
-                  ...batch,
-                  classes: batch.classes.map((cls) =>
-                    cls._id === classId ? { ...cls, status } : cls
-                  ),
-                }
-              : batch
-          )
-        );
-      })
-      .catch((error) => {
-        console.error("Error updating class status:", error);
+      .catch((err) => {
+        setLoading(false);
+        console.error(err);
       });
+  }, [dispatch]);
+
+  const handleStatusChange = (pendingClass) => {
+    // Update the status of the class
+    // axios
+    //   .patch(`/your-api-endpoint/${batchId}/class/${classId}`, { status })
+    //   .then(() => {
+    //     // Trigger a redux action to update the status after patch
+    //     dispatch(fetchPendingClasses());
+    //   })
+    //   .catch((error) => {
+    //     console.error("Error updating class status:", error);
+    //   });
+    console.log(pendingClass)
   };
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
+  
 
   return (
-    <div className="batch-list-container">
-      <h2>Batch List</h2>
-      {batchData.map((batch) => (
-        <div key={batch.batchDetails._id} className="batch-item">
+    <div className="pending-classes-container">
+      <h2 className="pending-classes-title">Pending Classes</h2>
+      
+      {PendingClasses && PendingClasses.map((pendingClass) => (
+        <div key={pendingClass.batchDetails._id} className="batch-item">
           <div className="batch-header">
-            <h3>{batch.batchDetails.name}</h3>
-            <p>{batch.batchDetails.branch} - Final Year: {batch.batchDetails.finalYear}</p>
+            <h3>{pendingClass.batchDetails.name}</h3>
+            <p>{pendingClass.batchDetails.branch} - Final Year: {pendingClass.batchDetails.finalYear}</p>
           </div>
 
-          {batch.classes.map((cls) => (
+          <div className="dateBox">
+            <h5>{formattedDateString(pendingClass.date)}</h5>
+          </div>
+
+          {pendingClass.classes.map((cls) => (
             <div key={cls._id} className="class-card">
               <div className="class-info">
-                <div className="info-item"><strong>Date:</strong> {new Date(cls.date).toLocaleDateString()}</div>
-                <div className="info-item"><strong>Course Name:</strong> {cls.courseName}</div>
-                <div className="info-item"><strong>Course Code:</strong> {cls.courseCode}</div>
-                <div className="info-item"><strong>Time:</strong> {cls.startingTime} - {cls.finishingTime}</div>
-                <div className="info-item"><strong>Teacher:</strong> {cls.teacherName}</div>
-              </div>
-
-              <div className="class-actions">
-                {cls.status === "pending" ? (
-                  <>
-                    <button
-                      className="approve-btn"
-                      onClick={() => handleStatusChange(batch.batchDetails._id, cls._id, "approved")}
-                    >
-                      Approve
-                    </button>
-                    <button
-                      className="cancel-btn"
-                      onClick={() => handleStatusChange(batch.batchDetails._id, cls._id, "cancelled")}
-                    >
-                      Cancel
-                    </button>
-                  </>
-                ) : (
-                  <p>Status: {cls.status}</p>
-                )}
+                <div className="info-item"><strong>{cls.courseName} <em>({cls.courseCode})</em>:</strong> {cls.startingTime} - {cls.finishingTime} [{cls.teacherName}] </div>
               </div>
             </div>
           ))}
+           <div className="class-actions">
+
+             <button
+                className="cancel-btn"
+                onClick={() => handleStatusChange(pendingClass)}
+            >
+                Cancel
+            </button>     
+            <button
+                className="approve-btn"
+                onClick={() => handleStatusChange(pendingClass)}
+            >
+                Approve
+            </button>
+              </div>
         </div>
       ))}
     </div>
   );
-};
+}
 
 export default PendingClasses;

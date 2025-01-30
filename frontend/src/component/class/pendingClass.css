@@ -1,0 +1,220 @@
+/* General Styles */
+.pending-classes-container {
+    padding: 20px;
+    background-color: #f9f9f9;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .pending-classes-title {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 600;
+    color: #3c3c3c;
+    margin-bottom: 20px;
+  }
+  
+  /* Individual batch item */
+  .batch-item {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 10px 0;
+    padding: 20px;
+    transition: all 0.3s ease;
+  }
+  
+  .batch-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* Batch Header */
+  .batch-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+  
+  .batch-header h3 {
+    font-size: 1.5rem;
+    color: #016c81;
+  }
+  
+  .batch-header p {
+    font-size: 0.9rem;
+    color: #6c757d;
+  }
+  
+  /* Date Box */
+  .dateBox {
+    background-color: #f1f1f1;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+  }
+  
+  .dateBox h5 {
+    font-size: 1.2rem;
+    color: #333333;
+    font-weight: 600;
+    margin: 0;
+  }
+  
+  /* Class Card */
+  .class-card {
+    background-color: #f9f9f9;
+    padding: 5px 15px;
+    margin-bottom: 5px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+  
+  .class-card:hover {
+    background-color: #eef2f7;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* .class-info {
+    margin-bottom: 15px;
+  } */
+  
+  .class-info .info-item {
+    font-size: 1rem;
+    color: #333333;
+    margin: 5px 0;
+  }
+  
+  /* Action Buttons */
+  .class-actions {
+    display: flex;
+    justify-content: space-around;
+    gap: 10px;
+  }
+  .class-actions > button{
+    width: 40%;
+  }
+  .approve-btn,
+  .cancel-btn {
+    padding: 10px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .approve-btn {
+    background-color: #28a745;
+    color: white;
+  }
+  
+  .approve-btn:hover {
+    background-color: #218838;
+  }
+  
+  .cancel-btn {
+    background-color: #dc3545;
+    color: white;
+  }
+  
+  .cancel-btn:hover {
+    background-color: #c82333;
+  }
+  
+  /* Loading and error messages */
+  .loading, .error-message {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #ff6b6b;
+    margin-top: 20px;
+  }
+  
+  .success-message {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #28a745;
+    margin-top: 20px;
+  }
+  
+  /* Responsive Design */
+  @media screen and (max-width: 768px) {
+    .pending-classes-title {
+      font-size: 1.6rem;
+    }
+  
+    .batch-item {
+      padding: 15px;
+    }
+  
+    .batch-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    .batch-header h3 {
+      font-size: 1.3rem;
+      margin-bottom: 5px;
+    }
+  
+    .batch-header p {
+      font-size: 0.8rem;
+      margin: 0;
+    }
+  
+    .dateBox h5 {
+      font-size: 1rem;
+    }
+  
+    .class-info .info-item {
+      font-size: 0.9rem;
+    }
+  
+    .approve-btn,
+    .cancel-btn {
+      font-size: 0.9rem;
+      padding: 8px 15px;
+    }
+  
+    .class-actions {
+        flex-wrap: wrap;
+      /* flex-direction: column;
+      align-items: flex-start; */
+    }
+  }
+  
+  @media screen and (max-width: 480px) {
+    .pending-classes-title {
+      font-size: 1.4rem;
+    }
+  
+    .batch-item {
+      padding: 10px;
+    }
+  
+    .batch-header h3 {
+      font-size: 1.1rem;
+    }
+  
+    .batch-header p {
+      font-size: 0.7rem;
+    }
+  
+    .dateBox h5 {
+      font-size: 0.9rem;
+    }
+  
+    .approve-btn,
+    .cancel-btn {
+      font-size: 0.8rem;
+      padding: 6px 12px;
+    }
+    .class-actions{
+        flex-direction: column-reverse;
+    }
+    .class-actions > button{
+        width: 90%;
+      }
+  }
+  
