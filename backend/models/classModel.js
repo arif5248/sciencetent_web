@@ -13,20 +13,18 @@ const classSchema = new mongoose.Schema({
   },
   classes: [
     {
-      course: {
-        courseId: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Courses",
-          required: [true, "Provide a Course"],
-        },
-        courseCode: {
-          type: String,
-          required: [true, "Please Enter the course code"],
-        },
-        courseName: {
-          type: String,
-          required: [true, "Please Enter the course name"],
-        }
+      courseId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Courses",
+        required: [true, "Provide a Course"],
+      },
+      courseCode: {
+        type: String,
+        required: [true, "Please Enter the course code"],
+      },
+      courseName: {
+        type: String,
+        required: [true, "Please Enter the course name"],
       },
       date: {
         type: Date,

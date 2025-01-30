@@ -4,7 +4,9 @@ const Classes = require("../models/classModel");
 
 exports.createClass = catchAsyncError(async (req, res, next) => {
   const { batch, courseDetails, date, startingTime, finishingTime, teacherName, classDuration, status } = req.body;
-  console.log(courseDetails)
+  console.log(courseDetails.courseId)
+  console.log(courseDetails.courseName)
+  console.log(courseDetails.courseCode)
   console.log(typeof(courseDetails))
   if (!batch || !courseDetails || !date || !classDuration || !startingTime) {
       return next(new ErrorHandler("Missing required fields", 400));
@@ -34,21 +36,19 @@ exports.createClass = catchAsyncError(async (req, res, next) => {
 
       // Add new class to the existing batch entry
       existingClass.classes.push({
-          course:{
-            courseId: courseDetails.courseId,
-            courseCode: courseDetails.courseCode,
-            courseName: courseDetails.courseName
-          },
-          date: classDate,
-          startingTime,
-          finishingTime,
-          teacherName: teacherName || "Not Set",
-          classDuration,
-          status: status || "pending",
-          createdBy: {
-              user: req.user._id,
-              name: req.user.name
-          }
+        courseId: courseDetails.courseId,
+        courseCode: courseDetails.courseCode,
+        courseName: courseDetails.courseName,
+        date: classDate,
+        startingTime,
+        finishingTime,
+        teacherName: teacherName || "Not Set",
+        classDuration,
+        status: status || "pending",
+        createdBy: {
+            user: req.user._id,
+            name: req.user.name
+        }
       });
 
       await existingClass.save();
@@ -59,11 +59,9 @@ exports.createClass = catchAsyncError(async (req, res, next) => {
           batch,
           monthAndYear,
           classes: [{
-            course:{
             courseId: courseDetails.courseId,
             courseCode: courseDetails.courseCode,
-            courseName: courseDetails.courseName
-            },
+            courseName: courseDetails.courseName,
             date: classDate,
             startingTime,
             finishingTime,
