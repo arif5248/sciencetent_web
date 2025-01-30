@@ -4,6 +4,8 @@ const Classes = require("../models/classModel");
 
 exports.createClass = catchAsyncError(async (req, res, next) => {
   const { batch, courseDetails, date, startingTime, finishingTime, teacherName, classDuration, status } = req.body;
+  console.log(req.body.courseDetails)
+  console.log(courseDetails)
   console.log(courseDetails.courseId)
   console.log(courseDetails.courseName)
   console.log(courseDetails.courseCode)
