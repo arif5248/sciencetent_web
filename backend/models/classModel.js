@@ -62,7 +62,7 @@ const classSchema = new mongoose.Schema({
       },
       status: {
         type: String,
-        enum: ["pending", "approved", "postponed"],
+        enum: ["pending", "approved", "postponed", "cancel"],
         default: "pending",
       },
       createdBy: {
@@ -82,6 +82,45 @@ const classSchema = new mongoose.Schema({
       },
     }
   ],
+  msgReports: [
+    {
+      date: {
+        type: Date,
+        required: [true, "Please provide class Date"],
+      },
+      allReports : [
+        {
+          studentId: {
+            type: String,
+            required: [true, "Please provide student id"],
+          },
+          studentName: {
+            type: String,
+            required: [true, "Please provide student Name"],
+          },
+          studentNumber: {
+            type: String,
+            validate: {
+              validator: function (v) {
+                return /\d{11}/.test(v);
+              },
+              message: (props) => `${props.value} is not a valid phone number!`,
+            },
+            required: [true, "Please Enter Student Number"],
+          },
+          status: {
+            type: String,
+            enum: ["sent", "failed","notExecute", "notApplicable"],
+            default: "notExecute",
+          },
+          message: {
+            type: String,
+            required: [true, "Please Enter Message"],
+          }
+        }
+      ]
+    }
+  ]
  
 });
 

@@ -13,12 +13,12 @@ const batch = require("./routes/batchRoutes");
 const course = require("./routes/courseRoutes");
 const student = require("./routes/studentRoutes");
 const classDetails = require("./routes/classRoutes");
-const notification = require("./routes/noifiactionRoutes");
+const notification = require("./routes/notificationRoutes");
 const permission = require("./routes/permissionRoutes");
 const exam = require("./routes/examRoutes");
 
 const errorMiddleware = require("./middleware/error");
-const { birthdayNotification } = require("./controllers/notifiactionController");
+const { birthdayNotification } = require("./controllers/notificationController");
 
 const app = express();
 

@@ -42,4 +42,4 @@ const classNotificationSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("ClassNotifiactions", classNotificationSchema);
+module.exports = mongoose.model("ClassNotifications", classNotificationSchema);

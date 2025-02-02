@@ -1,6 +1,7 @@
 const ErrorHandler = require("../utils/errorhander");
 const catchAsyncError = require("../middleware/catchAsyncError");
 const Classes = require("../models/classModel");
+const Students = require("../models/studentModel")
 
 exports.createClass = catchAsyncError(async (req, res, next) => {
   const { batch, date, startingTime, finishingTime, teacherName, classDuration, status } = req.body;
@@ -118,6 +119,149 @@ exports.getPendingClassesGroupedByDate = catchAsyncError(async (req, res, next) 
     console.log(pendingClasses);
     res.status(200).json({ success: true, data: pendingClasses });
   });
+
+  const mongoose = require("mongoose");
+const formattedDateString = require("../utils/dateConverter");
   
+  exports.pendingClassToCancel = catchAsyncError(async (req, res, next) => {
+    let { pendingClassesId } = req.body;
+
+    if (!pendingClassesId || !Array.isArray(pendingClassesId) || pendingClassesId.length === 0) {
+        return res.status(400).json({ success: false, message: "No class IDs provided" });
+    }
+
+    // Convert string IDs to ObjectId
+    const objectIdArray = pendingClassesId.map(id => new mongoose.Types.ObjectId(id));
+
+    const result = await Classes.updateMany(
+        { "classes._id": { $in: objectIdArray } },
+        { $set: { "classes.$[elem].status": "cancel" } },
+        { arrayFilters: [{ "elem._id": { $in: objectIdArray } }] }
+    );
+
+    if (result.modifiedCount === 0) {
+        return res.status(404).json({ success: false, message: "No classes found or already approved" });
+    }
+
+    res.status(200).json({
+        success: true,
+        message: "Classes approved successfully",
+        modifiedCount: result.modifiedCount,
+    });
+});
+
+exports.pendingClassToApprove = catchAsyncError(async (req, res, next) => {
+  let classDocId = ""
+  let headingPart = ""
+  let datePart = ""
+  let body = ""
+  let lastPart = "Science Tent"
+
+  let { pendingClassesId, batchId } = req.body;
+
+  if (!pendingClassesId || !Array.isArray(pendingClassesId) || pendingClassesId.length === 0) {
+      return res.status(400).json({ success: false, message: "No class IDs provided" });
+  }
+
+  // Convert string IDs to ObjectId
+  const objectIdArray = pendingClassesId.map(id => new mongoose.Types.ObjectId(id));
+  const objectBatchId = new mongoose.Types.ObjectId(batchId)
+
+  const result = await Classes.updateMany(
+      { "classes._id": { $in: objectIdArray } },
+      { $set: { "classes.$[elem].status": "approved" } },
+      { arrayFilters: [{ "elem._id": { $in: objectIdArray } }] }
+  );
+
+  if (result.modifiedCount === 0) {
+      return res.status(404).json({ success: false, message: "No classes found or already approved" });
+  }
+
+  // Fetch all students in the batch
+  const students = await Students.find({ "batchDetails.batchId": objectBatchId, "status": "approved" });
+  let classesArray = await Classes.aggregate([
+    { $unwind: "$classes" },
+    { $match: { "classes._id": { $in: objectIdArray } } },
+    { $project: { _id: 1, classes: 1  } }
+  ]);
+  classDocId = classesArray.length === 0 ? '' : classesArray[0]._id
+  classesArray = classesArray.map(doc => doc.classes);
+
+  datePart = classesArray.length === 0 ? "" :  formattedDateString(classesArray[0].date)
+  // For each student, create the message report
+  let msgReports = [];
+  let allReport = []
+
+  for (const student of students) {
+    headingPart = "Dear "+student.name
+    body = ''
+    classesArray.forEach(classItem => { 
+      student.enrolledCourses.forEach(enrolledCourse => {
+        if (enrolledCourse.courseID.toString() === classItem.courseId.toString()) { 
+          body = body +"\n" + classItem.courseName + ": " + classItem.startingTime + "-" + classItem.finishingTime
+        }
+      });
+    });
+    if(body !== ''){
+      allReport.push({
+          studentId: student.studentID,
+          studentName: student.name,
+          studentNumber: student.whatsappNumber,
+          status: "notExecute",
+          message: headingPart + "\n" + datePart + body +"\n" + lastPart
+      });
+    }else{
+      allReport.push({
+        studentId: student.studentID,
+        studentName: student.name,
+        studentNumber: student.whatsappNumber,
+        status: "notApplicable",
+        message: headingPart + "\n" + datePart.join + "\n" + body.join +"\n" + lastPart
+    });
+    }
+  }
+
+
+  const newReport = {
+    date: classesArray[0].date,
+    allReports: allReport, // Replace all existing reports
+  };
   
+  const approveAndReportInserted = await Classes.findOneAndUpdate(
+    { _id: classDocId, "msgReports.date": newReport.date }, // Check if the date exists
+    { $set: { "msgReports.$.allReports": newReport.allReports } }, // Replace existing allReports
+    { new: true }
+  )
+    .then((updatedClass) => {
+      if (!updatedClass) {
+        // If no existing date was found, insert a new entry
+        return Classes.findByIdAndUpdate(
+          classDocId,
+          { $push: { msgReports: newReport } }, // Insert a new msgReports object
+          { new: true }
+        );
+      }
+      return updatedClass;
+    })
+    .catch((err) => console.error("Error updating msgReports:", err));
+
+  res.status(200).json({
+      success: true,
+      message: "Classes approved successfully",
+      result,
+      modifiedCount: result.modifiedCount,
+      approveAndReportInserted
+  });
+});
+
+
+  
+
+
+
+
+
+
+
+
 

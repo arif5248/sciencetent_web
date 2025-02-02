@@ -3,6 +3,8 @@ const {
   createClass,
   deleteClassNotification,
   getPendingClassesGroupedByDate,
+  pendingClassToApprove,
+  pendingClassToCancel,
 } = require("../controllers/classController");
 const { isAuthenticatedUser, isAuthorizeRoles, isPermitted } = require("../middleware/auth");
 const { approvedClass } = require("../utils/approvedClass");
@@ -33,6 +35,21 @@ router
     isAuthenticatedUser,
     isPermitted(process.env.Get_Pending_Classes_Grouped_By_Date),
     getPendingClassesGroupedByDate
+  );
+
+router
+  .route("/admin/pendingClassesToApprove")
+  .get(
+    isAuthenticatedUser,
+    isPermitted(process.env.Pending_Classes_To_Approve),
+    pendingClassToApprove
+  );
+  router
+  .route("/admin/pendingClassesToCancel")
+  .get(
+    isAuthenticatedUser,
+    isPermitted(process.env.Pending_Classes_To_Cancel),
+    pendingClassToCancel
   );
 
 module.exports = router;

@@ -3,14 +3,21 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPendingClasses } from "../../slice/classSlice";
 import "./pendingClass.css"; // Importing the custom CSS file
+import PopupForApproveCancel from "./actionClass";
 
 function PendingClasses() {
   const dispatch = useDispatch();
   const [PendingClasses, setPendingClasses] = useState([]); 
   const [loading, setLoading] = useState(false);
 
+   const [showPopup, setShowPopup] = useState(false);
+  const [popupContent, setPopupContent] = useState(null);
+
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
+
+  const openPopup = (content) => setShowPopup(true) || setPopupContent(content);
+  const closePopup = () => setShowPopup(false) || setPopupContent(null);
 
   const formattedDateString = (date)=>{
     const formattedDate = new Date(date);
@@ -45,18 +52,27 @@ function PendingClasses() {
       });
   }, [dispatch]);
 
-  const handleStatusChange = (pendingClass) => {
-    // Update the status of the class
-    // axios
-    //   .patch(`/your-api-endpoint/${batchId}/class/${classId}`, { status })
-    //   .then(() => {
-    //     // Trigger a redux action to update the status after patch
-    //     dispatch(fetchPendingClasses());
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error updating class status:", error);
-    //   });
-    console.log(pendingClass)
+  const handleReject = (student) => {
+    openPopup({
+      type: "reject",
+      student,
+    });
+  };
+
+  const handleApprove = (pendingClass) => {
+    openPopup({
+      type: "approve",
+      pendingClass,
+    });
+  };
+
+  const handleStatusChange = (pendingClass, statusTo) => {
+    if (statusTo === 'approve'){
+
+
+    }else{
+      
+    }
   };
 
   
@@ -65,8 +81,8 @@ function PendingClasses() {
     <div className="pending-classes-container">
       <h2 className="pending-classes-title">Pending Classes</h2>
       
-      {PendingClasses && PendingClasses.map((pendingClass) => (
-        <div key={pendingClass.batchDetails._id} className="batch-item">
+      {PendingClasses && PendingClasses.map((pendingClass, index) => (
+        <div key={index+pendingClass.batchDetails.batchCode} className="batch-item">
           <div className="batch-header">
             <h3>{pendingClass.batchDetails.name}</h3>
             <p>{pendingClass.batchDetails.branch} - Final Year: {pendingClass.batchDetails.finalYear}</p>
@@ -87,19 +103,20 @@ function PendingClasses() {
 
              <button
                 className="cancel-btn"
-                onClick={() => handleStatusChange(pendingClass)}
+                onClick={() => handleStatusChange(pendingClass, "cancel")}
             >
                 Cancel
             </button>     
             <button
                 className="approve-btn"
-                onClick={() => handleStatusChange(pendingClass)}
+                onClick={() => handleApprove(pendingClass)}
             >
                 Approve
             </button>
               </div>
         </div>
       ))}
+      {showPopup && <PopupForApproveCancel content={popupContent} onClose={closePopup} />}
     </div>
   );
 }

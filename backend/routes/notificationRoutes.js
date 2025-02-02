@@ -7,7 +7,8 @@ const {
   getPendingClassNotification,
   getRejectedClassNotification,
   birthdayNotification,
-} = require("../controllers/notifiactionController");
+  sendMessage,
+} = require("../controllers/notificationController");
 
 const router = express.Router();
 
@@ -37,5 +38,7 @@ router
   );
   router
     .route("/cron-birthday-notification").post(birthdayNotification);
+  router
+    .route("/sendMessage").get(sendMessage);
 
 module.exports = router;

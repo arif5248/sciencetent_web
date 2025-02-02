@@ -1,21 +1,21 @@
 const ErrorHandler = require("../utils/errorhander");
 const catchAsyncError = require("../middleware/catchAsyncError");
-const ClassNotifiactions = require("../models/classNotificationModel");
+const ClassNotifications = require("../models/classNotificationModel");
 const Students = require("../models/studentModel");
 const sendSMS = require("../utils/sendSms");
 const sendEmail = require("../utils/sendEmail");
 
 exports.deleteClassNotification = catchAsyncError(async (req, res, next) => {
-  await ClassNotifiactions.deleteMany({ status: "approved" });
+  await ClassNotifications.deleteMany({ status: "approved" });
   res.status(204).json({
     success: true,
-    message: "All approved Notifiactiojm are deleted from Database",
+    message: "All approved Notification are deleted from Database",
   });
 });
 
 exports.getPendingClassNotification = catchAsyncError(
   async (req, res, next) => {
-    const pendingNotification = await ClassNotifiactions.find({
+    const pendingNotification = await ClassNotifications.find({
       status: "pending",
     });
     res.status(200).json({
@@ -23,14 +23,14 @@ exports.getPendingClassNotification = catchAsyncError(
       pendingNotification,
     });
     if (!pendingNotification) {
-      return next(new ErrorHandler("No Pending Notifation is available", 401));
+      return next(new ErrorHandler("No Pending Notification is available", 401));
     }
   }
 );
 
 exports.getRejectedClassNotification = catchAsyncError(
   async (req, res, next) => {
-    const rejectedNotification = await ClassNotifiactions.find({
+    const rejectedNotification = await ClassNotifications.find({
       status: "rejected",
     });
     res.status(200).json({
@@ -39,7 +39,7 @@ exports.getRejectedClassNotification = catchAsyncError(
     });
 
     if (!rejectedNotification) {
-      return next(new ErrorHandler("No Rejected Notifation is available", 401));
+      return next(new ErrorHandler("No Rejected Notification is available", 401));
     }
   }
 );
@@ -172,6 +172,17 @@ exports.birthdayNotification = async (req, res, next) => {
     res.status(500).json({ success: false, message: "Failed to send notifications." });
   }
 };
+
+exports.sendMessage = catchAsyncError( async (req, res, next) => {
+  const {toNumber, message}= req.body
+  const messageReport = await sendSMS({number: toNumber, message})
+  if(messageReport[0].status === 'SENT'){
+    res.status(200).json({ success: true, messageReport });
+  }else{
+    res.status(500).json({ success: false, messageReport });
+  }
+})
+
 
 
 
