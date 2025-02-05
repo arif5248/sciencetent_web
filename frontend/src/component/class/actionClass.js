@@ -2,7 +2,7 @@ import React, { Fragment, useState } from "react";
 import { useDispatch } from "react-redux";
 import "./actionClass";
 import { fetchApproveStudent, fetchRejectStudent } from "../../slice/studentSlice";
-import { fetchPendingClassesToApprove } from "../../slice/classSlice";
+import { fetchPendingClassesToApprove, fetchSendClassMessage, fetchUpdateClassMessageReport } from "../../slice/classSlice";
 
 function PopupForApproveCancel({ content, onClose }) {
   const [loading, setLoading] = useState(false); // Add loading state
@@ -107,6 +107,34 @@ function PopupForApproveCancel({ content, onClose }) {
     setSendStatus({ sent: 0, failed: 0 });
 
     for (let i = 0; i < allReports.length; i++) {
+
+      dispatch(fetchSendClassMessage({toNumber: allReports[i].studentNumber, message: allReports[i].message}))
+      .unwrap()
+      .then((response) => {
+        if(response.status === true){
+          allReports[i] = { ...allReports[i], status: "sent" };
+          sent++;
+        }
+        if(response.status === false){
+          allReports[i] = { ...allReports[i], status: "failed" };
+          failed++;
+        }
+      })
+      .catch((err) => {
+        allReports[i] = { ...allReports[i], status: "failed" };
+        failed++;
+      })
+      .finally(() => {
+        setProgress(((i + 1) / allReports.length) * 100);
+        setSendStatus({ sent, failed });
+        setLoading(false)
+      });
+
+
+
+
+
+
       try {
           await new Promise((resolve, reject) => {
               setTimeout(() => {
@@ -127,7 +155,7 @@ function PopupForApproveCancel({ content, onClose }) {
   }
   setUpdatedAllReports(allReports)
   console.log(pendingClassesToApproveData)
-  dispatch(fetchPendingClassesToApprove({date: content.pendingClass.date, allReports: allReports, classDocId: pendingClassesToApproveData._id}))
+  dispatch(fetchUpdateClassMessageReport({date: content.pendingClass.date, allReports: allReports, classDocId: pendingClassesToApproveData._id}))
       .unwrap()
       .then((response) => {
         setSuccessMessage("Class approved successfully!");

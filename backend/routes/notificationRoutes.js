@@ -39,6 +39,6 @@ router
   router
     .route("/cron-birthday-notification").post(birthdayNotification);
   router
-    .route("/sendMessage").get(sendMessage);
+    .route("/sendMessage").post(sendMessage);
 
 module.exports = router;

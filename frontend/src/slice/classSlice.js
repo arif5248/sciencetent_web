@@ -73,6 +73,22 @@ export const fetchUpdateClassMessageReport = createAsyncThunk(
   }
 );
 
+export const fetchSendClassMessage = createAsyncThunk(
+  "class/fetchSendClassMessage",
+  async (apiData, { rejectWithValue }) => {
+    try {
+      const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
+      const { data } = await axios.post(`${baseUrl}/api/v1/admin/getPendingClassesGroupedByDate`,apiData, config);
+      return data;
+    } catch (error) {
+      // Handle error response, including HTTP 409 Conflict
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message); // Provide custom error message from backend
+      }
+      return rejectWithValue(error.message || "Something went wrong");
+    }
+  }
+);
 
 
 
@@ -145,6 +161,18 @@ const classSlice = createSlice({
         .addCase(fetchUpdateClassMessageReport.rejected, (state, action) => {
           state.isLoading = false;
           state.pendingClasses = [];
+          state.error = action.payload || "An unexpected error occurred";
+        })
+
+        .addCase(fetchSendClassMessage.pending, (state) => {
+          state.isLoading = true;
+        })
+        .addCase(fetchSendClassMessage.fulfilled, (state, action) => {
+          state.isLoading = false;
+          state.error = null;
+        })
+        .addCase(fetchSendClassMessage.rejected, (state, action) => {
+          state.isLoading = false;
           state.error = action.payload || "An unexpected error occurred";
         })
 
