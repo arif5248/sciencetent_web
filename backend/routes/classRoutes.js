@@ -39,7 +39,7 @@ router
 
 router
   .route("/admin/pendingClassesToApprove")
-  .get(
+  .put(
     isAuthenticatedUser,
     isPermitted(process.env.Pending_Classes_To_Approve),
     pendingClassToApprove

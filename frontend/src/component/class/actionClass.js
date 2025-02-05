@@ -2,9 +2,9 @@ import React, { Fragment, useState } from "react";
 import { useDispatch } from "react-redux";
 import "./actionClass";
 import { fetchApproveStudent, fetchRejectStudent } from "../../slice/studentSlice";
+import { fetchPendingClassesToApprove } from "../../slice/classSlice";
 
 function PopupForApproveCancel({ content, onClose }) {
-    console.log(content)
   const [loading, setLoading] = useState(false); // Add loading state
   const [note, setNote] = useState("");
   const dispatch = useDispatch(); // Add useDispatch hook
@@ -44,19 +44,21 @@ function PopupForApproveCancel({ content, onClose }) {
   };
   // console.log(content.student)
   const handleApprove = async () => {
+    const batchId = content.pendingClass.batchDetails._id
+    const pendingClassesId = content.pendingClass.classes.map(classItem => classItem._id)
+      
     try {
       setLoading(true); 
-    //   await dispatch(fetchApproveStudent(content.student._id)).unwrap(); 
+      await dispatch(fetchPendingClassesToApprove({pendingClassesId, batchId})).unwrap(); 
 
       console.log("Class approved successfully:");
       setShowBoxOne(false)
       setShowBoxThree(false)
       setShowBoxTwo(true)
     } catch (error) {
-      console.error("Error deleting batch:", error); 
+      console.error("Error approving class", error); 
     } finally {
       setLoading(false); 
-      
     }
   };
 
