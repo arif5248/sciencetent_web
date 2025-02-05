@@ -254,6 +254,24 @@ exports.pendingClassToApprove = catchAsyncError(async (req, res, next) => {
   });
 });
 
+exports.updateClassMessageReport = catchAsyncError(async (req, res, next) => {
+  const {date, allReports, classDocId} = req.body
+  const approveAndReportInserted = await Classes.findOneAndUpdate(
+    { _id: classDocId, "msgReports.date": date }, // Check if both exist
+    { $set: { "msgReports.$.allReports": allReports } }, // Update allReports
+    { new: true } // Return the updated document
+  );
+  
+  if (!approveAndReportInserted) {
+    return next(new ErrorHandler("No matching document found, no update performed.", 400));
+  }
+
+  res.status(200).json({
+      success: true,
+      message: "Classes updated successfully",
+      approveAndReportInserted
+  });
+})
 
   
 

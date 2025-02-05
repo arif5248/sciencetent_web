@@ -56,6 +56,23 @@ export const fetchPendingClassesToApprove = createAsyncThunk(
   }
 );
 
+export const fetchUpdateClassMessageReport = createAsyncThunk(
+  "class/fetchUpdateClassMessageReport",
+  async (apiData, { rejectWithValue }) => {
+    try {
+      const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
+      const { data } = await axios.put(`${baseUrl}/api/v1/admin/updateClassMessageReport`, apiData, config);
+      return data;
+    } catch (error) {
+      // Handle error response, including HTTP 409 Conflict
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message); // Provide custom error message from backend
+      }
+      return rejectWithValue(error.message || "Something went wrong");
+    }
+  }
+);
+
 
 
 
@@ -103,11 +120,29 @@ const classSlice = createSlice({
           state.isLoading = true;
         })
         .addCase(fetchPendingClassesToApprove.fulfilled, (state, action) => {
+          // console.log(payload)
           state.isLoading = false;
           state.class = action.payload.approveAndReportInserted;
+          // state.pendingClasses = pendingClasses.filter(classItem => classItem.date !== )
           state.error = null;
         })
         .addCase(fetchPendingClassesToApprove.rejected, (state, action) => {
+          state.isLoading = false;
+          state.pendingClasses = [];
+          state.error = action.payload || "An unexpected error occurred";
+        })
+
+        .addCase(fetchUpdateClassMessageReport.pending, (state) => {
+          state.isLoading = true;
+        })
+        .addCase(fetchUpdateClassMessageReport.fulfilled, (state, action) => {
+          // console.log(payload)
+          state.isLoading = false;
+          state.class = action.payload.approveAndReportInserted;
+          // state.pendingClasses = pendingClasses.filter(classItem => classItem.date !== )
+          state.error = null;
+        })
+        .addCase(fetchUpdateClassMessageReport.rejected, (state, action) => {
           state.isLoading = false;
           state.pendingClasses = [];
           state.error = action.payload || "An unexpected error occurred";

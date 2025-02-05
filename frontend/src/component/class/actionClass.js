@@ -10,13 +10,19 @@ function PopupForApproveCancel({ content, onClose }) {
   const dispatch = useDispatch(); // Add useDispatch hook
   const [rejectPopUp, setRejectPopUp] = useState(0)
   const [successMessage, setSuccessMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
   
   const [showBoxOne, setShowBoxOne] = useState(true)
   const [showBoxTwo, setShowBoxTwo] = useState(false)
   const [showBoxThree, setShowBoxThree] = useState(false)
+  const [showFailedListTable, setShowFailedListTable] = useState(false)
+  const [showSentListTable, setShowSentListTable] = useState(false)
 
   const [progress, setProgress] = useState(0);
   const [sendStatus, setSendStatus] = useState({ sent: 0, failed: 0 });
+
+  const [pendingClassesToApproveData, setPendingClassesToApproveData] = useState({})
+  const [updatedAllReports, setUpdatedAllReports] = useState([])
  
   const formattedDateString = (date)=>{
     const formattedDate = new Date(date);
@@ -44,22 +50,29 @@ function PopupForApproveCancel({ content, onClose }) {
   };
   // console.log(content.student)
   const handleApprove = async () => {
+    setLoading(true)
     const batchId = content.pendingClass.batchDetails._id
     const pendingClassesId = content.pendingClass.classes.map(classItem => classItem._id)
       
-    try {
-      setLoading(true); 
-      await dispatch(fetchPendingClassesToApprove({pendingClassesId, batchId})).unwrap(); 
-
-      console.log("Class approved successfully:");
-      setShowBoxOne(false)
-      setShowBoxThree(false)
-      setShowBoxTwo(true)
-    } catch (error) {
-      console.error("Error approving class", error); 
-    } finally {
-      setLoading(false); 
-    }
+    dispatch(fetchPendingClassesToApprove({pendingClassesId, batchId}))
+      .unwrap()
+      .then((response) => {
+        setSuccessMessage("Class approved successfully!");
+        setPendingClassesToApproveData(response.approveAndReportInserted)
+        setTimeout(() => {
+          setSuccessMessage(null);
+        }, 20000);
+        setShowBoxOne(false)
+        setShowBoxThree(false)
+        setShowBoxTwo(true)
+      })
+      .catch((err) => {
+        setErrorMessage(err);
+        setTimeout(() => {
+          setErrorMessage(null);
+        }, 20000);
+      })
+      .finally(() => setLoading(false));
   };
 
   const handleReject = async () => {
@@ -82,104 +95,10 @@ function PopupForApproveCancel({ content, onClose }) {
     setShowBoxThree(true)
     setShowBoxTwo(false)
 
-    let allReports= [
-                    {
-                        "studentId": "NB2601",
-                        "studentName": "Nadira Ahmed Disha",
-                        "studentNumber": "01323234835",
-                        "status": "notExecute",
-                        "message": "Dear Nadira Ahmed Disha\nFriday 31 January 2025\nPhysics: 4:00pm-5:00pm\nPhysics: 5:00pm-6:00pm\nScience Tent",
-                        "_id": "679fb040bd455dea60a3faa3"
-                    },
-                    {
-                        "studentId": "NB2602",
-                        "studentName": "Sheikh Rakibul Hassan",
-                        "studentNumber": "01847754389",
-                        "status": "notExecute",
-                        "message": "Dear Sheikh Rakibul Hassan\nFriday 31 January 2025\nPhysics: 4:00pm-5:00pm\nPhysics: 5:00pm-6:00pm\nScience Tent",
-                        "_id": "679fb040bd455dea60a3faa4"
-                    },
-                    {
-                        "studentId": "NB2603",
-                        "studentName": "Prome Ghosh",
-                        "studentNumber": "01849512682",
-                        "status": "notExecute",
-                        "message": "Dear Prome Ghosh\nFriday 31 January 2025\nPhysics: 4:00pm-5:00pm\nPhysics: 5:00pm-6:00pm\nScience Tent",
-                        "_id": "679fb040bd455dea60a3faa5"
-                    },
-                    {
-                        "studentId": "NB2604",
-                        "studentName": "Piuli Baidya",
-                        "studentNumber": "01883619311",
-                        "status": "notExecute",
-                        "message": "Dear Piuli Baidya\nFriday 31 January 2025\nPhysics: 4:00pm-5:00pm\nPhysics: 5:00pm-6:00pm\nScience Tent",
-                        "_id": "679fb040bd455dea60a3faa6"
-                    },
-                    {
-                        "studentId": "NB2605",
-                        "studentName": "Jannatul Noor Hossen Mim",
-                        "studentNumber": "01851263869",
-                        "status": "notExecute",
-                        "message": "Dear Jannatul Noor Hossen Mim\nFriday 31 January 2025\nPhysics: 4:00pm-5:00pm\nPhysics: 5:00pm-6:00pm\nScience Tent",
-                        "_id": "679fb040bd455dea60a3faa7"
-                    },
-                    {
-                        "studentId": "NB2606",
-                        "studentName": "Sayed Anowar Riyad ",
-                        "studentNumber": "01815920523",
-                        "status": "notExecute",
-                        "message": "Dear Sayed Anowar Riyad \nFriday 31 January 2025\nPhysics: 4:00pm-5:00pm\nPhysics: 5:00pm-6:00pm\nScience Tent",
-                        "_id": "679fb040bd455dea60a3faa8"
-                    },
-                    {
-                        "studentId": "NB2607",
-                        "studentName": "Nusrat Jahan Niha",
-                        "studentNumber": "01540513887",
-                        "status": "notExecute",
-                        "message": "Dear Nusrat Jahan Niha\nFriday 31 January 2025\nPhysics: 4:00pm-5:00pm\nPhysics: 5:00pm-6:00pm\nScience Tent",
-                        "_id": "679fb040bd455dea60a3faa9"
-                    },
-                    {
-                        "studentId": "NB2608",
-                        "studentName": "Md Fayez ",
-                        "studentNumber": "01937153554",
-                        "status": "notExecute",
-                        "message": "Dear Md Fayez \nFriday 31 January 2025\nPhysics: 4:00pm-5:00pm\nPhysics: 5:00pm-6:00pm\nScience Tent",
-                        "_id": "679fb040bd455dea60a3faaa"
-                    },
-                    {
-                        "studentId": "NB2609",
-                        "studentName": "Fatema Hossain ",
-                        "studentNumber": "01613446702",
-                        "status": "notExecute",
-                        "message": "Dear Fatema Hossain \nFriday 31 January 2025\nPhysics: 4:00pm-5:00pm\nPhysics: 5:00pm-6:00pm\nScience Tent",
-                        "_id": "679fb040bd455dea60a3faab"
-                    },
-                    {
-                        "studentId": "NB2610",
-                        "studentName": "Sadiya Hossen ",
-                        "studentNumber": "01852117824",
-                        "status": "notExecute",
-                        "message": "Dear Sadiya Hossen \nFriday 31 January 2025\nPhysics: 4:00pm-5:00pm\nPhysics: 5:00pm-6:00pm\nScience Tent",
-                        "_id": "679fb040bd455dea60a3faac"
-                    },
-                    {
-                        "studentId": "NB2611",
-                        "studentName": "Abid",
-                        "studentNumber": "01869512511",
-                        "status": "notExecute",
-                        "message": "Dear Abid\nFriday 31 January 2025\nPhysics: 4:00pm-5:00pm\nPhysics: 5:00pm-6:00pm\nScience Tent",
-                        "_id": "679fb040bd455dea60a3faad"
-                    },
-                    {
-                        "studentId": "NB2612",
-                        "studentName": "Sadia Tanjina Karin",
-                        "studentNumber": "01882670023",
-                        "status": "notExecute",
-                        "message": "Dear Sadia Tanjina Karin\nFriday 31 January 2025\nPhysics: 4:00pm-5:00pm\nPhysics: 5:00pm-6:00pm\nScience Tent",
-                        "_id": "679fb040bd455dea60a3faae"
-                    }
-                ]
+    const allMessageReports = pendingClassesToApproveData.msgReports.find(item => item.date === content.pendingClass.date)
+
+    let allReports= [...allMessageReports.allReports]
+    console.log("======12345=====",allReports)
 
 
     let sent = 0;
@@ -188,25 +107,54 @@ function PopupForApproveCancel({ content, onClose }) {
     setSendStatus({ sent: 0, failed: 0 });
 
     for (let i = 0; i < allReports.length; i++) {
-        try {
-            // Simulating API call (replace this with your actual API call)
-            await new Promise((resolve, reject) => {
-                setTimeout(() => {
-                    Math.random() > 0.2 ? resolve() : reject(); // Simulate random success/failure
-                }, 500);
-            });
+      try {
+          await new Promise((resolve, reject) => {
+              setTimeout(() => {
+                  Math.random() > 0.2 ? resolve() : reject(); // Simulate random success/failure
+              }, 500);
+          });
 
-            allReports[i].status = "sent";
-            sent++;
-        } catch (error) {
-            allReports[i].status = "failed";
-            failed++;
-        } finally {
-            setProgress(((i + 1) / allReports.length) * 100);
-            setSendStatus({ sent, failed });
-        }
-    }
+          // ✅ Create a new copy and update its status
+          allReports[i] = { ...allReports[i], status: "sent" };
+          sent++;
+      } catch (error) {
+          allReports[i] = { ...allReports[i], status: "failed" };
+          failed++;
+      } finally {
+          setProgress(((i + 1) / allReports.length) * 100);
+          setSendStatus({ sent, failed });
+      }
+  }
+  setUpdatedAllReports(allReports)
+  console.log(pendingClassesToApproveData)
+  dispatch(fetchPendingClassesToApprove({date: content.pendingClass.date, allReports: allReports, classDocId: pendingClassesToApproveData._id}))
+      .unwrap()
+      .then((response) => {
+        setSuccessMessage("Class approved successfully!");
+        setPendingClassesToApproveData(response.approveAndReportInserted)
+        setTimeout(() => {
+          setSuccessMessage(null);
+        }, 20000);
+      })
+      .catch((err) => {
+        setErrorMessage(err);
+        setTimeout(() => {
+          setErrorMessage(null);
+        }, 20000);
+      })
+      .finally(() => setLoading(false));
+  }
+  const showSentList = async () => {
+    setShowFailedListTable(false)
+    setShowSentListTable(true)
+  }
+  const showFailedList = async () => {
+    setShowFailedListTable(true)
+    setShowSentListTable(false)
+  }
 
+  const retryMessage = async (msgReport) => {
+    console.log(msgReport)
   }
 
   return (
@@ -284,13 +232,85 @@ function PopupForApproveCancel({ content, onClose }) {
                         <div style={{ width: `${progress}%`, background: "#76c7c0", height: "8px" }}></div>
                     </div>
                     <div>
-                        <button className="btn btn-success" disabled={loading}>
+                        <button className="btn btn-success" disabled={loading} onClick={showSentList}>
                             Sent: {sendStatus.sent}
                         </button>
-                        <button className="btn btn-danger" disabled={loading}>
+                        <button className="btn btn-danger" disabled={loading} onClick={showFailedList}>
                             Failed: {sendStatus.failed}
                         </button>
                     </div>
+                    {showSentListTable && (
+                      <Fragment>
+                        <div className="showSentList">
+                          <table>
+                            <thead>
+                              <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Mobile</th>
+                                <th>Message</th>
+                              </tr>
+                            </thead>
+
+                            <tbody>
+                              {updatedAllReports.map(item=>{
+                                if(item.status === "sent"){
+                                  return(
+                                    <tr key={item.studentId}>
+                                      <td>{item.studentId}</td>
+                                      <td>{item.studentName}</td>
+                                      <td>{item.studentNumber}</td>
+                                      <td>{item.message}</td>
+                                    </tr>
+                                  )
+                                }
+                              })}
+                            </tbody>
+                          </table>
+                        </div>
+                      </Fragment>
+                    )}
+
+                    {showFailedListTable && (
+                      <Fragment>
+                        <div className="showSentList">
+                          <table>
+                            <thead>
+                              <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Mobile</th>
+                                <th>Message</th>
+                              </tr>
+                            </thead>
+
+                            <tbody>
+                              {updatedAllReports.map(item=>{
+                                if(item.status !== "sent"){
+                                  return(
+                                    <tr key={item.studentId}>
+                                      <td>{item.studentId}</td>
+                                      <td>{item.studentName}</td>
+                                      <td>{item.studentNumber}</td>
+                                      <td>{item.message}</td>
+                                      <td>
+                                        <button 
+                                        className="btn btn-danger" 
+                                        disabled={loading} 
+                                        onClick={() => retryMessage(item)}
+                                        >
+                                          Retry
+                                        </button>
+                                      </td>
+                                    </tr>
+                                  )
+                                }
+                              })}
+                            </tbody>
+                          </table>
+                        </div>
+                      </Fragment>
+                    )}
                 </Fragment>
             )}
           </Fragment>
