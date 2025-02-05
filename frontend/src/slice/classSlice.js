@@ -78,7 +78,7 @@ export const fetchSendClassMessage = createAsyncThunk(
   async (apiData, { rejectWithValue }) => {
     try {
       const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
-      const { data } = await axios.post(`${baseUrl}/api/v1/admin/getPendingClassesGroupedByDate`,apiData, config);
+      const { data } = await axios.post(`${baseUrl}/api/v1/sendMessage`,apiData, config);
       return data;
     } catch (error) {
       // Handle error response, including HTTP 409 Conflict

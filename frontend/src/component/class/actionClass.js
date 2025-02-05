@@ -91,87 +91,81 @@ function PopupForApproveCancel({ content, onClose }) {
   };
 
   const sendScheduleToStudents = async () => {
-    setShowBoxOne(false)
-    setShowBoxThree(true)
-    setShowBoxTwo(false)
+    setShowBoxOne(false);
+    setShowBoxThree(true);
+    setShowBoxTwo(false);
 
-    const allMessageReports = pendingClassesToApproveData.msgReports.find(item => item.date === content.pendingClass.date)
+    const allMessageReports = pendingClassesToApproveData.msgReports.find(
+      (item) => item.date === content.pendingClass.date
+    );
 
-    let allReports= [...allMessageReports.allReports]
-    console.log("======12345=====",allReports)
-
+    let allReports = [...allMessageReports.allReports];
+    console.log("======12345=====", allReports);
 
     let sent = 0;
     let failed = 0;
     setProgress(0);
     setSendStatus({ sent: 0, failed: 0 });
 
+    // Loop through all reports sequentially
     for (let i = 0; i < allReports.length; i++) {
+      try {
+        const response = await dispatch(
+          fetchSendClassMessage({
+            toNumber: allReports[i].studentNumber,
+            message: allReports[i].message,
+          })
+        ).unwrap();
 
-      dispatch(fetchSendClassMessage({toNumber: allReports[i].studentNumber, message: allReports[i].message}))
-      .unwrap()
-      .then((response) => {
-        if(response.status === true){
+        if (response.success === true) {
+          console.log(1);
           allReports[i] = { ...allReports[i], status: "sent" };
           sent++;
-        }
-        if(response.status === false){
+        } else {
+          console.log(2);
           allReports[i] = { ...allReports[i], status: "failed" };
           failed++;
         }
-      })
-      .catch((err) => {
+      } catch (err) {
+        console.log(3);
         allReports[i] = { ...allReports[i], status: "failed" };
         failed++;
-      })
-      .finally(() => {
-        setProgress(((i + 1) / allReports.length) * 100);
-        setSendStatus({ sent, failed });
-        setLoading(false)
-      });
-
-
-
-
-
-
-      try {
-          await new Promise((resolve, reject) => {
-              setTimeout(() => {
-                  Math.random() > 0.2 ? resolve() : reject(); // Simulate random success/failure
-              }, 500);
-          });
-
-          // ✅ Create a new copy and update its status
-          allReports[i] = { ...allReports[i], status: "sent" };
-          sent++;
-      } catch (error) {
-          allReports[i] = { ...allReports[i], status: "failed" };
-          failed++;
-      } finally {
-          setProgress(((i + 1) / allReports.length) * 100);
-          setSendStatus({ sent, failed });
       }
-  }
-  setUpdatedAllReports(allReports)
-  console.log(pendingClassesToApproveData)
-  dispatch(fetchUpdateClassMessageReport({date: content.pendingClass.date, allReports: allReports, classDocId: pendingClassesToApproveData._id}))
-      .unwrap()
-      .then((response) => {
-        setSuccessMessage("Class approved successfully!");
-        setPendingClassesToApproveData(response.approveAndReportInserted)
-        setTimeout(() => {
-          setSuccessMessage(null);
-        }, 20000);
-      })
-      .catch((err) => {
-        setErrorMessage(err);
-        setTimeout(() => {
-          setErrorMessage(null);
-        }, 20000);
-      })
-      .finally(() => setLoading(false));
-  }
+
+      setProgress(((i + 1) / allReports.length) * 100);
+      setSendStatus({ sent, failed });
+    }
+
+    // Now update the state after the loop completes
+    setUpdatedAllReports(allReports);
+
+    console.log(pendingClassesToApproveData);
+    try {
+      const response = await dispatch(
+        fetchUpdateClassMessageReport({
+          date: content.pendingClass.date,
+          allReports: allReports,
+          classDocId: pendingClassesToApproveData._id,
+        })
+      ).unwrap();
+
+      setSuccessMessage("Class approved successfully!");
+      setPendingClassesToApproveData(response.approveAndReportInserted);
+
+      setTimeout(() => {
+        setSuccessMessage(null);
+      }, 20000);
+    } catch (err) {
+      setErrorMessage(err);
+
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 20000);
+    } finally {
+      setLoading(false);
+    }
+};
+
   const showSentList = async () => {
     setShowFailedListTable(false)
     setShowSentListTable(true)
