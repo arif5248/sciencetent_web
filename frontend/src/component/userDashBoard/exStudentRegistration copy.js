@@ -6,7 +6,6 @@ import "./studentRegistration.css";
 import { fetchAllBatchForExReg } from "../../slice/batchSlice";
 import { fetchAllCoursesForReg } from "../../slice/courseSlice";
 import { fetchRegisterExStudent, fetchRegisterStudent } from "../../slice/studentSlice";
-import PopupForOtpAndExStudentRegister from "./actionOtp";
 
 function ExStudentRegistration() {
   const dispatch = useDispatch();
@@ -29,12 +28,6 @@ function ExStudentRegistration() {
 
   const [courseOptions, setCourseOptions] = useState([]); 
   const [batchOptions, setBatchOptions] = useState([]); 
-
-  const [showPopup, setShowPopup] = useState(false);
-  const [popupContent, setPopupContent] = useState(null);
-
-  const openPopup = (content) => setShowPopup(true) || setPopupContent(content);
-  const closePopup = () => setShowPopup(false) || setPopupContent(null);
 
   useEffect(() => {
     dispatch(fetchAllBatchForExReg())
@@ -92,12 +85,9 @@ function ExStudentRegistration() {
     myForm.append("batch", batch);
     myForm.append("enrolledCourses", JSON.stringify(enrolledCourses));
 
-    openPopup({
-        toNumber: whatsappNumber,
-        myForm,
-      });
+    
 
-    // dispatch(fetchRegisterExStudent(myForm));
+    dispatch(fetchRegisterExStudent(myForm));
   };
 
 
@@ -112,7 +102,6 @@ function ExStudentRegistration() {
       );
     }
   };
-  
 
   return (
     <Fragment>
@@ -197,7 +186,6 @@ function ExStudentRegistration() {
           </form>
         )}
       </div>
-      {showPopup && <PopupForOtpAndExStudentRegister content={popupContent} onClose={closePopup} />}
     </Fragment>
   );
 }
