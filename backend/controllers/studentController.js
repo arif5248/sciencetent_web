@@ -1,6 +1,7 @@
 const ErrorHandler = require("../utils/errorhander");
 const catchAsyncError = require("../middleware/catchAsyncError");
 const Students = require("../models/studentModel");
+const Users = require("../models/userModel");
 const Batches = require("../models/batchModel");
 const Courses = require("../models/courseModel");
 const cloudinary = require("cloudinary")
@@ -190,6 +191,23 @@ exports.exRegisterStudent = catchAsyncError(async (req, res, next) => {
       admissionFeeRef,
       status
     });
+
+    const setStudentRef = {
+      studentRef: student._id,
+    };
+
+    const updatedUser = await Users.findByIdAndUpdate(
+      user,
+      setStudentRef,
+      {
+        new: true,
+        runValidators: true,
+        useFindAndModify: false,
+      }
+    )
+    if(!updatedUser){
+      return next(new ErrorHandler("Student Ref in User model is not updated. Please Try Again", 500));
+    }
 
     res.status(200).json({ success: true, student });
   } catch (error) {
