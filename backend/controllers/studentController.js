@@ -92,6 +92,7 @@ exports.registerStudent = catchAsyncError(async (req, res, next) => {
       return next(new ErrorHandler("Failed to upload guardian signature", 500));
     }
   }
+  const status = req.body.status ? req.body.status : 'pending'
 
   try {
     // Create student
@@ -107,7 +108,8 @@ exports.registerStudent = catchAsyncError(async (req, res, next) => {
       batchDetails,
       enrolledCourses: courseDetails,
       guardianInfo,
-      admissionFeeRef
+      admissionFeeRef,
+      status
     });
 
     res.status(200).json({ success: true, student });

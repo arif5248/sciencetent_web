@@ -23,14 +23,14 @@ function ExStudentRegistration() {
   const [whatsappNumber, setWhatsappNumber] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [address, setAddress] = useState("");
-  const [collegeName, setCollegeName] = useState("");
+  const [collegeName, setCollegeName] = useState("N/A");
   const [batch, setBatch] = useState("");
   const [enrolledCourses, setEnrolledCourses] = useState([]);
-  const [guardianName, setGuardianName] = useState("");
-  const [guardianMobile, setGuardianMobile] = useState("");
-  const [guardianRelationWithStudent, setGuardianRelationWithStudent] = useState("");
-  const [admissionFeeRef, setAdmissionFeeRef] = useState("");
-  const [guardianSignature, setGuardianSignature] = useState("");
+  const [guardianName, setGuardianName] = useState("N/A");
+  const [guardianMobile, setGuardianMobile] = useState("N/A");
+  const [guardianRelationWithStudent, setGuardianRelationWithStudent] = useState("N/A");
+  const [admissionFeeRef, setAdmissionFeeRef] = useState("N/A");
+  const [guardianSignature, setGuardianSignature] = useState("N/A");
   const [signaturePreview, setSignaturePreview] = useState(null);
   const [courseOptions, setCourseOptions] = useState([]); 
   const [batchOptions, setBatchOptions] = useState([]); 
@@ -95,6 +95,7 @@ function ExStudentRegistration() {
     myForm.append("guardianMobile", guardianMobile);
     myForm.append("guardianRelationWithStudent", guardianRelationWithStudent);
     myForm.append("admissionFeeRef", admissionFeeRef);
+    myForm.append("status", "approved");
 
     if (guardianSignature) {
       myForm.append("guardianSignature", guardianSignature);
