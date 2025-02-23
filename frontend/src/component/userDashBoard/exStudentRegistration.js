@@ -5,7 +5,7 @@ import Loader from "../layout/loader/loader";
 import "./studentRegistration.css";
 import { fetchAllBatchForExReg } from "../../slice/batchSlice";
 import { fetchAllCoursesForReg } from "../../slice/courseSlice";
-import { fetchRegisterStudent } from "../../slice/studentSlice";
+import { fetchRegisterExStudent, fetchRegisterStudent } from "../../slice/studentSlice";
 
 function ExStudentRegistration() {
   const dispatch = useDispatch();
@@ -23,15 +23,9 @@ function ExStudentRegistration() {
   const [whatsappNumber, setWhatsappNumber] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [address, setAddress] = useState("");
-  const [collegeName, setCollegeName] = useState("N/A");
   const [batch, setBatch] = useState("");
   const [enrolledCourses, setEnrolledCourses] = useState([]);
-  const [guardianName, setGuardianName] = useState("N/A");
-  const [guardianMobile, setGuardianMobile] = useState("N/A");
-  const [guardianRelationWithStudent, setGuardianRelationWithStudent] = useState("N/A");
-  const [admissionFeeRef, setAdmissionFeeRef] = useState("N/A");
-  const [guardianSignature, setGuardianSignature] = useState("N/A");
-  const [signaturePreview, setSignaturePreview] = useState(null);
+
   const [courseOptions, setCourseOptions] = useState([]); 
   const [batchOptions, setBatchOptions] = useState([]); 
 
@@ -61,7 +55,7 @@ function ExStudentRegistration() {
 
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
-      setSuccessMessage("Registration successful! Please wait for the admin's approval");
+      setSuccessMessage("Registration successful! Stay with Science Tent");
       setTimeout(() => {
         setSuccessMessage(null);
       }, 5000);
@@ -88,37 +82,14 @@ function ExStudentRegistration() {
     myForm.append("whatsappNumber", whatsappNumber);
     myForm.append("dateOfBirth", dateOfBirth);
     myForm.append("address", address);
-    myForm.append("collegeName", collegeName);
     myForm.append("batch", batch);
     myForm.append("enrolledCourses", JSON.stringify(enrolledCourses));
-    myForm.append("guardianName", guardianName);
-    myForm.append("guardianMobile", guardianMobile);
-    myForm.append("guardianRelationWithStudent", guardianRelationWithStudent);
-    myForm.append("admissionFeeRef", admissionFeeRef);
-    myForm.append("status", "approved");
 
-    if (guardianSignature) {
-      myForm.append("guardianSignature", guardianSignature);
-    }
+    
 
-    dispatch(fetchRegisterStudent(myForm));
+    dispatch(fetchRegisterExStudent(myForm));
   };
 
-  const UpdateSignatureDataChange = (e) => {
-    const file = e.target.files[0];
-
-    if (file) {
-      setGuardianSignature(file);
-
-      const reader = new FileReader();
-      reader.onload = () => {
-        if (reader.readyState === 2) {
-          setSignaturePreview(reader.result);
-        }
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
   const handleCourseChange = (e) => {
     const courseID = e.target.value;
@@ -174,10 +145,7 @@ function ExStudentRegistration() {
               <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} required />
             </div>
 
-            <div className="form-group animated" style={{display: "none"}}>
-              <label>College Name</label>
-              <input type="text" value={collegeName} onChange={(e) => setCollegeName(e.target.value)} required />
-            </div>
+           
 
             <div className="form-group animated">
               <label>Batch</label>
@@ -192,7 +160,7 @@ function ExStudentRegistration() {
               {batchError && <p className="error">{batchError}</p>}
             </div>
 
-            <div className="form-group animated" style={{display: "none"}}>
+            <div className="form-group animated" >
               <label>Enrolled Courses</label>
               <div className="course-list">
                 {courseOptions.length > 0 ? (
@@ -209,33 +177,6 @@ function ExStudentRegistration() {
               {courseError && <p className="error">{courseError}</p>}
             </div>
 
-            <div className="form-group animated" style={{display: "none"}}>
-              <label>Guardian Name</label>
-              <input type="text" value={guardianName} onChange={(e) => setGuardianName(e.target.value)} required />
-            </div>
-
-            <div className="form-group animated" style={{display: "none"}}>
-              <label>Guardian Mobile</label>
-              <input type="text" value={guardianMobile} onChange={(e) => setGuardianMobile(e.target.value)} required />
-            </div>
-
-            <div className="form-group animated" style={{display: "none"}}>
-              <label>Guardian's Relation with Student</label>
-              <input type="text" value={guardianRelationWithStudent} onChange={(e) => setGuardianRelationWithStudent(e.target.value)} required />
-            </div>
-
-            <div className="form-group animated" style={{display: "none"}}>
-              <label>Admission Fee Ref.</label>
-              <input type="text" value={admissionFeeRef} onChange={(e) => setAdmissionFeeRef(e.target.value)} required />
-            </div>
-
-            <div className="form-group animated" style={{display: "none"}}>
-              <label>Guardian Signature</label>
-              <input type="file" accept="image/*" onChange={UpdateSignatureDataChange} />
-              {signaturePreview && (
-                <img src={signaturePreview} alt="Guardian's Signature Preview" className="signature-preview" />
-              )}
-            </div>
 
             <button className="submit-button" type="submit">
               Register Student

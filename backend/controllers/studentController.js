@@ -92,7 +92,7 @@ exports.registerStudent = catchAsyncError(async (req, res, next) => {
       return next(new ErrorHandler("Failed to upload guardian signature", 500));
     }
   }
-  const status = req.body.status ? req.body.status : 'pending'
+  // const status = req.body.status ? req.body.status : 'pending'
 
   try {
     // Create student
@@ -125,6 +125,76 @@ exports.registerStudent = catchAsyncError(async (req, res, next) => {
     }
     return next(new ErrorHandler(error, 500));
   }}
+});
+
+exports.exRegisterStudent = catchAsyncError(async (req, res, next) => {
+    const user = req.user.id;
+    const {
+      name,
+      fatherName,
+      motherName,
+      whatsappNumber,
+      dateOfBirth,
+      address,
+      batch,
+      enrolledCourses,
+      
+    } = req.body;
+    let admissionFeeRef = "N/A"
+    let collegeName = "N/A"
+    let guardianInfo = {
+      name: "N/A",
+      mobile: "01000000000",
+      relationWithStudent: "N/A",
+      signature: {
+        public_id: "N/A",
+        url:"N/A",
+      },
+    };
+    const enrolledCoursesArray = JSON.parse(enrolledCourses);
+    const courseDetails = await Promise.all(
+      enrolledCoursesArray.map(async (course) => {
+        const courseDetails = await Courses.findById(course.courseID);
+        return {
+          courseID: courseDetails._id,
+          name: courseDetails.name,
+        };
+      })
+    );
+
+    const getBatch = await Batches.findById(batch)
+    if(!getBatch){
+      return next(new ErrorHandler("Failed to get batch", 500));
+    }
+    const batchDetails = {
+      batchId : getBatch._id,
+      batchCode : getBatch.batchCode
+    }
+
+  const status = "approved"
+
+  try {
+    // Create student
+    const student = await Students.create({
+      user,
+      name,
+      fatherName,
+      motherName,
+      whatsappNumber,
+      dateOfBirth,
+      collegeName,
+      address,
+      batchDetails,
+      enrolledCourses: courseDetails,
+      guardianInfo,
+      admissionFeeRef,
+      status
+    });
+
+    res.status(200).json({ success: true, student });
+  } catch (error) {
+    return next(new ErrorHandler(error, 500));
+  }
 });
 
 

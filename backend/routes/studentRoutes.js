@@ -9,12 +9,14 @@ const {
   test,
   getAllBatchStudents,
   rejectStudent,
+  exRegisterStudent,
 } = require("../controllers/studentController");
 const { isAuthenticatedUser, isAuthorizeRoles, isPermitted } = require("../middleware/auth");
 const { generateUniqueID } = require("../utils/generateUniqueID");
 const router = express.Router();
 
 router.route("/student/register").post(isAuthenticatedUser, registerStudent);
+router.route("/exStudent/register").post(isAuthenticatedUser, exRegisterStudent);
 router
   .route("/admin/students")
   .get(isAuthenticatedUser, isPermitted(process.env.GET_ALL_STUDENTS), getAllStudents);
