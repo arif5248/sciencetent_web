@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import "./actionOtp.css";
 import { fetchCreateOtp } from "../../slice/otpSlice";
@@ -10,28 +10,41 @@ function PopupForOtpAndExStudentRegister({ content, onClose }) {
   const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState("");
   const [otpSentMessage, setOtpSentMessage] = useState("");
+  const [timeLeft, setTimeLeft] = useState(120); // 2 minutes in seconds
   const dispatch = useDispatch();
+
+  // Start countdown when OTP is sent
+  useEffect(() => {
+    let timer;
+    if (otpSent && timeLeft > 0) {
+      timer = setInterval(() => {
+        setTimeLeft((prevTime) => prevTime - 1);
+      }, 1000);
+    } else if (timeLeft === 0) {
+      clearInterval(timer);
+    }
+    return () => clearInterval(timer);
+  }, [otpSent, timeLeft]);
 
   const handleOtpSent = async () => {
     setLoading(true);
     const otpData = {
-      toNumber : content.toNumber,
-      sms : otpMethod === "sms" ? true : false
-    }
-    
+      toNumber: content.toNumber,
+      sms: otpMethod === "sms" ? true : false,
+    };
+
     dispatch(fetchCreateOtp(otpData))
-    .then((response) => {
-      if (response.error) {
-        setOtpSentMessage(response.payload)
-      } else {
-        setOtpSentMessage(response.payload.message)
-      }
-    })
-    .catch((error) => {
-      
-      setOtpSentMessage(error)
-    });
-    
+      .then((response) => {
+        if (response.error) {
+          setOtpSentMessage(response.payload);
+        } else {
+          setOtpSentMessage(response.payload.message);
+        }
+      })
+      .catch((error) => {
+        setOtpSentMessage(error);
+      });
+
     // Simulate API call to send OTP
     setTimeout(() => {
       setOtpSent(true);
@@ -48,6 +61,13 @@ function PopupForOtpAndExStudentRegister({ content, onClose }) {
       alert(`OTP Verified Successfully!`);
       onClose(); // Close popup on success
     }, 1500);
+  };
+
+  // Format time to MM:SS
+  const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
   };
 
   return (
@@ -100,25 +120,37 @@ function PopupForOtpAndExStudentRegister({ content, onClose }) {
             {/* OTP Input Field (Visible after sending OTP) */}
             {otpSent && (
               <Fragment>
-              <div className="otpSentMessage">
-                <p>{otpSentMessage}</p>
-              </div>
-              <div className="otp-input">
-                <input
-                  type="text"
-                  maxLength="6"
-                  placeholder="Enter 6-digit OTP"
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value)}
-                />
-                <button
-                  className="verify-otp-btn"
-                  onClick={handleOtpSubmit}
-                  disabled={otp.length !== 6 || loading}
-                >
-                  {loading ? "Verifying..." : "Submit"}
-                </button>
-              </div>
+                <div className="otpSentMessage">
+                  <p>{otpSentMessage}</p>
+                </div>
+                <div className="otp-input">
+                  <input
+                    type="text"
+                    maxLength="6"
+                    placeholder="Enter 6-digit OTP"
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value)}
+                  />
+                  <button
+                    className="verify-otp-btn"
+                    onClick={handleOtpSubmit}
+                    disabled={otp.length !== 6 || loading || timeLeft === 0}
+                  >
+                    {loading ? "Verifying..." : "Submit"}
+                  </button>
+                </div>
+
+                {/* Countdown Timer */}
+                {timeLeft > 0 && (
+                  <div className="otp-timer">
+                    <p>Time left: {formatTime(timeLeft)}</p>
+                  </div>
+                )}
+                {timeLeft === 0 && (
+                  <div className="otp-timer">
+                    <p>OTP Expired. Please request a new one.</p>
+                  </div>
+                )}
               </Fragment>
             )}
           </Fragment>
