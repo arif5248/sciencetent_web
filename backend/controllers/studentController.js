@@ -129,7 +129,12 @@ exports.registerStudent = catchAsyncError(async (req, res, next) => {
 });
 
 exports.exRegisterStudent = catchAsyncError(async (req, res, next) => {
+
     const user = req.user.id;
+    const registeredStudent = await Students.findOne({ user: req.user._id });
+    if(registeredStudent && (registeredStudent.status === 'pending' || registeredStudent.status === 'approved')){
+      return next(new ErrorHandler("You are already registered for this form. Please Reload the tab. Thank You", 400));
+    }
     const {
       name,
       fatherName,
