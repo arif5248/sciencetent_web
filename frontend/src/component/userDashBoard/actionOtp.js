@@ -15,21 +15,21 @@ function PopupForOtpAndExStudentRegister({ content, onClose }) {
   const handleOtpSent = async () => {
     setLoading(true);
     const otpData = {
-      toNumber : "0182526922",
+      toNumber : content.toNumber,
       sms : otpMethod === "sms" ? true : false
     }
     
     dispatch(fetchCreateOtp(otpData))
     .then((response) => {
       if (response.error) {
-        console.log("=====1======",response)
+        setOtpSentMessage(response.payload)
       } else {
-        console.log("=====2======",response)
+        setOtpSentMessage(response.payload.message)
       }
     })
     .catch((error) => {
       
-      console.log("=====3======",error)
+      setOtpSentMessage(error)
     });
     
     // Simulate API call to send OTP

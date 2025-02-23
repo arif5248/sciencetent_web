@@ -24,7 +24,7 @@ exports.createOtpForExStudentVerification = catchAsyncError(async (req, res, nex
     if(!otp){
         return next(new ErrorHandler("Failed to create otp",400))
     }
-    const message = `Your One time password (OTP) for Registration verification is ${otp}. validity is 2 minutes.\nFor any help contact with Admin\nScience Tent.\nAn Ultimate Education Care of Science.`
+    const message = `Your One time password (OTP) for Registration verification is ${otp.otp}. validity is 2 minutes.\nFor any help contact with Admin\nScience Tent.\nAn Ultimate Education Care of Science.`
 
     if(sms){
         function maskMobileNumber(mobileNumber) {
