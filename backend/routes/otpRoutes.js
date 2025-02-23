@@ -4,3 +4,5 @@ const { createOtpForExStudentVerification } = require("../controllers/otpControl
 const router = express.Router();
 
 router.route("/createOtp").post(isAuthenticatedUser, createOtpForExStudentVerification)
+
+module.exports = router;
