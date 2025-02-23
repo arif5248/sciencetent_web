@@ -16,6 +16,7 @@ import StudentRegistration from "./studentRegistration";
 import { fetchAllPermissions } from "../../slice/permissionSlice";
 import Batch from "../dashBoard/batch";
 import Exam from "../dashBoard/exam";
+import ExStudentRegistration from "./exStudentRegistration";
 
 function UserDashBoard() {
   const dispatch = useDispatch();
@@ -24,7 +25,7 @@ function UserDashBoard() {
   const [isThin, setIsThin] = useState(false);
   const [dynamicItems, setDynamicItems] = useState([
     { id: "list1", src: studentRegistration, title: "Student Registration", content: <StudentRegistration /> },
-    { id: "list2", src: exStudentRegistration, title: "Ex-Student Registration", content: "" },
+    { id: "list2", src: exStudentRegistration, title: "Ex-Student Registration", content: <ExStudentRegistration/> },
   ]);
 
   const { user, isLoading } = useSelector((state) => state.user);

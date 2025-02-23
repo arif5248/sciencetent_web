@@ -33,6 +33,12 @@ export const fetchAllBatchForReg = createAsyncThunk("batch/fetchAllBatchForReg",
   return data;
 });
 
+export const fetchAllBatchForExReg = createAsyncThunk("batch/fetchAllBatchForExReg", async () => {
+  const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
+  const { data } = await axios.get(`${baseUrl}/api/v1/user/batchesForExStudentReg`, config);
+  return data;
+});
+
 export const fetchDeleteBatch = createAsyncThunk("batch/fetchDeleteBatch", async (batchId) => {
   const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
   const { data } = await axios.delete(`${baseUrl}/api/v1/admin/deleteBatch/${batchId}`, config);
@@ -63,6 +69,7 @@ const batchSlice = createSlice({
     batch: null,  // Store the batch data
     isAuthenticated: false,
     error: null,
+    allBatchForExReg: null,
   },
   extraReducers: (builder) => {
     builder
@@ -113,6 +120,21 @@ const batchSlice = createSlice({
         state.allBatchForReg = null;
         state.error = action.error.message;
       })
+
+      .addCase(fetchAllBatchForExReg.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(fetchAllBatchForExReg.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.allBatchForExReg = action.payload.batches;
+        state.error = null;
+      })
+      .addCase(fetchAllBatchForExReg.rejected, (state, action) => {
+        state.isLoading = false;
+        state.allBatchForExReg = null;
+        state.error = action.error.message;
+      })
+
       .addCase(fetchDeleteBatch.pending, (state) => {
         state.isLoading = true;
         state.error = null;
