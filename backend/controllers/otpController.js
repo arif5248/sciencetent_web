@@ -2,6 +2,7 @@ const ErrorHandler = require("../utils/errorhander");
 const catchAsyncError = require("../middleware/catchAsyncError");
 const Otp = require("../models/otpModel");
 const sendEmail = require("../utils/sendEmail");
+const sendSMS = require("../utils/sendSms");
 
 exports.createOtpForExStudentVerification = catchAsyncError(async (req, res, next) => {
     const {sms, toNumber} = req.body

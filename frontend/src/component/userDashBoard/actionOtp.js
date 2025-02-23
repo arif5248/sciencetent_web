@@ -1,6 +1,7 @@
 import React, { Fragment, useState } from "react";
 import { useDispatch } from "react-redux";
 import "./actionOtp.css";
+import { fetchCreateOtp } from "../../slice/otpSlice";
 
 function PopupForOtpAndExStudentRegister({ content, onClose }) {
   const [batchName, setBatchName] = useState(content.batch?.name || "");
@@ -8,16 +9,33 @@ function PopupForOtpAndExStudentRegister({ content, onClose }) {
   const [otpMethod, setOtpMethod] = useState("sms"); // Default to SMS
   const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState("");
+  const [otpSentMessage, setOtpSentMessage] = useState("");
   const dispatch = useDispatch();
 
   const handleOtpSent = async () => {
     setLoading(true);
+    const otpData = {
+      toNumber : "0182526922",
+      sms : otpMethod === "sms" ? true : false
+    }
+    
+    dispatch(fetchCreateOtp(otpData))
+    .then((response) => {
+      if (response.error) {
+        console.log("=====1======",response)
+      } else {
+        console.log("=====2======",response)
+      }
+    })
+    .catch((error) => {
+      
+      console.log("=====3======",error)
+    });
     
     // Simulate API call to send OTP
     setTimeout(() => {
       setOtpSent(true);
       setLoading(false);
-      alert(`OTP sent via ${otpMethod.toUpperCase()}`);
     }, 1500);
   };
 
@@ -81,6 +99,10 @@ function PopupForOtpAndExStudentRegister({ content, onClose }) {
 
             {/* OTP Input Field (Visible after sending OTP) */}
             {otpSent && (
+              <Fragment>
+              <div className="otpSentMessage">
+                <p>{otpSentMessage}</p>
+              </div>
               <div className="otp-input">
                 <input
                   type="text"
@@ -97,6 +119,7 @@ function PopupForOtpAndExStudentRegister({ content, onClose }) {
                   {loading ? "Verifying..." : "Submit"}
                 </button>
               </div>
+              </Fragment>
             )}
           </Fragment>
         )}

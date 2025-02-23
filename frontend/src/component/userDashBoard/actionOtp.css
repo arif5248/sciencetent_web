@@ -23,7 +23,6 @@
     position: absolute;
     top: 10px;
     right: 10px;
-    background: none;
     border: none;
     font-size: 24px;
     cursor: pointer;
@@ -57,3 +56,100 @@
     align-items: center;
   }
   
+
+
+
+
+
+  /* ==================================== */
+  /* Overlay background */
+
+
+/* Popup box */
+
+
+/* Close button */
+
+
+
+
+/* OTP Method Selection */
+.otp-method {
+  display: flex;
+  justify-content: flex-start;
+  gap: 15px;
+  margin: 15px 0;
+}
+
+.otp-method label {
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.otp-method input {
+  margin-right: 5px;
+}
+
+/* Send OTP Button */
+.send-otp-btn {
+  background: #016c81;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.send-otp-btn:disabled {
+  background: gray;
+  cursor: not-allowed;
+}
+
+.send-otp-btn:hover:not(:disabled) {
+  background: #014e5d;
+}
+
+/* OTP Sent Message */
+.otpSentMessage p {
+  font-size: 14px;
+  color: green;
+  margin-bottom: 10px;
+}
+
+/* OTP Input */
+.otp-input {
+  margin-top: 15px;
+}
+
+.otp-input input {
+  width: 80%;
+  padding: 10px;
+  font-size: 18px;
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+/* Submit Button */
+.verify-otp-btn {
+  background: #f9bf29;
+  color: black;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.verify-otp-btn:disabled {
+  background: gray;
+  cursor: not-allowed;
+}
+
+.verify-otp-btn:hover:not(:disabled) {
+  background: #d9a619;
+}

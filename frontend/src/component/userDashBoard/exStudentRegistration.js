@@ -80,7 +80,6 @@ function ExStudentRegistration() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setLoading(true);
 
     const myForm = new FormData();
     myForm.append("name", name);
@@ -93,6 +92,7 @@ function ExStudentRegistration() {
     myForm.append("enrolledCourses", JSON.stringify(enrolledCourses));
 
     openPopup({
+        type: "otp",
         toNumber: whatsappNumber,
         myForm,
       });
