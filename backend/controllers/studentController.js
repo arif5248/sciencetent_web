@@ -148,10 +148,10 @@ exports.exRegisterStudent = catchAsyncError(async (req, res, next) => {
       otp
     } = req.body;
 
-    const pendingOtp = await Otp.find({ userId: req.user.id, otpStatus: "pending",createdAt: { $gte: twoMinutesAgo }  });
+    const pendingOtp = await Otp.findOne({ userId: req.user.id, otpStatus: "pending",createdAt: { $gte: twoMinutesAgo }  });
     console.log(pendingOtp)
     console.log("pendingOtp.otp", pendingOtp.otp, "==============", "otp", otp)
-    
+
     if(!pendingOtp || pendingOtp.otp !== otp){
       return next(new ErrorHandler("Otp Expired or not matched. Please try again", 500));
     }
