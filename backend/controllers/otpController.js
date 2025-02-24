@@ -6,12 +6,13 @@ const sendSMS = require("../utils/sendSms");
 
 exports.createOtpForExStudentVerification = catchAsyncError(async (req, res, next) => {
     const {sms, toNumber} = req.body
+    const twoMinutesAgo = new Date(Date.now() - 2 * 60 * 1000);
     const countOtp = await Otp.countDocuments({ userId: req.user.id, });
 
     if (countOtp >= 3) {
         return next(new ErrorHandler("You have already requested 3 OTPs. Please try again later or contact with Admin", 400));
     }
-    const pendingOtp = await Otp.countDocuments({ userId: req.user.id, otpStatus: "pending",});
+    const pendingOtp = await Otp.countDocuments({ userId: req.user.id, otpStatus: "pending",createdAt: { $gte: twoMinutesAgo }  });
     if (pendingOtp) {
         return next(new ErrorHandler("You have already requested for an OTP. Please try after 2 Minutes", 400));
     }
