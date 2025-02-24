@@ -41,23 +41,27 @@ function PopupForOtpAndExStudentRegister({ content, onClose }) {
         if (response.error) {
           setOtpSentMessage(response.payload);
           setOtpSent(false);
+          setLoading(false);
         } else {
           setOtpSentMessage(response.payload.message);
           if(response.payload.success === "false"){
             setOtpSent(false);
+            setLoading(false);
           }else{
             setOtpSent(true);
+            setLoading(false);
           }
 
         }
       })
       .catch((error) => {
         setOtpSentMessage(error);
+        setLoading(false);
       });
 
    
       
-      setLoading(false);
+      
   };
 
   const handleOtpSubmit = async () => {

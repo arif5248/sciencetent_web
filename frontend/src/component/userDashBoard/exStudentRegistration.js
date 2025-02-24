@@ -65,7 +65,7 @@ function ExStudentRegistration() {
       setSuccessMessage("Registration successful! Stay with Science Tent");
       setTimeout(() => {
         setSuccessMessage(null);
-      }, 5000);
+      }, 30000);
     }
 
     if (!isLoading && error) {
