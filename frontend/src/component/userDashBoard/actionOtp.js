@@ -42,7 +42,7 @@ function PopupForOtpAndExStudentRegister({ content, onClose }) {
           setOtpSent(false);
         } else {
           setOtpSentMessage(response.payload.message);
-          if(response.payload.message === "You have already requested 3 OTPs. Please try again later or contact with Admin"){
+          if(response.payload.success === "false"){
             setOtpSent(false);
           }else{
             setOtpSent(true);
@@ -70,7 +70,10 @@ function PopupForOtpAndExStudentRegister({ content, onClose }) {
         } else {
           
           setOtpSentMessage(response.payload.message);
-          onClose();
+          if(response.payload.success === true){
+            onClose();
+          }
+          
         }
       })
       .catch((error) => {
