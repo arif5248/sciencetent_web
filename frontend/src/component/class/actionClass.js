@@ -38,17 +38,7 @@ function PopupForApproveCancel({ content, onClose }) {
     return(formattedDateString)
   }
 
-  const handleRejectPopUp = async () => {
-    setRejectPopUp((prev) => prev + 1);
-    // setRejectPopUp(false)
-    content.type = 'reject'
-  };
-  const handleApprovePopUp = async () => {
-    setRejectPopUp((prev) => prev + 1);
-    // setRejectPopUp(false)
-    content.type = 'approve'
-  };
-  // console.log(content.student)
+  
   const handleApprove = async () => {
     setLoading(true)
     const batchId = content.pendingClass.batchDetails._id
@@ -75,20 +65,7 @@ function PopupForApproveCancel({ content, onClose }) {
       .finally(() => setLoading(false));
   };
 
-  const handleReject = async () => {
-    try {
-      setLoading(true); // Set loading to true while processing
-      await dispatch(fetchRejectStudent({studentID : content.student._id, correctionNote : {note : note}})).unwrap(); // Dispatch the delete batch action
-      // console.log("Batch deleted successfully:", content.batch._id);
-
-    } catch (error) {
-      console.error("Error deleting batch:", error); // Handle any errors during deletion
-    } finally {
-      setLoading(false); // Set loading to false after deletion completes
-      onClose(); // Close the popup after deletion
-      setSuccessMessage("Successfully rejected the form")
-    }
-  };
+  
 
   const sendScheduleToStudents = async () => {
     setShowBoxOne(false);
@@ -100,7 +77,6 @@ function PopupForApproveCancel({ content, onClose }) {
     );
 
     let allReports = [...allMessageReports.allReports];
-    console.log("======12345=====", allReports);
 
     let sent = 0;
     let failed = 0;
@@ -118,16 +94,13 @@ function PopupForApproveCancel({ content, onClose }) {
         ).unwrap();
 
         if (response.success === true) {
-          console.log(1);
           allReports[i] = { ...allReports[i], status: "sent" };
           sent++;
         } else {
-          console.log(2);
           allReports[i] = { ...allReports[i], status: "failed" };
           failed++;
         }
       } catch (err) {
-        console.log(3);
         allReports[i] = { ...allReports[i], status: "failed" };
         failed++;
       }
@@ -139,7 +112,6 @@ function PopupForApproveCancel({ content, onClose }) {
     // Now update the state after the loop completes
     setUpdatedAllReports(allReports);
 
-    console.log(pendingClassesToApproveData);
     try {
       const response = await dispatch(
         fetchUpdateClassMessageReport({
@@ -178,6 +150,23 @@ function PopupForApproveCancel({ content, onClose }) {
   const retryMessage = async (msgReport) => {
     console.log(msgReport)
   }
+
+  const copySchedule = async () => {
+  
+    const messageData = content.pendingClass.classes.map(cls => {
+      return `${cls.courseName}: ${cls.startingTime} - ${cls.finishingTime}`;
+    }).join("\n");
+  
+    const message = `${formattedDateString(content.pendingClass.date)}\n\n${messageData}\n\nScience Tent\nAn Ultimate Education Care of Science`;
+  
+    try {
+      await navigator.clipboard.writeText(message);
+      alert("Schedule copied to clipboard! You can now paste it anywhere.");
+    } catch (error) {
+      alert("Failed to copy schedule. Please try again.");
+    }
+  };
+  
 
   return (
     <div className="popup-overlay">
@@ -238,7 +227,7 @@ function PopupForApproveCancel({ content, onClose }) {
                         <button
                             style={{ width: "45%" }}
                             className="btn btn-warning"
-                            onClick={onClose}
+                            onClick={copySchedule}
                             disabled={loading}
                         >
                             Click here to Copy
@@ -338,39 +327,7 @@ function PopupForApproveCancel({ content, onClose }) {
           </Fragment>
         )}
 
-        {content.type === "reject" && (
-          <Fragment>
-            <h3 style={{ fontSize: "20px" }}>
-              Are you sure to reject "{content.student.name}"?
-            </h3>
-            <div className="detail-row">
-                <span className="label">Note:</span>
-                <input
-                  type="text"
-                  value={note}
-                  onChange={(e) => setNote(e.target.value)}
-                />
-              </div>
-            <div className="deleteBtnGroup">
-              <button
-                style={{ width: "45%" }}
-                className="btn btn-danger"
-                onClick={onClose}
-                disabled={loading}
-              >
-                Cancel
-              </button>
-              <button
-                style={{ width: "45%" }}
-                className="btn btn-success"
-                onClick={handleReject}
-                disabled={loading}
-              >
-                {loading ? "Processing..." : "OK"}
-              </button>
-            </div>
-          </Fragment>
-        )}
+        
 
         
       </div>
