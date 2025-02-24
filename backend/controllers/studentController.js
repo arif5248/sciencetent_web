@@ -4,6 +4,7 @@ const Students = require("../models/studentModel");
 const Users = require("../models/userModel");
 const Batches = require("../models/batchModel");
 const Courses = require("../models/courseModel");
+const Otp = require('../models/otpModel')
 const cloudinary = require("cloudinary")
 const mongoose = require('mongoose');
 const sendSMS = require("../utils/sendSms");
@@ -144,8 +145,14 @@ exports.exRegisterStudent = catchAsyncError(async (req, res, next) => {
       address,
       batch,
       enrolledCourses,
-      
+      otp
     } = req.body;
+
+    const pendingOtp = await Otp.countDocuments({ userId: req.user.id, otpStatus: "pending",createdAt: { $gte: twoMinutesAgo }  });
+    if(!pendingOtp || pendingOtp.otp === otp){
+      return next(new ErrorHandler("Otp Expired or not matched. Please try again", 500));
+    }
+  
     let admissionFeeRef = "N/A"
     let collegeName = "N/A"
     let guardianInfo = {

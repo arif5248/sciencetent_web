@@ -2,6 +2,7 @@ import React, { Fragment, useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import "./actionOtp.css";
 import { fetchCreateOtp } from "../../slice/otpSlice";
+import { fetchRegisterExStudent } from "../../slice/studentSlice";
 
 function PopupForOtpAndExStudentRegister({ content, onClose }) {
   const [batchName, setBatchName] = useState(content.batch?.name || "");
@@ -54,11 +55,25 @@ function PopupForOtpAndExStudentRegister({ content, onClose }) {
 
   const handleOtpSubmit = async () => {
     setLoading(true);
+    content.myForm.append("otp", otp)
+
+    dispatch(fetchRegisterExStudent(content.myForm))
+      .then((response) => {
+        if (response.error) {
+          setOtpSentMessage(response.payload);
+        } else {
+          
+          setOtpSentMessage(response.payload.message);
+          onClose();
+        }
+      })
+      .catch((error) => {
+        setOtpSentMessage(error);
+      });
 
     // Simulate API call to verify OTP
     setTimeout(() => {
       setLoading(false);
-      alert(`OTP Verified Successfully!`);
       onClose(); // Close popup on success
     }, 1500);
   };
@@ -143,12 +158,12 @@ function PopupForOtpAndExStudentRegister({ content, onClose }) {
                 {/* Countdown Timer */}
                 {timeLeft > 0 && (
                   <div className="otp-timer">
-                    <p>Time left: {formatTime(timeLeft)}</p>
+                    <p style={{color: "red"}}>Time left: {formatTime(timeLeft)}</p>
                   </div>
                 )}
                 {timeLeft === 0 && (
                   <div className="otp-timer">
-                    <p>OTP Expired. Please request a new one.</p>
+                    <p style={{color: "red"}}>OTP Expired. Please request a new one.</p>
                   </div>
                 )}
               </Fragment>
