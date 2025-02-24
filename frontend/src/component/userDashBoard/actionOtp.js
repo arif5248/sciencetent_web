@@ -7,7 +7,7 @@ import { fetchRegisterExStudent } from "../../slice/studentSlice";
 function PopupForOtpAndExStudentRegister({ content, onClose }) {
   const [batchName, setBatchName] = useState(content.batch?.name || "");
   const [loading, setLoading] = useState(false);
-  const [otpMethod, setOtpMethod] = useState("sms"); // Default to SMS
+  const [otpMethod, setOtpMethod] = useState("email"); // Default to SMS
   const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState("");
   const [otpSentMessage, setOtpSentMessage] = useState("");
@@ -79,12 +79,9 @@ function PopupForOtpAndExStudentRegister({ content, onClose }) {
       .catch((error) => {
         setOtpSentMessage(error);
       });
-
-    // Simulate API call to verify OTP
-    setTimeout(() => {
       setLoading(false);
-      onClose(); // Close popup on success
-    }, 1500);
+    // Simulate API call to verify OTP
+    
   };
 
   // Format time to MM:SS
@@ -107,6 +104,16 @@ function PopupForOtpAndExStudentRegister({ content, onClose }) {
 
             {/* Radio Buttons for OTP Method */}
             <div className="otp-method">
+            <label>
+                <input
+                  type="radio"
+                  name="otpMethod"
+                  value="email"
+                  checked={otpMethod === "email"}
+                  onChange={() => setOtpMethod("email")}
+                />
+                Email
+              </label>
               <label>
                 <input
                   type="radio"
@@ -118,16 +125,7 @@ function PopupForOtpAndExStudentRegister({ content, onClose }) {
                 SMS
               </label>
 
-              <label>
-                <input
-                  type="radio"
-                  name="otpMethod"
-                  value="email"
-                  checked={otpMethod === "email"}
-                  onChange={() => setOtpMethod("email")}
-                />
-                Email
-              </label>
+              
             </div>
             <div className="otpSentMessage">
                   <p>{otpSentMessage}</p>
