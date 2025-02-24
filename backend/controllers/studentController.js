@@ -130,7 +130,7 @@ exports.registerStudent = catchAsyncError(async (req, res, next) => {
 });
 
 exports.exRegisterStudent = catchAsyncError(async (req, res, next) => {
-
+    const twoMinutesAgo = new Date(Date.now() - 2 * 60 * 1000);
     const user = req.user.id;
     const registeredStudent = await Students.findOne({ user: req.user._id });
     if(registeredStudent && (registeredStudent.status === 'pending' || registeredStudent.status === 'approved')){

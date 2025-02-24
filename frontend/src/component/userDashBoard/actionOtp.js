@@ -12,6 +12,7 @@ function PopupForOtpAndExStudentRegister({ content, onClose }) {
   const [otp, setOtp] = useState("");
   const [otpSentMessage, setOtpSentMessage] = useState("");
   const [timeLeft, setTimeLeft] = useState(120); // 2 minutes in seconds
+
   const dispatch = useDispatch();
 
   // Start countdown when OTP is sent
@@ -38,19 +39,24 @@ function PopupForOtpAndExStudentRegister({ content, onClose }) {
       .then((response) => {
         if (response.error) {
           setOtpSentMessage(response.payload);
+          setOtpSent(false);
         } else {
           setOtpSentMessage(response.payload.message);
+          if(response.payload.message === "You have already requested 3 OTPs. Please try again later or contact with Admin"){
+            setOtpSent(false);
+          }else{
+            setOtpSent(true);
+          }
+
         }
       })
       .catch((error) => {
         setOtpSentMessage(error);
       });
 
-    // Simulate API call to send OTP
-    setTimeout(() => {
-      setOtpSent(true);
+   
+      
       setLoading(false);
-    }, 1500);
   };
 
   const handleOtpSubmit = async () => {
@@ -120,7 +126,9 @@ function PopupForOtpAndExStudentRegister({ content, onClose }) {
                 Email
               </label>
             </div>
-
+            <div className="otpSentMessage">
+                  <p>{otpSentMessage}</p>
+                </div>
             {/* Send OTP Button */}
             {!otpSent && (
               <button
@@ -135,9 +143,7 @@ function PopupForOtpAndExStudentRegister({ content, onClose }) {
             {/* OTP Input Field (Visible after sending OTP) */}
             {otpSent && (
               <Fragment>
-                <div className="otpSentMessage">
-                  <p>{otpSentMessage}</p>
-                </div>
+                
                 <div className="otp-input">
                   <input
                     type="text"
