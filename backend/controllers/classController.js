@@ -211,6 +211,7 @@ exports.pendingClassToApprove = catchAsyncError(async (req, res, next) => {
           message: headingPart + "\n" + datePart + body +"\n" + lastPart
       });
     }else{
+      console.log("==========", student.name)
       allReport.push({
         studentId: student.studentID,
         studentName: student.name,

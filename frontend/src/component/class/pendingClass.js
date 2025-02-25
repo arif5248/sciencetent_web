@@ -19,19 +19,19 @@ function PendingClasses() {
   const openPopup = (content) => setShowPopup(true) || setPopupContent(content);
   const closePopup = () => setShowPopup(false) || setPopupContent(null);
 
-  const formattedDateString = (date)=>{
+  const formattedDateString = (date) => {
     const formattedDate = new Date(date);
 
     // Format the date using Intl.DateTimeFormat
-    const options = {
-      weekday: "long", // Day of the week (e.g., "Friday")
-      year: "numeric", // Full year (e.g., "2025")
-      month: "long", // Full month name (e.g., "January")
-      day: "numeric", // Day of the month (e.g., "31")
-    };
-    const formattedDateString = new Intl.DateTimeFormat("en-GB", options).format(formattedDate);
-    return(formattedDateString)
-  }
+    const dateOptions = { year: "numeric", month: "long", day: "numeric" };
+    const weekdayOptions = { weekday: "long" };
+
+    const formattedDatePart = new Intl.DateTimeFormat("en-GB", dateOptions).format(formattedDate);
+    const formattedWeekday = new Intl.DateTimeFormat("en-GB", weekdayOptions).format(formattedDate);
+
+    return `${formattedDatePart}, ${formattedWeekday}`;
+  };
+
     
   
 
