@@ -84,28 +84,30 @@ function PopupForApproveCancel({ content, onClose }) {
 
     // Loop through all reports sequentially
     for (let i = 0; i < allReports.length; i++) {
-      try {
-        const response = await dispatch(
-          fetchSendClassMessage({
-            toNumber: allReports[i].studentNumber,
-            message: allReports[i].message,
-          })
-        ).unwrap();
-
-        if (response.success === true) {
-          allReports[i] = { ...allReports[i], status: "sent" };
-          sent++;
-        } else {
+      if(allReports[i].status !== "notApplicable"){
+        try {
+          const response = await dispatch(
+            fetchSendClassMessage({
+              toNumber: allReports[i].studentNumber,
+              message: allReports[i].message,
+            })
+          ).unwrap();
+  
+          if (response.success === true) {
+            allReports[i] = { ...allReports[i], status: "sent" };
+            sent++;
+          } else {
+            allReports[i] = { ...allReports[i], status: "failed" };
+            failed++;
+          }
+        } catch (err) {
           allReports[i] = { ...allReports[i], status: "failed" };
           failed++;
         }
-      } catch (err) {
-        allReports[i] = { ...allReports[i], status: "failed" };
-        failed++;
+  
+        setProgress(((i + 1) / allReports.length) * 100);
+        setSendStatus({ sent, failed });
       }
-
-      setProgress(((i + 1) / allReports.length) * 100);
-      setSendStatus({ sent, failed });
     }
 
     // Now update the state after the loop completes
