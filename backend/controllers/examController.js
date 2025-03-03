@@ -3,36 +3,93 @@ const ErrorHandler = require("../utils/errorhander");
 const catchAsyncError = require("../middleware/catchAsyncError");
 const Exam = require("../models/examModel");
 const Batch = require("../models/batchModel")
+const Student = require("../models/studentModel")
 
 
+
+  // exports.createExam = catchAsyncError(async (req, res, next) => {
+  //   console.log(req.body.courses)
+  //   console.log(typeof(req.body.courses))
+  //   try {
+  //     const examData = {
+  //       name: req.body.name,
+  //       examCode: req.body.examCode,
+  //       // date: req.body.date,
+  //       // time: req.body.time,
+  //       totalMarks: req.body.totalMarks,
+  //       courses: JSON.parse(req.body.courses),
+  //       batches: JSON.parse(req.body.batches),
+  //       guards: JSON.parse(req.body.guards),
+  //       createdBy: {
+  //         user: req.user._id, // Assume `req.user` contains authenticated user info
+  //         name: req.user.name,
+  //       },
+  //     };
+  
+  //     const newExam = new Exam(examData);
+  //     await newExam.save();
+  
+  //     res.status(201).json({ message: "Exam created successfully", exam: newExam });
+  //   } catch (error) {
+  //     return next(new ErrorHandler(`Error creating exam = ${error}`, 500));
+  //   }
+  // });
 
   exports.createExam = catchAsyncError(async (req, res, next) => {
-    console.log(req.body.courses)
-    console.log(typeof(req.body.courses))
     try {
-      const examData = {
-        name: req.body.name,
-        examCode: req.body.examCode,
-        // date: req.body.date,
-        // time: req.body.time,
-        totalMarks: req.body.totalMarks,
-        courses: JSON.parse(req.body.courses),
-        batches: JSON.parse(req.body.batches),
-        guards: JSON.parse(req.body.guards),
-        createdBy: {
-          user: req.user._id, // Assume `req.user` contains authenticated user info
-          name: req.user.name,
-        },
-      };
-  
-      const newExam = new Exam(examData);
-      await newExam.save();
-  
-      res.status(201).json({ message: "Exam created successfully", exam: newExam });
+        const { name, examCode, totalMarks } = req.body;
+        const courses = JSON.parse(req.body.courses);
+        const batches = JSON.parse(req.body.batches);
+        const guards = JSON.parse(req.body.guards);
+
+        // Fetch all students for the given batches
+        const batchIds = batches.map(batch => batch._id);
+        const students = await Student.find({ batch: { $in: batchIds } }).select("_id batch");
+
+        // Initialize result with all students and set marks to null
+        const result = batches.map(batch => {
+            const batchStudents = students.filter(student => student.batch.toString() === batch._id.toString());
+
+            return {
+                batchId: batch._id,
+                batchWiseResult: batchStudents.map(student => ({
+                    student: student._id,
+                    courses: courses.map(course => ({
+                        courseId: course.course,
+                        courseName: course.courseName,
+                        marks: {
+                            cq: null,
+                            mcq: null
+                        }
+                    }))
+                }))
+            };
+        });
+
+        // Create the exam object
+        const examData = {
+            name,
+            examCode,
+            totalMarks,
+            courses,
+            batches,
+            guards,
+            result, // Include default result field
+            createdBy: {
+                user: req.user._id,
+                name: req.user.name,
+            },
+        };
+
+        const newExam = new Exam(examData);
+        await newExam.save();
+
+        res.status(201).json({ message: "Exam created successfully", exam: newExam });
     } catch (error) {
-      return next(new ErrorHandler(`Error creating exam = ${error}`, 500));
+        return next(new ErrorHandler(`Error creating exam = ${error}`, 500));
     }
-  });
+});
+
 
   exports.getAllExamBatchWise = catchAsyncError(async (req, res, next) => {
     const { batchId } = req.params;
