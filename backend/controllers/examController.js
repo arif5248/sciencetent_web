@@ -45,7 +45,6 @@ const Student = require("../models/studentModel")
         // Fetch all students for the given batches
         const batchIds = batches.map(batch => batch._id);
         const students = await Student.find({ "batchDetails.batchId": { $in: batchIds } })
-            .select("_id batchDetails");
 
         console.log(students);
 
@@ -63,8 +62,8 @@ const Student = require("../models/studentModel")
                         courseId: course.course,
                         courseName: course.courseName,
                         marks: {
-                            cq: null,
-                            mcq: null
+                            cq: "null",
+                            mcq: "null"
                         }
                     }))
                 }))
