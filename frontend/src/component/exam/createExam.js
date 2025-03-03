@@ -73,8 +73,9 @@ function CreateExam() {
   const addCourse = () => {
     setSelectedCourses([
       ...selectedCourses,
-      { course: "", courseName: "", courseCode: "", marks: "", date: "", time: ""  },
+      { course: "", courseName: "", courseCode: "", marks: {cq: "", mcq:""}, date: "", time: ""  },
     ]);
+    console.log(selectedCourses)
   };
 
   // Updating a course when selected
@@ -117,14 +118,14 @@ function CreateExam() {
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
-
-    const totalCourseMarks = selectedCourses.reduce((acc, cur) => acc + Number(cur.marks), 0);
+    console.log(selectedCourses)
+    const totalCourseMarks = selectedCourses.reduce((acc, cur) => acc + Number(cur.marks.cq) + Number(cur.marks.mcq), 0);
     if (totalCourseMarks !== Number(totalMarks)) {
       setErrorMessage("Total marks of courses must equal exam's total marks!");
       setLoading(false);
       return;
     }
-
+    console.log(selectedCourses)
     const myForm = new FormData();
 
     myForm.append("name", examName);
@@ -189,16 +190,6 @@ function CreateExam() {
               />
             </div>
 
-            {/* Date and Time */}
-            {/* <div className="formGroup">
-              <label>Date</label>
-              <input type="date" value={examDate} onChange={(e) => setExamDate(e.target.value)} required />
-            </div>
-            <div className="formGroup">
-              <label>Time</label>
-              <input type="time" value={examTime} onChange={(e) => setExamTime(e.target.value)} required />
-            </div> */}
-
             {/* Total Marks */}
             <div className="formGroup">
               <label>Total Marks</label>
@@ -235,14 +226,26 @@ function CreateExam() {
 
                   <input
                     type="number"
-                    value={course.marks}
+                    value={course.marks.cq}
                     onChange={(e) => {
                       const updatedCourses = [...selectedCourses];
                       
-                      updatedCourses[index].marks = e.target.value;
+                      updatedCourses[index].marks.cq = e.target.value;
                       setSelectedCourses(updatedCourses);
                     }}
-                    placeholder="Marks"
+                    placeholder="CQ"
+                    required
+                  />
+                  <input
+                    type="number"
+                    value={course.marks.mcq}
+                    onChange={(e) => {
+                      const updatedCourses = [...selectedCourses];
+                      
+                      updatedCourses[index].marks.mcq = e.target.value;
+                      setSelectedCourses(updatedCourses);
+                    }}
+                    placeholder="MCQ"
                     required
                   />
                   <input
