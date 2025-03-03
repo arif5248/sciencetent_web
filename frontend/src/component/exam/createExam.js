@@ -123,6 +123,9 @@ function CreateExam() {
     if (totalCourseMarks !== Number(totalMarks)) {
       setErrorMessage("Total marks of courses must equal exam's total marks!");
       setLoading(false);
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 20000);
       return;
     }
     console.log(selectedCourses)
