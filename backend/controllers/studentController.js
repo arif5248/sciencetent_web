@@ -111,7 +111,6 @@ exports.registerStudent = catchAsyncError(async (req, res, next) => {
       enrolledCourses: courseDetails,
       guardianInfo,
       admissionFeeRef,
-      status
     });
 
     res.status(200).json({ success: true, student });
