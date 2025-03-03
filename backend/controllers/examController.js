@@ -7,6 +7,8 @@ const Batch = require("../models/batchModel")
 
 
   exports.createExam = catchAsyncError(async (req, res, next) => {
+    console.log(req.body.courses)
+    console.log(typeof(req.body.courses))
     try {
       const examData = {
         name: req.body.name,
