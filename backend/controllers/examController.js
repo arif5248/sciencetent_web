@@ -58,6 +58,8 @@ const Student = require("../models/studentModel")
                 batchId: batch._id,
                 batchWiseResult: batchStudents.map(student => ({
                     student: student._id,
+                    studentID: student.studentID,
+                    studentName: student.name,
                     courses: courses.map(course => ({
                         courseId: course.course,
                         courseName: course.courseName,

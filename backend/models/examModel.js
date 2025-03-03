@@ -101,6 +101,14 @@ const examSchema = new mongoose.Schema({
             ref: "Students", // Reference to the Students collection
             required: true,
           },
+          studentID: {
+            type: String,
+            require: true,
+          },
+          studentName: {
+            type: String,
+            require: true,
+          },
           courses: [
             {
               courseId: {
