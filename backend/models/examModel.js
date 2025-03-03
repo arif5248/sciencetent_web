@@ -8,6 +8,7 @@ const examSchema = new mongoose.Schema({
   examCode:{
     type: String,
     required: true,
+    unique: true,
   },
   
   totalMarks: {

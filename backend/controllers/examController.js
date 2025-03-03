@@ -5,39 +5,13 @@ const Exam = require("../models/examModel");
 const Batch = require("../models/batchModel")
 const Student = require("../models/studentModel")
 
-
-
-  // exports.createExam = catchAsyncError(async (req, res, next) => {
-  //   console.log(req.body.courses)
-  //   console.log(typeof(req.body.courses))
-  //   try {
-  //     const examData = {
-  //       name: req.body.name,
-  //       examCode: req.body.examCode,
-  //       // date: req.body.date,
-  //       // time: req.body.time,
-  //       totalMarks: req.body.totalMarks,
-  //       courses: JSON.parse(req.body.courses),
-  //       batches: JSON.parse(req.body.batches),
-  //       guards: JSON.parse(req.body.guards),
-  //       createdBy: {
-  //         user: req.user._id, // Assume `req.user` contains authenticated user info
-  //         name: req.user.name,
-  //       },
-  //     };
-  
-  //     const newExam = new Exam(examData);
-  //     await newExam.save();
-  
-  //     res.status(201).json({ message: "Exam created successfully", exam: newExam });
-  //   } catch (error) {
-  //     return next(new ErrorHandler(`Error creating exam = ${error}`, 500));
-  //   }
-  // });
-
   exports.createExam = catchAsyncError(async (req, res, next) => {
     try {
         const { name, examCode, totalMarks } = req.body;
+        // const isExist = await Exam.findOne({"examCode": examCode})
+        // if(isExist){
+        //   return next(new ErrorHandler(`Batch not found`, 400));
+        // }
         const courses = JSON.parse(req.body.courses);
         const batches = JSON.parse(req.body.batches);
         const guards = JSON.parse(req.body.guards);
@@ -45,8 +19,6 @@ const Student = require("../models/studentModel")
         // Fetch all students for the given batches
         const batchIds = batches.map(batch => batch._id);
         const students = await Student.find({ "batchDetails.batchId": { $in: batchIds } })
-
-        console.log(students);
 
         // Initialize result with all students and set marks to null
         const result = batches.map(batch => {
