@@ -31,8 +31,14 @@ const examSchema = new mongoose.Schema({
         required: true,
       },
       marks: {
-        type: Number,
-        required: true,
+        cq:{
+          type: String,
+          required: true, // Marks scored in this course
+        },
+        mcq:{
+          type: String, 
+          required: true, // Marks scored in this course
+        },
       },
       date: {
         type: Date,
