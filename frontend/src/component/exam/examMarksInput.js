@@ -16,7 +16,6 @@ function ExamMarksInput() {
   const [batchOptions, setBatchOptions] = useState([]);
   const [examOptions, setExamOptions] = useState([]);
   const [courseOptions, setCourseOptions] = useState([]);
-  const [students, setStudents] = useState([]);
   const [course, setCourse] = useState({});
   const [marks, setMarks] = useState([]);
   const [batchWiseResult, setBatchWiseResult] = useState([]);
@@ -92,41 +91,6 @@ function ExamMarksInput() {
     setShowMarksSheet(true);
     console.log(batchWiseResult)
     
-  };
-  
-
-  // useEffect(() => {
-  //   if (students.length > 0 && courses.length > 0) {
-  //     const initialMarks = students.map((student) => ({
-  //       id: student.id,
-  //       studentId: student.studentID,
-  //       studentName: student.name,
-  //       courseMarks: courses.reduce((acc, course) => {
-  //         acc[course.id] = ""; // Initialize marks as empty
-  //         return acc;
-  //       }, {}),
-  //       total: 0,
-  //     }));
-  //     setMarks(initialMarks);
-  //   }
-  // }, [students, courses]);
-
-  const handleInputChange = (studentId, courseId, value) => {
-    const updatedMarks = marks.map((mark) => {
-      if (mark.studentId === studentId) {
-        const updatedCourseMarks = {
-          ...mark.courseMarks,
-          [courseId]: value.trim(), // Accept both numeric and string inputs
-        };
-        const total = Object.values(updatedCourseMarks).reduce(
-          (sum, mark) => (isNaN(parseFloat(mark)) ? sum : sum + parseFloat(mark)),
-          0
-        );
-        return { ...mark, courseMarks: updatedCourseMarks, total };
-      }
-      return mark;
-    });
-    setMarks(updatedMarks);
   };
   
 
@@ -276,25 +240,6 @@ function ExamMarksInput() {
                     })
                   }
 
-
-                    {/* {marks.map((mark) => (
-                      <tr key={mark.studentId}>
-                        <td>{mark.studentId}</td>
-                        {courses.map((course) => (
-                          <td key={course.id}>
-                            <input
-                              className="numberInput"
-                              type="text"
-                              value={mark.courseMarks[course.id]}
-                              onChange={(e) =>
-                                handleInputChange(mark.studentId, course.id, e.target.value)
-                              }
-                            />
-                          </td>
-                        ))}
-                        <td>{mark.total}</td>
-                      </tr>
-                    ))} */}
                   </tbody>
                 </table>
                 <button onClick={handleSubmit}>Submit Marks</button>
