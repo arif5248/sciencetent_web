@@ -47,7 +47,6 @@ function ExamMarksInput() {
     setBatch(batchId);
     setShowExamSelectBox(false);
     setShowMarksSheet(false);
-    setStudents([]);
     setMarks([]);
     setExamOptions([]);
     setExam("");
