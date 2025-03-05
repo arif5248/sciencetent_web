@@ -93,11 +93,7 @@ exports.forgotPassword = catchAsyncError(async (req, res, next) => {
   console.log(message)
   // console.log(req)
   try {
-    await sendEmail({
-      email: user.email,
-      subject: `Password Recovery`,
-      message,
-    });
+    
 
     res.status(200).json({
       success: true,

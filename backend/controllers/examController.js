@@ -127,6 +127,16 @@ exports.getAllExamOptionsBatchWise = catchAsyncError(async (req, res, next) => {
   }); 
 });
 
+exports.getSingleExamDetails = catchAsyncError(async (req, res, next) => {
+  const exam = await Exam.findById(req.params.id);
+  if (!exam) {
+    return next(
+      new ErrorHandler(`Exam doesn't exist with Id: ${req.params.id}`, 400)
+    );
+  }
+  res.status(200).json({ success: true, exam });
+});
+
 
 exports.batchWiseMarksInput = catchAsyncError(async (req, res, next) => {
   const { resultData } = req.body; // Extracting resultData from the request body
