@@ -98,6 +98,35 @@ const Student = require("../models/studentModel")
     });
 });
 
+exports.getAllExamOptionsBatchWise = catchAsyncError(async (req, res, next) => {     
+  const { batchId } = req.params;  
+
+  // Validate batch ID     
+  const batch = await Batch.findById(batchId);     
+  if (!batch) {         
+      return next(new ErrorHandler(`Batch not found`, 400));     
+  }  
+
+  // Fetch only exam _id and name associated with the batch     
+  const exams = await Exam.find(
+      { 'batches._id': batchId }  // Match batchId in the batches array
+  ).select('_id name'); // Select only _id and name
+
+  // Check if exams exist     
+  if (exams.length === 0) {         
+      return res.status(404).json({             
+          success: false,             
+          message: 'No exams found for the specified batch.',         
+      });     
+  }  
+
+  // Send response     
+  res.status(200).json({         
+      success: true,         
+      exams,     
+  }); 
+});
+
 
 exports.batchWiseMarksInput = catchAsyncError(async (req, res, next) => {
   const { resultData } = req.body; // Extracting resultData from the request body

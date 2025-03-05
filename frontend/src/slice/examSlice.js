@@ -22,12 +22,12 @@ export const fetchCreateExam = createAsyncThunk(
   }
 );
 
-export const fetchGetAllExamBatchWise = createAsyncThunk(
-  "exam/fetchGetAllExamBatchWise",
+export const fetchGetAllExamOptionsBatchWise = createAsyncThunk(
+  "exam/fetchGetAllExamOptionsBatchWise",
   async (batchId, { rejectWithValue }) => {
     try {
       const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
-      const { data } = await axios.get(`${baseUrl}/api/v1/admin/getAllExamBatchWise/${batchId}`, config);
+      const { data } = await axios.get(`${baseUrl}/api/v1/admin/getAllExamOptionsBatchWise/${batchId}`, config);
       return data;
     } catch (error) {
       // Handle error response, including HTTP 409 Conflict
@@ -84,15 +84,15 @@ const examSlice = createSlice({
         state.error = action.payload || "An unexpected error occurred";
         })
 
-        .addCase(fetchGetAllExamBatchWise.pending, (state) => {
+        .addCase(fetchGetAllExamOptionsBatchWise.pending, (state) => {
           state.isLoading = true;
           })
-          .addCase(fetchGetAllExamBatchWise.fulfilled, (state, action) => {
+          .addCase(fetchGetAllExamOptionsBatchWise.fulfilled, (state, action) => {
           state.isLoading = false;
           state.allExamBatchWise = action.payload.exams;
           state.error = null;
           })
-          .addCase(fetchGetAllExamBatchWise.rejected, (state, action) => {
+          .addCase(fetchGetAllExamOptionsBatchWise.rejected, (state, action) => {
           state.isLoading = false;
           state.allExamBatchWise = null;
           state.error = action.payload || "An unexpected error occurred";

@@ -5,7 +5,7 @@ import Loader from "../layout/loader/loader";
 import { useNavigate } from "react-router-dom";
 import "./getResult.css";
 import { fetchAllBatchForReg } from "../../slice/batchSlice";
-import { fetchGetAllExamBatchWise } from "../../slice/examSlice";
+import { fetchGetAllExamOptionsBatchWise } from "../../slice/examSlice";
 import BatchWiseAllExam from "./batchWiseAllExam";
 
 function GetResult() {
@@ -59,7 +59,7 @@ function GetResult() {
     setBatch(batchId)
 
     setLoading(true);
-        dispatch(fetchGetAllExamBatchWise(batchId))
+        dispatch(fetchGetAllExamOptionsBatchWise(batchId))
         .unwrap()
         .then((response) => {
             // console.log(response)

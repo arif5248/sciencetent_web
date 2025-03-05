@@ -5,7 +5,7 @@ import Loader from "../layout/loader/loader";
 import { useNavigate } from "react-router-dom";
 import "./examMarksInput.css";
 import { fetchAllBatchForReg } from "../../slice/batchSlice";
-import { fetchBatchWiseMarksInput, fetchGetAllExamBatchWise } from "../../slice/examSlice";
+import { fetchBatchWiseMarksInput, fetchGetAllExamOptionsBatchWise } from "../../slice/examSlice";
 import { fetchAllStudentsBatchWise } from "../../slice/studentSlice";
 
 function ExamMarksInput() {
@@ -22,6 +22,7 @@ function ExamMarksInput() {
   const [batch, setBatch] = useState("");
   const [exam, setExam] = useState("");
   const [showExamSelectBox, setShowExamSelectBox] = useState(false);
+  const [showCourseSelectBox, setShowCourseSelectBox] = useState(false);
   const [showMarksSheet, setShowMarksSheet] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
@@ -52,7 +53,7 @@ function ExamMarksInput() {
     if (!batchId) return;
 
     setLoading(true);
-    dispatch(fetchGetAllExamBatchWise(batchId))
+    dispatch(fetchGetAllExamOptionsBatchWise(batchId))
       .unwrap()
       .then((response) => {
         setExamOptions(response.exams || []);
@@ -72,30 +73,30 @@ function ExamMarksInput() {
       })
       .finally(() => setLoading(false));
   };
-
+console.log(examOptions)
   const handleExam = (examId) => {
     setExam(examId);
-    setShowMarksSheet(false);
+    setShowMarksSheet(true);
     const selectedExam = examOptions.find((exam) => exam._id === examId);
     console.log(selectedExam.result)
-    let isExist =[]
-    if(selectedExam.result.length !== 0){
-      isExist = selectedExam.result.filter((item) => batch === item.batchId.toString());
-      console.log("is Exist", isExist)
-    }
-    if (selectedExam && isExist.length === 0) {
-      const courseData = selectedExam.courses.map((course) => ({
-        id: course.course,
-        name: course.courseName,
-        maxMarks: course.marks,
-      }));
-      setCourses(courseData);
-      setShowMarksSheet(true);
-    }else{
-      setErrorMessage("The marks are inputted already for this batch.")
-      setTimeout(() => setErrorMessage(null), 5000);
+    // let isExist =[]
+    // if(selectedExam.result.length !== 0){
+    //   isExist = selectedExam.result.filter((item) => batch === item.batchId.toString());
+    //   console.log("is Exist", isExist)
+    // }
+    // if (selectedExam && isExist.length === 0) {
+    //   const courseData = selectedExam.courses.map((course) => ({
+    //     id: course.course,
+    //     name: course.courseName,
+    //     maxMarks: course.marks,
+    //   }));
+    //   setCourses(courseData);
+    //   setShowMarksSheet(true);
+    // }else{
+    //   setErrorMessage("The marks are inputted already for this batch.")
+    //   setTimeout(() => setErrorMessage(null), 5000);
 
-    }
+    // }
   };
 
   useEffect(() => {
@@ -198,6 +199,19 @@ function ExamMarksInput() {
                   </select>
                 </div>
               )}
+
+              {showCourseSelectBox && (
+                <div className="form-group">
+                  <select value={exam} onChange={(e) => handleExam(e.target.value)}>
+                    <option value="">Select Exam</option>
+                    {examOptions.map((exam) => (
+                      <option key={exam._id} value={exam._id}>
+                        {exam.examCode}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
             </div>
             {errorMessage && <p className="error">{errorMessage}</p>}
             {successMessage && <p className="success">{successMessage}</p>}
@@ -214,7 +228,8 @@ function ExamMarksInput() {
                     </tr>
                   </thead>
                   <tbody>
-                    {marks.map((mark) => (
+                  {console.log(courses)}
+                    {/* {marks.map((mark) => (
                       <tr key={mark.studentId}>
                         <td>{mark.studentId}</td>
                         {courses.map((course) => (
@@ -231,7 +246,7 @@ function ExamMarksInput() {
                         ))}
                         <td>{mark.total}</td>
                       </tr>
-                    ))}
+                    ))} */}
                   </tbody>
                 </table>
                 <button onClick={handleSubmit}>Submit Marks</button>
