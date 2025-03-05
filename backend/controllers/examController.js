@@ -110,7 +110,7 @@ exports.getAllExamOptionsBatchWise = catchAsyncError(async (req, res, next) => {
   // Fetch only exam _id and name associated with the batch     
   const exams = await Exam.find(
       { 'batches._id': batchId }  // Match batchId in the batches array
-  ).select('_id name'); // Select only _id and name
+  ).select('_id name examCode'); // Select only _id and name
 
   // Check if exams exist     
   if (exams.length === 0) {         
