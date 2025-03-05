@@ -5,7 +5,7 @@ import Loader from "../layout/loader/loader";
 import { useNavigate } from "react-router-dom";
 import "./examMarksInput.css";
 import { fetchAllBatchForReg } from "../../slice/batchSlice";
-import { fetchBatchWiseMarksInput, fetchGetAllExamOptionsBatchWise } from "../../slice/examSlice";
+import { fetchBatchWiseMarksInput, fetchGetAllExamOptionsBatchWise, fetchGetSingleExamDetails } from "../../slice/examSlice";
 import { fetchAllStudentsBatchWise } from "../../slice/studentSlice";
 
 function ExamMarksInput() {
@@ -15,12 +15,16 @@ function ExamMarksInput() {
   const [loading, setLoading] = useState(false);
   const [batchOptions, setBatchOptions] = useState([]);
   const [examOptions, setExamOptions] = useState([]);
+  const [courseOptions, setCourseOptions] = useState([]);
   const [students, setStudents] = useState([]);
-  const [courses, setCourses] = useState([]);
+  const [course, setCourse] = useState({});
   const [marks, setMarks] = useState([]);
+  const [batchWiseResult, setBatchWiseResult] = useState([]);
+  const [examDetails, setExamDetails] = useState({});
 
   const [batch, setBatch] = useState("");
   const [exam, setExam] = useState("");
+  const [selectedCourseId, setSelectedCourseId] = useState("");
   const [showExamSelectBox, setShowExamSelectBox] = useState(false);
   const [showCourseSelectBox, setShowCourseSelectBox] = useState(false);
   const [showMarksSheet, setShowMarksSheet] = useState(false);
@@ -45,7 +49,6 @@ function ExamMarksInput() {
     setShowExamSelectBox(false);
     setShowMarksSheet(false);
     setStudents([]);
-    setCourses([]);
     setMarks([]);
     setExamOptions([]);
     setExam("");
@@ -58,62 +61,55 @@ function ExamMarksInput() {
       .then((response) => {
         setExamOptions(response.exams || []);
         setShowExamSelectBox(true);
-        return dispatch(fetchAllStudentsBatchWise(batchId)).unwrap();
-      })
-      .then((response) => {
-        const studentData = response.students.map((student) => ({
-          id: student._id,
-          name: student.name,
-          studentID: student.studentID,
-        }));
-        setStudents(studentData);
       })
       .catch((err) => {
         setErrorMessage(err.message || "Failed to load data.");
       })
       .finally(() => setLoading(false));
   };
-console.log(examOptions)
   const handleExam = (examId) => {
     setExam(examId);
-    setShowMarksSheet(true);
-    const selectedExam = examOptions.find((exam) => exam._id === examId);
-    console.log(selectedExam.result)
-    // let isExist =[]
-    // if(selectedExam.result.length !== 0){
-    //   isExist = selectedExam.result.filter((item) => batch === item.batchId.toString());
-    //   console.log("is Exist", isExist)
-    // }
-    // if (selectedExam && isExist.length === 0) {
-    //   const courseData = selectedExam.courses.map((course) => ({
-    //     id: course.course,
-    //     name: course.courseName,
-    //     maxMarks: course.marks,
-    //   }));
-    //   setCourses(courseData);
-    //   setShowMarksSheet(true);
-    // }else{
-    //   setErrorMessage("The marks are inputted already for this batch.")
-    //   setTimeout(() => setErrorMessage(null), 5000);
+    console.log(examId)
+    setShowMarksSheet(false);
 
-    // }
+    dispatch(fetchGetSingleExamDetails(examId))
+      .unwrap()
+      .then((response) => {
+        setExamDetails(response.exams);
+        setCourseOptions(response.exam.courses)
+        setBatchWiseResult((response.exam.result.find(item => item.batchId === batch).batchWiseResult))
+        setShowCourseSelectBox(true);
+      })
+      .catch((err) => {
+        setErrorMessage(err.message || "Failed to load data.");
+      })
+      .finally(() => setLoading(false));
   };
 
-  useEffect(() => {
-    if (students.length > 0 && courses.length > 0) {
-      const initialMarks = students.map((student) => ({
-        id: student.id,
-        studentId: student.studentID,
-        studentName: student.name,
-        courseMarks: courses.reduce((acc, course) => {
-          acc[course.id] = ""; // Initialize marks as empty
-          return acc;
-        }, {}),
-        total: 0,
-      }));
-      setMarks(initialMarks);
-    }
-  }, [students, courses]);
+  const handleCourse = (courseId) => {
+    setSelectedCourseId(courseId)
+    setCourse(courseOptions.find(course => course.course === courseId))
+    setShowMarksSheet(true);
+    console.log(batchWiseResult)
+    
+  };
+  
+
+  // useEffect(() => {
+  //   if (students.length > 0 && courses.length > 0) {
+  //     const initialMarks = students.map((student) => ({
+  //       id: student.id,
+  //       studentId: student.studentID,
+  //       studentName: student.name,
+  //       courseMarks: courses.reduce((acc, course) => {
+  //         acc[course.id] = ""; // Initialize marks as empty
+  //         return acc;
+  //       }, {}),
+  //       total: 0,
+  //     }));
+  //     setMarks(initialMarks);
+  //   }
+  // }, [students, courses]);
 
   const handleInputChange = (studentId, courseId, value) => {
     const updatedMarks = marks.map((mark) => {
@@ -138,11 +134,11 @@ console.log(examOptions)
     // console.log(courses)
     const transformedData = marks.map((mark) => ({
       student: mark.id,
-      courses: courses.map((course) => ({
-        courseId: course.id,
-        courseName : course.name,
-        marks: mark.courseMarks[course.id] === '' ? "0" :mark.courseMarks[course.id],
-      })),
+      // courses: courses.map((course) => ({
+      //   courseId: course.id,
+      //   courseName : course.name,
+      //   marks: mark.courseMarks[course.id] === '' ? "0" :mark.courseMarks[course.id],
+      // })),
     }));
 
     const requestData = {
@@ -202,11 +198,11 @@ console.log(examOptions)
 
               {showCourseSelectBox && (
                 <div className="form-group">
-                  <select value={exam} onChange={(e) => handleExam(e.target.value)}>
-                    <option value="">Select Exam</option>
-                    {examOptions.map((exam) => (
-                      <option key={exam._id} value={exam._id}>
-                        {exam.examCode}
+                  <select value={selectedCourseId} onChange={(e) => handleCourse(e.target.value)}>
+                    <option value="">Select Course</option>
+                    {courseOptions.map((course) => (
+                      <option key={course.course} value={course.course}>
+                        {course.courseName}
                       </option>
                     ))}
                   </select>
@@ -220,15 +216,67 @@ console.log(examOptions)
                 <table className="marksInputTable">
                   <thead>
                     <tr>
-                      <th>Student ID</th>
-                      {courses.map((course) => (
-                        <th key={course.id}>{course.name} (out of {course.maxMarks})</th>
-                      ))}
+                      <th rowSpan={2}>ID</th>
+                      <th rowSpan={2}>Name</th>
+                      <th colSpan={3}>{course.courseName}</th>
+                    </tr>
+                    <tr>
+                      <th>CQ (out of {course.marks.cq})</th>
+                      <th>MCQ (out of {course.marks.mcq})</th>
                       <th>Total</th>
                     </tr>
                   </thead>
                   <tbody>
-                  {console.log(courses)}
+                  {
+                    batchWiseResult.map((item) => {
+                      console.log("+++++++",course)
+                      const selectedCourse = item.courses.find(c => c.courseId === selectedCourseId); // Find the course
+                      console.log(selectedCourse)
+                      return (
+                        <tr key={item.studentID}>
+                          <td>{item.studentID}</td>
+                          <td>{item.studentName}</td>
+                          {selectedCourse ? (
+                            <>
+                              <td>
+                                <input
+                                className="numberInput"
+                                type="text"
+                                value={selectedCourse.marks.cq}
+                                // onChange={(e) =>
+                                //   handleInputChange(mark.studentId, course.id, e.target.value)
+                                // }
+                                />
+                              </td>
+                              <td>
+                                <input
+                                className="numberInput"
+                                type="text"
+                                value={selectedCourse.marks.mcq}
+                                // onChange={(e) =>
+                                //   handleInputChange(mark.studentId, course.id, e.target.value)
+                                // }
+                                />
+                              </td>
+                              <td>
+                                {selectedCourse.marks.cq !== "null" && selectedCourse.marks.mcq !== "null"
+                                  ? Number(selectedCourse.marks.cq) + Number(selectedCourse.marks.mcq)
+                                  : 0}
+                              </td>
+                            </>
+                          ) : (
+                            <>
+                              <td>-</td>
+                              <td>-</td>
+                              <td>-</td>
+                            </>
+                          )}
+                        </tr>
+                      );
+                    })
+                  }
+
+
                     {/* {marks.map((mark) => (
                       <tr key={mark.studentId}>
                         <td>{mark.studentId}</td>

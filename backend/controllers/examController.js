@@ -18,7 +18,7 @@ const Student = require("../models/studentModel")
 
         // Fetch all students for the given batches
         const batchIds = batches.map(batch => batch._id);
-        const students = await Student.find({ "batchDetails.batchId": { $in: batchIds } })
+        const students = await Student.find({ "batchDetails.batchId": { $in: batchIds },status: "approved" })
 
         // Initialize result with all students and set marks to null
         const result = batches.map(batch => {

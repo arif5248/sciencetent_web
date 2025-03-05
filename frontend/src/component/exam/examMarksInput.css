@@ -9,6 +9,8 @@
     border-radius: 15px;
     box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
     animation: fadeIn 0.8s ease-in-out;
+    flex-wrap: wrap;
+    gap: 5px;
 }
 .selectBatchAndExam > .animated{
     width: 40%;

@@ -39,6 +39,23 @@ export const fetchGetAllExamOptionsBatchWise = createAsyncThunk(
   }
 );
 
+export const fetchGetSingleExamDetails = createAsyncThunk(
+  "exam/fetchGetSingleExamDetails",
+  async (examId, { rejectWithValue }) => {
+    try {
+      const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
+      const { data } = await axios.get(`${baseUrl}/api/v1/admin/getSingleExamDetails/${examId}`, config);
+      return data;
+    } catch (error) {
+      // Handle error response, including HTTP 409 Conflict
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message); // Provide custom error message from backend
+      }
+      return rejectWithValue(error.message || "Something went wrong");
+    }
+  }
+);
+
 export const fetchBatchWiseMarksInput = createAsyncThunk(
   "exam/fetchBatchWiseMarksInput",
   async (marksData, { rejectWithValue }) => {
@@ -86,26 +103,40 @@ const examSlice = createSlice({
 
         .addCase(fetchGetAllExamOptionsBatchWise.pending, (state) => {
           state.isLoading = true;
-          })
-          .addCase(fetchGetAllExamOptionsBatchWise.fulfilled, (state, action) => {
-          state.isLoading = false;
-          state.allExamBatchWise = action.payload.exams;
-          state.error = null;
-          })
-          .addCase(fetchGetAllExamOptionsBatchWise.rejected, (state, action) => {
-          state.isLoading = false;
-          state.allExamBatchWise = null;
-          state.error = action.payload || "An unexpected error occurred";
-          })
+        })
+        .addCase(fetchGetAllExamOptionsBatchWise.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.allExamBatchWise = action.payload.exams;
+        state.error = null;
+        })
+        .addCase(fetchGetAllExamOptionsBatchWise.rejected, (state, action) => {
+        state.isLoading = false;
+        state.allExamBatchWise = null;
+        state.error = action.payload || "An unexpected error occurred";
+        })
 
-          .addCase(fetchBatchWiseMarksInput.pending, (state) => {
+        .addCase(fetchBatchWiseMarksInput.pending, (state) => {
+        state.isLoading = true;
+        })
+        .addCase(fetchBatchWiseMarksInput.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+        })
+        .addCase(fetchBatchWiseMarksInput.rejected, (state, action) => {
+        state.isLoading = false;
+        state.exam = null;
+        state.error = action.payload || "An unexpected error occurred";
+        })
+
+        .addCase(fetchGetSingleExamDetails.pending, (state) => {
           state.isLoading = true;
           })
-          .addCase(fetchBatchWiseMarksInput.fulfilled, (state, action) => {
+          .addCase(fetchGetSingleExamDetails.fulfilled, (state, action) => {
           state.isLoading = false;
+          state.exam = action.payload.exam;
           state.error = null;
           })
-          .addCase(fetchBatchWiseMarksInput.rejected, (state, action) => {
+          .addCase(fetchGetSingleExamDetails.rejected, (state, action) => {
           state.isLoading = false;
           state.exam = null;
           state.error = action.payload || "An unexpected error occurred";
