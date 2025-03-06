@@ -176,6 +176,8 @@ exports.batchWiseMarksInput = catchAsyncError(async (req, res, next) => {
   });
 });
 
+
+
 exports.courseWiseMarksInput = catchAsyncError(async (req, res, next) => {
   const { examId, batchId, courseId, students } = req.body; // Extract data from request
   const session = await mongoose.startSession(); // Start a transaction session
@@ -187,6 +189,9 @@ exports.courseWiseMarksInput = catchAsyncError(async (req, res, next) => {
     for (const student of students) {
       const { studentId, marks } = student;
 
+      // Convert studentId to ObjectId before using it in the update
+      const studentObjectId = mongoose.Types.ObjectId(studentId);
+
       const result = await Exam.updateOne(
         { _id: examId, "result.batchId": batchId }, // Find the exam and batch
         {
@@ -196,7 +201,7 @@ exports.courseWiseMarksInput = catchAsyncError(async (req, res, next) => {
         },
         {
           arrayFilters: [
-            { "student.student": String(studentId) }, // Force studentId to be treated as a string
+            { "student.student": studentObjectId }, // Convert to ObjectId here
             { "course.courseId": courseId }, // Match specific course
           ],
           session, // Ensure update happens in transaction
@@ -226,5 +231,6 @@ exports.courseWiseMarksInput = catchAsyncError(async (req, res, next) => {
     });
   }
 });
+
 
 
