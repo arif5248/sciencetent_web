@@ -176,3 +176,54 @@ exports.batchWiseMarksInput = catchAsyncError(async (req, res, next) => {
   });
 });
 
+exports.courseWiseMarksInput = catchAsyncError(async (req, res, next) => {
+  const { examId, batchId, courseId, students } = req.body; // Extract data from request
+  const session = await mongoose.startSession(); // Start a transaction session
+
+  try {
+    session.startTransaction(); // Begin a transaction
+
+    // Iterate over each student and update their marks
+    for (const student of students) {
+      const { studentId, marks } = student;
+
+      const result = await Exam.updateOne(
+        { _id: examId, "result.batchId": batchId }, // Find the exam and batch
+        {
+          $set: {
+            "result.$.batchWiseResult.$[student].courses.$[course].marks": marks, // Update marks
+          },
+        },
+        {
+          arrayFilters: [
+            { "student.student": studentId }, // Match specific student
+            { "course.courseId": courseId }, // Match specific course
+          ],
+          session, // Ensure update happens in transaction
+        }
+      );
+
+      if (result.modifiedCount === 0) {
+        throw new Error(`Failed to update marks for student ${studentId}`); // Force rollback
+      }
+    }
+
+    await session.commitTransaction(); // Commit transaction if all updates succeed
+    session.endSession();
+    
+    res.status(200).json({
+      success: true,
+      message: "Marks updated successfully!",
+    });
+  } catch (error) {
+    await session.abortTransaction(); // Rollback all changes on error
+    session.endSession();
+    
+    res.status(500).json({
+      success: false,
+      message: "Failed to update marks",
+      error: error.message,
+    });
+  }
+});
+

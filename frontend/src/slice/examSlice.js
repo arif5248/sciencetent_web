@@ -56,13 +56,12 @@ export const fetchGetSingleExamDetails = createAsyncThunk(
   }
 );
 
-export const fetchBatchWiseMarksInput = createAsyncThunk(
-  "exam/fetchBatchWiseMarksInput",
-  async (marksData, { rejectWithValue }) => {
+export const fetchCourseWiseMarksInput = createAsyncThunk(
+  "exam/fetchCourseWiseMarksInput",
+  async (apiData, { rejectWithValue }) => {
     try {
       const config = { withCredentials: true };
-      console.log(marksData.allMarks)
-      const { data } = await axios.put(`${baseUrl}/api/v1/admin/bachWiseMarksInput/${marksData.examId}`, {resultData: marksData.allMarks}, config);
+      const { data } = await axios.put(`${baseUrl}/api/v1/admin/bachWiseMarksInput`, apiData, config);
       return data;
     } catch (error) {
       // Handle error response, including HTTP 409 Conflict
@@ -115,14 +114,14 @@ const examSlice = createSlice({
         state.error = action.payload || "An unexpected error occurred";
         })
 
-        .addCase(fetchBatchWiseMarksInput.pending, (state) => {
+        .addCase(fetchCourseWiseMarksInput.pending, (state) => {
         state.isLoading = true;
         })
-        .addCase(fetchBatchWiseMarksInput.fulfilled, (state, action) => {
+        .addCase(fetchCourseWiseMarksInput.fulfilled, (state, action) => {
         state.isLoading = false;
         state.error = null;
         })
-        .addCase(fetchBatchWiseMarksInput.rejected, (state, action) => {
+        .addCase(fetchCourseWiseMarksInput.rejected, (state, action) => {
         state.isLoading = false;
         state.exam = null;
         state.error = action.payload || "An unexpected error occurred";

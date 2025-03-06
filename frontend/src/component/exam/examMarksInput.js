@@ -5,7 +5,7 @@ import Loader from "../layout/loader/loader";
 import { useNavigate } from "react-router-dom";
 import "./examMarksInput.css";
 import { fetchAllBatchForReg } from "../../slice/batchSlice";
-import { fetchBatchWiseMarksInput, fetchGetAllExamOptionsBatchWise, fetchGetSingleExamDetails } from "../../slice/examSlice";
+import {  fetchCourseWiseMarksInput, fetchGetAllExamOptionsBatchWise, fetchGetSingleExamDetails } from "../../slice/examSlice";
 import { fetchAllStudentsBatchWise } from "../../slice/studentSlice";
 
 function ExamMarksInput() {
@@ -19,6 +19,7 @@ function ExamMarksInput() {
   const [course, setCourse] = useState({});
   const [marks, setMarks] = useState([]);
   const [batchWiseResult, setBatchWiseResult] = useState([]);
+  const [updatedStudents, setUpdatedStudents] = useState([]);
   const [examDetails, setExamDetails] = useState({});
 
   const [batch, setBatch] = useState("");
@@ -91,29 +92,95 @@ function ExamMarksInput() {
     console.log(batchWiseResult)
     
   };
+
+  const handleInputChange = (studentId, courseId, type, mark) => {
+    let updatedMarks
+    let student = []
+    // Create a new array to update state immutably
+    const updatedResults = batchWiseResult.map(student => {
+        if (student.studentID === studentId) {
+            return {
+                ...student,
+                courses: student.courses.map(course => {
+                    if (course.courseId === courseId) {
+                      updatedMarks = course.marks
+                      // console.log(updatedMarks)
+                        updatedMarks = {
+                            ...updatedMarks, // Keep existing values
+                            [type]: mark     // Update only the specified field (cq or mcq)
+                        };
+                        return {
+                            ...course,
+                            marks: {
+                                ...course.marks,
+                                [type]: mark 
+                            }
+                        };
+                    }
+                    return course;
+                })
+            };
+            
+        }
+        return student;
+    });
+    setBatchWiseResult(updatedResults)
+    
+    // const inputData = {
+    //   examId: exam,
+    //   batchId: batch,
+    //   courseId: courseId,
+    //   students :[...students, {studentId: studentId, marks: updatedMarks}]
+    // }
+    // console.log(inputData)
+    handlePayloadData(studentId, updatedMarks)
+    
+};
+const handlePayloadData = (studentId, updatedMarks) => {
+  setUpdatedStudents(prevState => {
+      // Ensure prevState is always an array (in case it is not)
+      const validPrevState = Array.isArray(prevState) ? prevState : [];
+
+      // Check if the student already exists
+      const updated = validPrevState.map(item => {
+          if (item.studentId === studentId) {
+              // Update the marks if the student exists
+              return {
+                  ...item,
+                  marks: { ...item.marks, ...updatedMarks }
+              };
+          }
+          return item;
+      });
+
+      // Check if the student does not exist and add the new student
+      const studentExists = validPrevState.some(item => item.studentId === studentId);
+      if (!studentExists) {
+          return [
+              ...updated,
+              { studentId, marks: updatedMarks }
+          ];
+      }
+
+      return updated;
+  });
+};
+
+
   
 
   const handleSubmit = () => {
-    // console.log(courses)
-    const transformedData = marks.map((mark) => ({
-      student: mark.id,
-      // courses: courses.map((course) => ({
-      //   courseId: course.id,
-      //   courseName : course.name,
-      //   marks: mark.courseMarks[course.id] === '' ? "0" :mark.courseMarks[course.id],
-      // })),
-    }));
-
-    const requestData = {
-      examId: exam,
-      allMarks: {
-        batchId:batch,
-        batchWiseResult: transformedData
-      },
-    };
+    const inputData = {
+        examId: exam,
+        batchId: batch,
+        courseId: selectedCourseId,
+        students : updatedStudents
+      }
+    console.log(inputData)
+    
 
     setLoading(true);
-    dispatch(fetchBatchWiseMarksInput(requestData))
+    dispatch(fetchCourseWiseMarksInput(inputData))
       .unwrap()
       .then((response) => {
         setSuccessMessage(response.message || "Marks submitted successfully!");
@@ -192,9 +259,8 @@ function ExamMarksInput() {
                   <tbody>
                   {
                     batchWiseResult.map((item) => {
-                      console.log("+++++++",course)
                       const selectedCourse = item.courses.find(c => c.courseId === selectedCourseId); // Find the course
-                      console.log(selectedCourse)
+                      
                       return (
                         <tr key={item.studentID}>
                           <td>{item.studentID}</td>
@@ -206,9 +272,9 @@ function ExamMarksInput() {
                                 className="numberInput"
                                 type="text"
                                 value={selectedCourse.marks.cq}
-                                // onChange={(e) =>
-                                //   handleInputChange(mark.studentId, course.id, e.target.value)
-                                // }
+                                onChange={(e) =>
+                                  handleInputChange(item.studentID, selectedCourseId, "cq", e.target.value)
+                                }
                                 />
                               </td>
                               <td>
@@ -216,9 +282,9 @@ function ExamMarksInput() {
                                 className="numberInput"
                                 type="text"
                                 value={selectedCourse.marks.mcq}
-                                // onChange={(e) =>
-                                //   handleInputChange(mark.studentId, course.id, e.target.value)
-                                // }
+                                onChange={(e) =>
+                                  handleInputChange(item.studentID, selectedCourseId, "mcq", e.target.value)
+                                }
                                 />
                               </td>
                               <td>
