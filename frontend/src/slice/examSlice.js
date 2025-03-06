@@ -61,7 +61,7 @@ export const fetchCourseWiseMarksInput = createAsyncThunk(
   async (apiData, { rejectWithValue }) => {
     try {
       const config = { withCredentials: true };
-      const { data } = await axios.put(`${baseUrl}/api/v1/admin/bachWiseMarksInput`, apiData, config);
+      const { data } = await axios.put(`${baseUrl}/api/v1/admin/courseWiseMarksInput`, apiData, config);
       return data;
     } catch (error) {
       // Handle error response, including HTTP 409 Conflict

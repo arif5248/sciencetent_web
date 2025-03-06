@@ -196,7 +196,7 @@ exports.courseWiseMarksInput = catchAsyncError(async (req, res, next) => {
         },
         {
           arrayFilters: [
-            { "student.student": studentId }, // Match specific student
+            { "student.student": String(studentId) }, // Force studentId to be treated as a string
             { "course.courseId": courseId }, // Match specific course
           ],
           session, // Ensure update happens in transaction
@@ -226,4 +226,5 @@ exports.courseWiseMarksInput = catchAsyncError(async (req, res, next) => {
     });
   }
 });
+
 
