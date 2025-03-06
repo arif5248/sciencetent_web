@@ -190,7 +190,7 @@ exports.courseWiseMarksInput = catchAsyncError(async (req, res, next) => {
       const { studentId, marks } = student;
 
       // Convert studentId to ObjectId using 'new' keyword
-      const studentObjectId = new mongoose.Types.ObjectId(studentId);
+      // const studentObjectId = new mongoose.Types.ObjectId(studentId);
 
       const result = await Exam.updateOne(
         { _id: examId, "result.batchId": batchId }, // Find the exam and batch
@@ -201,7 +201,7 @@ exports.courseWiseMarksInput = catchAsyncError(async (req, res, next) => {
         },
         {
           arrayFilters: [
-            { "student.student": studentId }, // Use ObjectId for comparison
+            { "student.studentID": studentId }, // Use ObjectId for comparison
             { "course.courseId": courseId }, // Match specific course
           ],
           session, // Ensure update happens in transaction
