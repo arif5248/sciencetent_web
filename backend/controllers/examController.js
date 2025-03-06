@@ -201,7 +201,7 @@ exports.courseWiseMarksInput = catchAsyncError(async (req, res, next) => {
         },
         {
           arrayFilters: [
-            { "student.student": studentObjectId }, // Use ObjectId for comparison
+            { "student.student": studentId }, // Use ObjectId for comparison
             { "course.courseId": courseId }, // Match specific course
           ],
           session, // Ensure update happens in transaction
