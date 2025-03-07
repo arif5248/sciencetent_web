@@ -4,6 +4,7 @@ import MetaData from "../layout/metaData/metaData";
 import "./batchWiseAllExam.css";
 import PopupForShowExamResult from "./actionBatchWiseAllExam";
 import { fetchGetSingleExamDetails } from "../../slice/examSlice";
+import Loader from "../layout/loader/loader";
 
 function BatchWiseAllExam({ batchWiseAllExam , batchId}) {
     const dispatch = useDispatch()
@@ -19,6 +20,7 @@ function BatchWiseAllExam({ batchWiseAllExam , batchId}) {
     const reversedOptions = [...batchWiseAllExam].reverse()
 
     const handleDetails = (exam) => {
+      setLoading(true)
       dispatch(fetchGetSingleExamDetails(exam._id))
             .unwrap()
             .then((response) => {
@@ -38,27 +40,30 @@ function BatchWiseAllExam({ batchWiseAllExam , batchId}) {
   return (
     <Fragment>
       <MetaData title="Batch-wise All Exam" />
-      <div className="batchWiseAllExamSection">
-        <h2 className="examListTitle">Batch-wise Exam List</h2>
-        <div className="examTableContainer">
-          <table className="examTable">
-            <thead>
-              <tr>
-                <th>Exam Code</th>
-                <th>Name</th>
-              </tr>
-            </thead>
-            <tbody>
-              {reversedOptions.map((exam, index) => (
-                <tr key={index} className="examRow" onClick={() => handleDetails(exam)}>
-                  <td>{exam.examCode}</td>
-                  <td>{exam.name}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      {loading ? <Loader /> : (
+        <Fragment>
+            <div className="batchWiseAllExamSection">
+              <h2 className="examListTitle">Batch-wise Exam List</h2>
+              <div className="examTableContainer">
+                <table className="examTable">
+                  <thead>
+                    <tr>
+                      <th>Exam Code</th>
+                      <th>Name</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {reversedOptions.map((exam, index) => (
+                      <tr key={index} className="examRow" onClick={() => handleDetails(exam)}>
+                        <td>{exam.examCode}</td>
+                        <td>{exam.name}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+      </Fragment>)}
       {showPopup && <PopupForShowExamResult content={popupContent} onClose={closePopup} />}
     </Fragment>
   );
