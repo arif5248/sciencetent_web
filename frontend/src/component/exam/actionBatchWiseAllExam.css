@@ -21,6 +21,9 @@
     animation: fadeIn 0.3s ease-in-out;
     overflow-y: auto;
   }
+  .result_popup{
+    max-width: 80% !important;
+  }
   
   @keyframes fadeIn {
     from {
@@ -66,7 +69,7 @@
   .popup-content th,
   .popup-content td {
     text-align: left;
-    padding: 12px 8px;
+    padding: 6px 4px;
     border-bottom: 1px solid #ddd;
   }
   
@@ -74,6 +77,10 @@
     background-color: #016c81;
     color: white;
     font-weight: bold;
+  }
+  .examResultTable > thead > tr > th,
+  .examResultTable > tbody > tr > td{
+    text-align: center;
   }
   
   .popup-content td {

@@ -17,10 +17,8 @@ function ExamMarksInput() {
   const [examOptions, setExamOptions] = useState([]);
   const [courseOptions, setCourseOptions] = useState([]);
   const [course, setCourse] = useState({});
-  const [marks, setMarks] = useState([]);
   const [batchWiseResult, setBatchWiseResult] = useState([]);
   const [updatedStudents, setUpdatedStudents] = useState([]);
-  const [examDetails, setExamDetails] = useState({});
 
   const [batch, setBatch] = useState("");
   const [exam, setExam] = useState("");
@@ -32,6 +30,7 @@ function ExamMarksInput() {
   const [successMessage, setSuccessMessage] = useState(null);
 
   useEffect(() => {
+    setLoading(true)
     // Fetch batches on component mount
     dispatch(fetchAllBatchForReg())
       .unwrap()
@@ -39,16 +38,20 @@ function ExamMarksInput() {
         setBatchOptions(response.batches || []);
       })
       .catch((err) => {
-        console.log(err)
-        setErrorMessage("Failed to load batches. Please try again.");
-      });
+        setErrorMessage(err || "Failed to load batches. Please try again.");
+        setTimeout(() => {
+          setErrorMessage(null);
+        }, 20000);
+        setLoading(false)
+      })
+      .finally(()=> setLoading(false))
   }, [dispatch]);
 
   const handleBatch = (batchId) => {
     setBatch(batchId);
     setShowExamSelectBox(false);
     setShowMarksSheet(false);
-    setMarks([]);
+    setShowCourseSelectBox(false)
     setExamOptions([]);
     setExam("");
 
@@ -58,29 +61,37 @@ function ExamMarksInput() {
     dispatch(fetchGetAllExamOptionsBatchWise(batchId))
       .unwrap()
       .then((response) => {
-        setExamOptions(response.exams || []);
+        const reversedOptions = [...response.exams].reverse()
+        setExamOptions(reversedOptions || []);
         setShowExamSelectBox(true);
       })
       .catch((err) => {
         setErrorMessage(err.message || "Failed to load data.");
+        setTimeout(() => {
+          setErrorMessage(null);
+        }, 20000);
+
       })
       .finally(() => setLoading(false));
   };
   const handleExam = (examId) => {
     setExam(examId);
-    console.log(examId)
+    setShowCourseSelectBox(false)
+    setSelectedCourseId("")
     setShowMarksSheet(false);
 
     dispatch(fetchGetSingleExamDetails(examId))
       .unwrap()
       .then((response) => {
-        setExamDetails(response.exams);
         setCourseOptions(response.exam.courses)
         setBatchWiseResult((response.exam.result.find(item => item.batchId === batch).batchWiseResult))
         setShowCourseSelectBox(true);
       })
       .catch((err) => {
         setErrorMessage(err.message || "Failed to load data.");
+        setTimeout(() => {
+          setErrorMessage(null);
+        }, 20000);
       })
       .finally(() => setLoading(false));
   };
@@ -89,8 +100,6 @@ function ExamMarksInput() {
     setSelectedCourseId(courseId)
     setCourse(courseOptions.find(course => course.course === courseId))
     setShowMarksSheet(true);
-    console.log(batchWiseResult)
-    
   };
 
   const handleInputChange = (studentId, courseId, type, mark) => {

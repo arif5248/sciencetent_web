@@ -9,50 +9,20 @@ function PopupForShowExamResult({ content, onClose }) {
   const [errorMessage, setErrorMessage] = useState(null);
   const [students, setStudents] = useState([]);
   const [mergedData, setMergedData] = useState([]);
+  const [numberOfCourse, setNumberOfCourse] = useState();
 
   useEffect(() => {
-    setLoading(true);
+    const result = content.examDetails.result
+    console.log(result)
+    setNumberOfCourse(content.examDetails.courses.length * 2)
 
-    // Fetch students batch-wise
-    dispatch(fetchAllStudentsBatchWise(content.batchId))
-      .unwrap()
-      .then((response) => {
-        const studentData = response.students.map((student) => ({
-          id: student._id,
-          name: student.name,
-          studentID: student.studentID,
-        }));
-        setStudents(studentData);
-      })
-      .catch((err) => {
-        setErrorMessage(err.message || "Failed to load data.");
-      })
-      .finally(() => setLoading(false));
-  }, [dispatch, content.batchId]);
+  }, []);
 
-  useEffect(() => {
-    if (students.length > 0) {
-      const resultData = content.exam.result.filter(
-        (item) => content.batchId === item.batchId.toString()
-      );
-      const finalResult = resultData[0]?.batchWiseResult || [];
-
-      // Merge students with results
-      const merged = students.map((student) => {
-        const result = finalResult.find((res) => res.student === student.id);
-        return {
-          ...student,
-          marks: result?.courses || [], // Include the courses or set to empty array
-        };
-      });
-
-      setMergedData(merged);
-    }
-  }, [students, content.exam.result, content.batchId]);
+ 
 
   return (
     <div className="popup-overlay">
-      <div className="popup-content">
+      <div className="result_popup popup-content">
         <button className="close-btn" onClick={onClose}>
           &times;
         </button>
@@ -62,15 +32,50 @@ function PopupForShowExamResult({ content, onClose }) {
         {!loading && !errorMessage && (
           <Fragment>
             <h2>Exam Results</h2>
-            <table>
+            <table className="examResultTable" style={{borderCollapse : "separate"}}>
               <thead>
                 <tr>
-                  <th>Student ID</th>
-                  <th>Student Name</th>
-                  <th>Marks</th>
+                  <th rowSpan={2}>ID</th>
+                  <th rowSpan={2}>Name</th>
+                  {
+                    content.examDetails.courses.map(course =>(
+                      <th colSpan={2}>{course.courseName}</th>
+                    ))
+                  }
+                </tr>
+                <tr>
+                {
+                    content.examDetails.courses.map(course =>(
+                      <>
+                        <th style={{fontSize: "14px"}} >CQ({course.marks.cq})</th>
+                        <th style={{fontSize: "14px"}} >MCQ({course.marks.mcq})</th>
+                      </>
+                      
+                    ))
+                  }
                 </tr>
               </thead>
               <tbody>
+              {(content.examDetails.result.find(item => item.batchId === content.batchId)).batchWiseResult.map((student) => (
+                <tr key={student.studentID}>
+                  <td>{student.studentID}</td>
+                  <td>{student.studentName}</td>
+                  {content.examDetails.courses.map((course) => {
+                    const studentCourse = student.courses.find(
+                      (sc) => sc.courseId === course.course
+                    );
+                    return (
+                      <>
+                        <td>{studentCourse?.marks.cq !== "null" ? studentCourse?.marks.cq : "-"}</td>
+                        <td>{studentCourse?.marks.mcq !== "null" ? studentCourse?.marks.mcq : "-"}</td>
+                      </>
+                    );
+                  })}
+                </tr>
+              ))}
+            </tbody>
+
+              {/* <tbody>
                 {mergedData.map((data) => (
                   <tr key={data.id}>
                     <td>{data.studentID}</td>
@@ -93,7 +98,7 @@ function PopupForShowExamResult({ content, onClose }) {
 
                   </tr>
                 ))}
-              </tbody>
+              </tbody> */}
             </table>
           </Fragment>
         )}

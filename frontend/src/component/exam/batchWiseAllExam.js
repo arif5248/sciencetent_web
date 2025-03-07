@@ -1,21 +1,38 @@
 import React, { Fragment, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import MetaData from "../layout/metaData/metaData";
 import "./batchWiseAllExam.css";
 import PopupForShowExamResult from "./actionBatchWiseAllExam";
+import { fetchGetSingleExamDetails } from "../../slice/examSlice";
 
 function BatchWiseAllExam({ batchWiseAllExam , batchId}) {
+    const dispatch = useDispatch()
     const [showPopup, setShowPopup] = useState(false);
     const [popupContent, setPopupContent] = useState(null);
 
+    const [loading, setLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(null);
+    const [successMessage, setSuccessMessage] = useState(null);
+
     const openPopup = (content) => setShowPopup(true) || setPopupContent(content);
     const closePopup = () => setShowPopup(false) || setPopupContent(null);
+    const reversedOptions = [...batchWiseAllExam].reverse()
 
     const handleDetails = (exam) => {
-        openPopup({
-          type: "details",
-          batchId: batchId,
-          exam,
-        });
+      dispatch(fetchGetSingleExamDetails(exam._id))
+            .unwrap()
+            .then((response) => {
+              openPopup({
+                type: "details",
+                batchId: batchId,
+                examDetails: response.exam,
+              });
+            })
+            .catch((err) => {
+              setErrorMessage(err.message || "Failed to load data.");
+            })
+            .finally(() => setLoading(false));
+        
       };
 
   return (
@@ -29,23 +46,13 @@ function BatchWiseAllExam({ batchWiseAllExam , batchId}) {
               <tr>
                 <th>Exam Code</th>
                 <th>Name</th>
-                <th>Courses</th>
-                <th>Total Marks</th>
               </tr>
             </thead>
             <tbody>
-              {batchWiseAllExam.map((exam, index) => (
+              {reversedOptions.map((exam, index) => (
                 <tr key={index} className="examRow" onClick={() => handleDetails(exam)}>
                   <td>{exam.examCode}</td>
                   <td>{exam.name}</td>
-                  <td>
-                    {exam.courses.map((course, i) => (
-                      <span key={i} className="courseTag">
-                        {course.courseName}
-                      </span>
-                    ))}
-                  </td>
-                  <td>{exam.totalMarks}</td>
                 </tr>
               ))}
             </tbody>
