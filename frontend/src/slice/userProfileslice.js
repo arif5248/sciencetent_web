@@ -7,7 +7,6 @@ const baseUrl= "https://sciencetent-backend.vercel.app"
 export const fetchUserUpdateProfile = createAsyncThunk(
   "user/fetchUserProfile",
   async (userData) => {
-    console.log('user data', userData);
     const config = { withCredentials: true }; // No need for Content-Type
     const { data } = await axios.put(`${baseUrl}/api/v1/me/update`, userData, config);
     return data;
