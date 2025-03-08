@@ -78,5 +78,5 @@ exports.createAttendance = catchAsyncError(async (req, res, next) => {
     }
 
     await attendance.save();
-    res.status(200).json({ success: true, message: "Attendance updated successfully." });
+    res.status(200).json({ success: true, message: `Thank You ${name}. Attendance updated successfully.` });
 });

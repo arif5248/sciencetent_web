@@ -15,29 +15,32 @@ function QrCodeScanner() {
 
   const handleScan = async (data) => {
     if (data) {
+        console.log(data)
+        // const modifiedData = JSON.parse(data);
+        // console.log(modifiedData)
     //   setQrData(data);
-      try {
-        const parsedData = JSON.parse(data); // QR Code should contain JSON data
-        const { studentId, batchId } = parsedData;
-        const clockInTime = new Date().toLocaleTimeString("en-US", {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: true,
-        });
+    //   try {
+    //     const parsedData = JSON.parse(data); // QR Code should contain JSON data
+    //     const { studentId, batchId } = parsedData;
+    //     const clockInTime = new Date().toLocaleTimeString("en-US", {
+    //       hour: "2-digit",
+    //       minute: "2-digit",
+    //       hour12: true,
+    //     });
 
-        setLoading(true);
-        const response = await axios.post("https://your-backend-url.com/api/attendance", {
-          studentId,
-          batchId,
-          clockIn: clockInTime,
-        });
+    //     setLoading(true);
+    //     const response = await axios.post("https://your-backend-url.com/api/attendance", {
+    //       studentId,
+    //       batchId,
+    //       clockIn: clockInTime,
+    //     });
 
-        setMessage(response.data.message);
-      } catch (error) {
-        setMessage("Invalid QR Code or Network Error");
-      } finally {
-        setLoading(false);
-      }
+    //     setMessage(response.data.message);
+    //   } catch (error) {
+    //     setMessage("Invalid QR Code or Network Error");
+    //   } finally {
+    //     setLoading(false);
+    //   }
     }
   };
 
