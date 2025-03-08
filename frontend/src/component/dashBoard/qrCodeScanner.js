@@ -19,13 +19,24 @@ function QrCodeScanner() {
   const [timeoutId, setTimeoutId] = useState(null); // Store the timeout ID for automatic scanner turn-off
   const [showPopup, setShowPopup] = useState(false); // Control popup visibility
   const [popupMessage, setPopupMessage] = useState(""); // Store the API response message for the popup
+  const [cameraMode, setCameraMode] = useState("environment"); // Default to laptop (back camera)
+
+  useEffect(() => {
+    // Detect whether the device is a mobile device or not
+    if (window.matchMedia("(max-width: 768px)").matches) {
+      // If the screen width is less than 768px, it's likely a mobile device
+      setCameraMode("user"); // Front camera for mobile
+    } else {
+      // Otherwise, use the environment (back camera) for laptops/desktops
+      setCameraMode("environment");
+    }
+  }, []);
 
   const handleScan = async (data) => {
     if (data && scanning) {
       // Stop scanning once we get data
       setScanning(false);
-      setPopupMessage("")
-    //   console.log(data);
+      console.log(data);
       let modifiedData = JSON.parse(data);
       const clockInTime = new Date().toLocaleTimeString("en-US", {
         hour: "2-digit",
@@ -38,9 +49,8 @@ function QrCodeScanner() {
       setLoading(true);
       dispatch(fetchCreateAttendance(apiData))
         .unwrap()
-        .then((response) => {
-          console.log(response)
-          setPopupMessage(response.message);
+        .then(() => {
+          setPopupMessage("Class created successfully!");
           setShowPopup(true);
           setTimeout(() => {
             setShowPopup(false);
@@ -48,22 +58,14 @@ function QrCodeScanner() {
           }, 5000); // Show the popup for 5 seconds
         })
         .catch((err) => {
-            console.log(err)
-          setPopupMessage(err);
+          setPopupMessage(`Error: ${err.message}`);
           setShowPopup(true);
           setTimeout(() => {
             setShowPopup(false);
             setScanning(true); // Re-enable scanning after showing the error popup
-          }, 500000); // Show the popup for 5 seconds
+          }, 5000); // Show the popup for 5 seconds
         })
-        .finally(() => {
-            setLoading(false)
-            const newTimeoutId = setTimeout(() => {
-                setScanning(false); // Stop scanning if no card is scanned for 30 seconds
-                setMessage("Scanner turned off due to inactivity");
-              }, 30000); // Automatically turn off the scanner after 30 seconds of inactivity
-              setTimeoutId(newTimeoutId);
-        });
+        .finally(() => setLoading(false));
     }
   };
 
@@ -101,16 +103,15 @@ function QrCodeScanner() {
             <div className="scannerContainer">
               {scanning && (
                 <QrReader
-                constraints={{
-                  facingMode: "user" // This ensures the front camera is used
-                }}
-                onResult={(result, error) => {
-                  if (result) handleScan(result.text);
-                  if (error) console.error(error);
-                }}
-                style={{ width: "100%" }}
-              />
-              
+                  constraints={{
+                    facingMode: cameraMode // Use the dynamic camera mode based on the device
+                  }}
+                  onResult={(result, error) => {
+                    if (result) handleScan(result.text);
+                    if (error) console.error(error);
+                  }}
+                  style={{ width: "100%" }}
+                />
               )}
             </div>
             {message && <p className="scanMessage">{message}</p>}
