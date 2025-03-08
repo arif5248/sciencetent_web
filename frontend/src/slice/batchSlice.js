@@ -23,7 +23,7 @@ export const fetchCreateBatch = createAsyncThunk(
 );
 
 export const fetchAllBatch = createAsyncThunk("batch/fetchAllBatch", async () => {
-  const config = { withCredentials: true };
+  const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
   const { data } = await axios.get(`${baseUrl}/api/v1/admin/batches`, config);
   return data;
 });

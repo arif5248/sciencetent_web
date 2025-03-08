@@ -7,9 +7,6 @@ const { updatePassword } = require("../controllers/userController");
 
 exports.isAuthenticatedUser = catchAsyncError(async (req, res, next) => {
   const { token } = req.cookies;
-  // console.log("==========================")
-  // console.log(req)
-  // console.log("==========================")
 
   if (!token) {
     return next(new ErrorHandler("Please Login to access this resource", 401));
@@ -24,10 +21,6 @@ exports.isAuthenticatedUser = catchAsyncError(async (req, res, next) => {
   next();
 });
 exports.isUserLoaded = catchAsyncError(async (req, res, next) => {
-  const { token } = req.cookies;
-  // console.log("==========================")
-  // console.log(req)
-  // console.log("==========================")
 
   if (!token) {
     // return next(new ErrorHandler("Please Login to access this resource", 401));

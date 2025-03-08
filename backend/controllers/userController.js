@@ -90,8 +90,7 @@ exports.forgotPassword = catchAsyncError(async (req, res, next) => {
   const resetUrl = `${host}/password/reset/${resetToken}`;
 
   const message = `Your password reset token is :- \n\n\n ${resetUrl} \n\n if you have not request this email then, please ignore it`;
-  console.log(message)
-  // console.log(req)
+  
   try {
     
 

@@ -5,9 +5,13 @@ const sendToken = (user, statusCode, res) => {
     expires: new Date(
       Date.now() + process.env.COOKIE_EXPIRE * 24 * 60 * 60 * 1000
     ),
+    // httpOnly: true,
+    // secure: process.env.NODE_ENV === "development", // Should be true for HTTPS
+    // sameSite: process.env.NODE_ENV === "development" ? "None" : "Lax",
+    // path: "/"
     httpOnly: true,
-    secure: process.env.NODE_ENV === "development", // Should be true for HTTPS
-    sameSite: process.env.NODE_ENV === "development" ? "None" : "Lax",
+    secure: true, // Should be true for HTTPS
+    sameSite: "None",
     path: "/"
   };
 

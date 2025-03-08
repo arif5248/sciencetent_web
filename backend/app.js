@@ -61,15 +61,6 @@ app.use("/api/v1", otp);
 // Error Middleware
 app.use(errorMiddleware);
 
-// Schedule Tasks
-// cron.schedule(
-//   "0 0 * * *",
-//   () => {
-//     birthdayNotification();
-//   },
-//   {
-//     timezone: "Asia/Dhaka",
-//   }
-// );
+
 
 module.exports = app;
