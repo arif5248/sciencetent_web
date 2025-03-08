@@ -1,0 +1,71 @@
+/* General Styling */
+.qrCodeScannerSection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #016c81, #0f2027);
+    color: white;
+    text-align: center;
+    font-family: "Poppins", sans-serif;
+    padding: 20px;
+  }
+  
+  /* Scanner Container */
+  .scannerContainer {
+    width: 90%;
+    max-width: 350px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.2);
+    animation: fadeIn 1s ease-in-out;
+  }
+  
+  /* Scan Result */
+  .scanResult {
+    margin-top: 10px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #f9bf29;
+  }
+  
+  /* Message Styling */
+  .scanMessage {
+    margin-top: 10px;
+    font-size: 1rem;
+    padding: 10px;
+    border-radius: 5px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+  }
+  
+  /* Eye-Catching Animation */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Mobile Responsive */
+  @media (max-width: 600px) {
+    .qrCodeScannerSection {
+      padding: 10px;
+    }
+  
+    .scannerContainer {
+      width: 100%;
+      padding: 10px;
+    }
+  
+    .scanResult, .scanMessage {
+      font-size: 1rem;
+    }
+  }
+  

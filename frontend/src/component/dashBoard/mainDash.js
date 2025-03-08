@@ -17,6 +17,7 @@ import AssignPermission from "./assignPermission";
 import Student from "./student";
 import Exam from "./exam";
 import Class from "./class";
+import QrCodeScanner from "./qrCodeScanner";
 
 function MainDashBoard() {
   // const navigate = useNavigate();
@@ -36,7 +37,7 @@ function MainDashBoard() {
     { id: "list4", iconSrc : createBatchIcon, title: "Students", content: <Student /> },
     { id: "list7", iconSrc : exam, title: "Exam", content: <Exam/> },
     { id: "list5", iconSrc : createBatchIcon, title: "Permissions", content: <AssignPermission /> },
-    { id: "list6", iconSrc : createBatchIcon, title: "Others", content: "Content for Create Batch6" },
+    { id: "list6", iconSrc : createBatchIcon, title: "Qr Code Scanner", content: <QrCodeScanner/> },
   ];
 
   if (isLoading) {

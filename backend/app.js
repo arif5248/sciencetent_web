@@ -17,6 +17,9 @@ const notification = require("./routes/notificationRoutes");
 const permission = require("./routes/permissionRoutes");
 const exam = require("./routes/examRoutes");
 const otp = require("./routes/otpRoutes");
+const attendance = require("./routes/attendanceRoutes");
+
+
 
 const errorMiddleware = require("./middleware/error");
 const { birthdayNotification } = require("./controllers/notificationController");
@@ -59,6 +62,7 @@ app.use("/api/v1", notification);
 app.use("/api/v1", permission);
 app.use("/api/v1", exam);
 app.use("/api/v1", otp);
+app.use("/api/v1", attendance);
 
 
 // Error Middleware
