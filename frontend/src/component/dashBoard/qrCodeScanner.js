@@ -101,13 +101,16 @@ function QrCodeScanner() {
             <div className="scannerContainer">
               {scanning && (
                 <QrReader
-                  constraints={{ facingMode: "environment" }}
-                  onResult={(result, error) => {
-                    if (result) handleScan(result.text);
-                    // if (error) console.error(error);
-                  }}
-                  style={{ width: "100%" }}
-                />
+                constraints={{
+                  facingMode: "user" // This ensures the front camera is used
+                }}
+                onResult={(result, error) => {
+                  if (result) handleScan(result.text);
+                  if (error) console.error(error);
+                }}
+                style={{ width: "100%" }}
+              />
+              
               )}
             </div>
             {message && <p className="scanMessage">{message}</p>}
