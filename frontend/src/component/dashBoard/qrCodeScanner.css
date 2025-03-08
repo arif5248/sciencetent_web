@@ -68,4 +68,40 @@
       font-size: 1rem;
     }
   }
+  .popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    z-index: 1000;
+    text-align: center;
+  }
   
+  .scanControlButtons {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .startScanBtn,
+  .finishScanBtn {
+    padding: 10px 20px;
+    font-size: 16px;
+    margin: 0 10px;
+    cursor: pointer;
+  }
+  
+  .startScanBtn {
+    background-color: #4CAF50;
+    color: white;
+  }
+  
+  .finishScanBtn {
+    background-color: #f44336;
+    color: white;
+  }
+    
