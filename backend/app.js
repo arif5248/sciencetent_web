@@ -41,7 +41,10 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Credentials", "true");
+  next();
+});
 // Route Handlers
 app.get('/', (req, res) => {
   res.status(404).json({ message: "This is an API server. Please use the appropriate endpoints." });
