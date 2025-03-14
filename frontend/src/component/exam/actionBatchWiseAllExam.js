@@ -26,9 +26,10 @@ function PopupForShowExamResult({ content, onClose }) {
   
   const printTable = () => {
     const tableContent = document.getElementById("printableTable").innerHTML;
-    const originalContent = document.body.innerHTML;
+    
+    const printWindow = window.open("", "_blank", "width=800,height=600");
   
-    document.body.innerHTML = `
+    printWindow.document.write(`
       <html>
         <head>
           <title>Print Exam Results</title>
@@ -54,11 +55,16 @@ function PopupForShowExamResult({ content, onClose }) {
           ${tableContent}
         </body>
       </html>
-    `;
-    window.print();
-    document.body.innerHTML = originalContent;
-    window.location.reload(); // Refresh to restore the original content
+    `);
+  
+    // Trigger the print dialog
+    printWindow.document.close();
+    printWindow.print();
+  
+    // No need to reload the page, as this avoids the interference
   };
+  
+
   
   
 
