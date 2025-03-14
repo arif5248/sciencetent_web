@@ -202,4 +202,14 @@
       padding: 5px 8px;
     }
   }
+  /* Slider styling */
+.slider-container {
+  margin-bottom: 20px;
+}
+
+.slider {
+  width: 100%;
+  margin: 10px 0;
+}
+
   
