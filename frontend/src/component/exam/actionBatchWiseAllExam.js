@@ -125,17 +125,25 @@ function PopupForShowExamResult({ content, onClose }) {
                   {content.examDetails.result
                     .find((item) => item.batchId === content.batchId)
                     .batchWiseResult.map((student) => {
-                      const totalMarks = content.examDetails.courses.reduce(
-                        (acc, course) => {
-                          const studentCourse = student.courses.find(
-                            (sc) => sc.courseId === course.course
-                          );
-                          const cq = studentCourse?.marks.cq || 0;
-                          const mcq = studentCourse?.marks.mcq || 0;
-                          return acc + parseInt(cq) + parseInt(mcq);
-                        },
-                        0
-                      );
+                      const totalMarks = content.examDetails.courses.reduce((acc, course) => {
+                        const studentCourse = student.courses.find(
+                          (sc) => sc.courseId === course.course
+                        );
+                      
+                        const cq = isNaN(studentCourse?.marks.cq) || studentCourse?.marks.cq === "A"
+                          ? 0
+                          : parseFloat(studentCourse?.marks.cq || 0);
+                      
+                        const mcq = isNaN(studentCourse?.marks.mcq) || studentCourse?.marks.mcq === "A"
+                          ? 0
+                          : parseFloat(studentCourse?.marks.mcq || 0);
+                      
+                        console.log(cq, mcq, acc); // Debugging output
+                      
+                        return acc + cq + mcq;
+                      }, 0);
+                      
+                      
 
                       return (
                         <tr key={student.studentID}>
