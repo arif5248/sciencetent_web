@@ -70,99 +70,85 @@ const Student = require("../models/studentModel")
 
 exports.modifyExam = catchAsyncError(async (req, res, next) => {
   try {
-      const { examId, name, examCode, totalMarks } = req.body;
+    const { examId, name, examCode, totalMarks } = req.body;
 
-      const courses = JSON.parse(req.body.courses); // Received courses (existing + new)
-      const batches = JSON.parse(req.body.batches); // Received batches (existing + new)
-      const guards = JSON.parse(req.body.guards); // Received guards (existing + new)
+    const courses = JSON.parse(req.body.courses); // Existing + new courses
+    const batches = JSON.parse(req.body.batches); // Existing + new batches
+    const guards = JSON.parse(req.body.guards); // Existing + new guards
 
-      // Find the existing exam
-      const exam = await Exam.findById(examId);
-      if (!exam) {
-          return next(new ErrorHandler("Exam not found", 404));
-      }
-      // Identify new courses
-      const existingCourseIds = exam.courses.map(course => course.course);
-      const newCourses = courses.filter(course => !existingCourseIds.includes(course.course));
+    // Find the existing exam
+    const exam = await Exam.findById(examId);
+    if (!exam) {
+      return next(new ErrorHandler("Exam not found", 404));
+    }
 
-      // Identify new batches
-      const existingBatchIds = exam.batches.map(batch => batch._id);
-      const newBatches = batches.filter(batch => !existingBatchIds.includes(batch._id));
+    // Identify new courses
+    const existingCourseIds = exam.courses.map(course => course.course.toString());
+    const newCourses = courses.filter(course => !existingCourseIds.includes(course.course.toString()));
 
-      // Fetch all students for the newly added batches
-      const newBatchIds = newBatches.map(batch => batch._id);
-      const newStudents = await Student.find({ "batchDetails.batchId": { $in: newBatchIds }, status: "approved" });
+    // Identify new batches
+    const existingBatchIds = exam.batches.map(batch => batch._id.toString());
+    const newBatches = batches.filter(batch => !existingBatchIds.includes(batch._id.toString()));
 
-      // Initialize result for new batches
-      exam.result.map(r =>{
-        if(r.batchId === batches._id){
-          r.batchWiseResult.map(i =>{
-            i.courses.map(c=> {
-              courses.map(course =>{
-                if( course.course !== c.courseId){
-                i.courses.push({
-                  courseId: course.course,
-                      courseName: course.courseName,
-                      marks: {
-                          cq: "null",
-                          mcq: "null"
-                      }
-                })
-                }
-              })
-            })
-          })
-        }else{
-          const newBatchResults = newBatches.map(batch => {
-            const batchStudents = newStudents.filter(student =>
-                student.batchDetails.batchId.toString() === batch._id.toString()
-            );
-  
-            return {
-                batchId: batch._id,
-                batchWiseResult: batchStudents.map(student => ({
-                    student: student._id,
-                    studentID: student.studentID,
-                    studentName: student.name,
-                    courses: courses.map(course => ({
-                        courseId: course.course,
-                        courseName: course.courseName,
-                        marks: {
-                            cq: "null",
-                            mcq: "null"
-                        }
-                    }))
-                }))
-            };
+    // Fetch all students for the newly added batches
+    const newBatchIds = newBatches.map(batch => batch._id);
+    const newStudents = await Student.find({ "batchDetails.batchId": { $in: newBatchIds }, status: "approved" });
+
+    // Update results
+    exam.result.forEach(result => {
+      // Check if batch exists in the result
+      const batchExists = batches.find(batch => batch._id.toString() === result.batchId.toString());
+      if (batchExists) {
+        // Add only new courses to the existing batch results
+        result.batchWiseResult.forEach(studentResult => {
+          newCourses.forEach(course => {
+            if (!studentResult.courses.some(c => c.courseId.toString() === course.course.toString())) {
+              studentResult.courses.push({
+                courseId: course.course,
+                courseName: course.courseName,
+                marks: { cq: "null", mcq: "null" }
+              });
+            }
+          });
         });
-        exam.result.push(...newBatchResults);
-        }
-      })
+      }
+    });
 
-      
-      
+    // Add new batch results
+    newBatches.forEach(batch => {
+      const batchStudents = newStudents.filter(student => student.batchDetails.batchId.toString() === batch._id.toString());
+      exam.result.push({
+        batchId: batch._id,
+        batchWiseResult: batchStudents.map(student => ({
+          student: student._id,
+          studentID: student.studentID,
+          studentName: student.name,
+          courses: courses.map(course => ({
+            courseId: course.course,
+            courseName: course.courseName,
+            marks: { cq: "null", mcq: "null" }
+          }))
+        }))
+      });
+    });
 
-      
+    // Update exam details
+    exam.name = name || exam.name;
+    exam.examCode = examCode || exam.examCode;
+    exam.totalMarks = totalMarks || exam.totalMarks;
+    exam.courses = courses; // Updated courses list
+    exam.batches = batches; // Updated batches list
+    exam.guards = guards; // Updated guards list
 
-      // Add new batch results to existing results
-      
+    await exam.save();
 
-      // Update exam details
-      exam.name = name || exam.name;
-      exam.examCode = examCode || exam.examCode;
-      exam.totalMarks = totalMarks || exam.totalMarks;
-      exam.courses = courses; // Updated courses list (existing + new)
-      exam.batches = batches; // Updated batches list (existing + new)
-      exam.guards = guards; // Updated guards list (existing + new)
-
-      await exam.save();
-
-      res.status(200).json({ message: "Exam updated successfully", exam });
+    res.status(200).json({ message: "Exam updated successfully", exam });
 
   } catch (error) {
-      return next(new ErrorHandler(`Error modifying exam = ${error}`, 500));
+    return next(new ErrorHandler(`Error modifying exam = ${error}`, 500));
   }
 });
+
 
 
 
