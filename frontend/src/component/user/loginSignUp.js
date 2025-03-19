@@ -40,8 +40,8 @@ const LoginSignUp = () => {
       const result = await dispatch(
         fetchUserLogin({ email: loginEmail, password: loginPassword })
       ).unwrap();
-      console.log(result);
-      console.log("Successfully Logged In");
+      // console.log(result);
+      // console.log("Successfully Logged In");
       navigate("/account");
     } catch (error) {
       console.error("Error Log In:", error);

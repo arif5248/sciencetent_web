@@ -68,6 +68,93 @@ const Student = require("../models/studentModel")
     }
 });
 
+exports.modifyExam = catchAsyncError(async (req, res, next) => {
+  try {
+      const { examId, name, examCode, totalMarks } = req.body;
+
+      const courses = JSON.parse(req.body.courses); // Received courses (existing + new)
+      const batches = JSON.parse(req.body.batches); // Received batches (existing + new)
+      const guards = JSON.parse(req.body.guards); // Received guards (existing + new)
+
+      // Find the existing exam
+      const exam = await Exam.findById(examId);
+      if (!exam) {
+          return next(new ErrorHandler("Exam not found", 404));
+      }
+
+      // Identify new courses
+      const existingCourseIds = exam.courses.map(course => course.course);
+      const newCourses = courses.filter(course => !existingCourseIds.includes(course.course));
+
+      // Identify new batches
+      const existingBatchIds = exam.batches.map(batch => batch._id);
+      const newBatches = batches.filter(batch => !existingBatchIds.includes(batch._id));
+
+      // Fetch all students for the newly added batches
+      const newBatchIds = newBatches.map(batch => batch._id);
+      const newStudents = await Student.find({ "batchDetails.batchId": { $in: newBatchIds }, status: "approved" });
+
+      // Initialize result for new batches
+      const newBatchResults = newBatches.map(batch => {
+          const batchStudents = newStudents.filter(student =>
+              student.batchDetails.batchId.toString() === batch._id.toString()
+          );
+
+          return {
+              batchId: batch._id,
+              batchWiseResult: batchStudents.map(student => ({
+                  student: student._id,
+                  studentID: student.studentID,
+                  studentName: student.name,
+                  courses: courses.map(course => ({
+                      courseId: course.course,
+                      courseName: course.courseName,
+                      marks: {
+                          cq: "null",
+                          mcq: "null"
+                      }
+                  }))
+              }))
+          };
+      });
+
+      // Update results for existing batches when new courses are added
+      exam.result.forEach(batchResult => {
+          batchResult.batchWiseResult.forEach(studentResult => {
+              newCourses.forEach(newCourse => {
+                  studentResult.courses.push({
+                      courseId: newCourse.course,
+                      courseName: newCourse.courseName,
+                      marks: {
+                          cq: "null",
+                          mcq: "null"
+                      }
+                  });
+              });
+          });
+      });
+
+      // Add new batch results to existing results
+      exam.result.push(...newBatchResults);
+
+      // Update exam details
+      exam.name = name || exam.name;
+      exam.examCode = examCode || exam.examCode;
+      exam.totalMarks = totalMarks || exam.totalMarks;
+      exam.courses = courses; // Updated courses list (existing + new)
+      exam.batches = batches; // Updated batches list (existing + new)
+      exam.guards = guards; // Updated guards list (existing + new)
+
+      await exam.save();
+
+      res.status(200).json({ message: "Exam updated successfully", exam });
+
+  } catch (error) {
+      return next(new ErrorHandler(`Error modifying exam = ${error}`, 500));
+  }
+});
+
+
 
   exports.getAllExamBatchWise = catchAsyncError(async (req, res, next) => {
     const { batchId } = req.params;

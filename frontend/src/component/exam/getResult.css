@@ -19,3 +19,12 @@
 .selectResultType > .form-group > select{
     padding: 10px 5px;
 }
+.noExamFound{
+    text-align: center;
+    padding: 15px 5px;
+    border: 1px solid #ff3700;
+    border-radius: 10px;
+    margin-top: 10px;
+    background-color: antiquewhite;
+    color: #ff0000;
+}

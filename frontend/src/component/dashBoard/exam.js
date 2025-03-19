@@ -12,6 +12,7 @@ import "./exam.css";
 import CreateExam from "../exam/createExam";
 import ExamMarksInput from "../exam/examMarksInput";
 import GetResult from "../exam/getResult";
+import ModifyExam from "../exam/modifyExam";
 
 function Exam() {
   const navigate = useNavigate();
@@ -20,8 +21,9 @@ function Exam() {
 
   const allButtons = [
     { id: "btn1", title:"Create Exam", content: <CreateExam/>},
-    { id: "btn2", title:"Marks Input", content: <ExamMarksInput /> },
-    { id: "btn3", title:"Get Result", content: <GetResult /> }
+    { id: "btn2", title:"Modify Exam", content: <ModifyExam/>},
+    { id: "btn3", title:"Marks Input", content: <ExamMarksInput /> },
+    { id: "btn4", title:"Get Result", content: <GetResult /> }
   ];
   
 

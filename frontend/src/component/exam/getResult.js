@@ -56,8 +56,9 @@ function GetResult() {
     }
   }
   const handleBatch = (batchId) => {
+    setErrorMessage(null)
     setBatch(batchId)
-
+    setBatchWiseAllExam([])
     setLoading(true);
         dispatch(fetchGetAllExamOptionsBatchWise(batchId))
         .unwrap()
@@ -67,7 +68,7 @@ function GetResult() {
             setShowBatchWiseAllExamList(true);
         })
         .catch((err) => {
-        setErrorMessage(err.message || "Failed to load data.");
+        setErrorMessage(err || "Failed to load data.");
         })
         .finally(() => setLoading(false));
   }
@@ -106,8 +107,12 @@ function GetResult() {
                     }
                 </div>
 
-                {showBatchWiseAllExamList && (
-                    <BatchWiseAllExam batchWiseAllExam={batchWiseAllExam} batchId={batch}/>
+                {errorMessage ? (
+                    <p className="noExamFound">{errorMessage}</p>
+                ) : (
+                    showBatchWiseAllExamList && (
+                        <BatchWiseAllExam batchWiseAllExam={batchWiseAllExam} batchId={batch} />
+                    )
                 )}
             </Fragment>
         )}

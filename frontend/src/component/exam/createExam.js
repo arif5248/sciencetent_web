@@ -2,7 +2,7 @@ import React, { Fragment, useState, useEffect } from "react";
 import MetaData from "../layout/metaData/metaData";
 import { useSelector, useDispatch } from "react-redux";
 import Loader from "../layout/loader/loader";
-import { useNavigate } from "react-router-dom";
+import { json, useNavigate } from "react-router-dom";
 import { fetchAllBatchForReg } from "../../slice/batchSlice";
 import { fetchAllCoursesForReg } from "../../slice/courseSlice";
 import "./createExam.css";
@@ -12,16 +12,8 @@ import { fetchCreateExam } from "../../slice/examSlice";
 function CreateExam() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  // Redux state
-  // const {  batchesLoading, batchesError } = useSelector((state) => state.batch);
-  // const {  coursesLoading, coursesError } = useSelector((state) => state.course);
-
   const [examName, setExamName] = useState("");
   const [examCode, setExamCode] = useState("");
-  // const [examDate, setExamDate] = useState("");
-  // const [examTime, setExamTime] = useState("");
-  const [totalMarks, setTotalMarks] = useState("");
   let [selectedCourses, setSelectedCourses] = useState([]);
   const [selectedBatches, setSelectedBatches] = useState([]);
   const [guards, setGuards] = useState([{ name: "", mobile: "", center: "" }]);
@@ -75,7 +67,6 @@ function CreateExam() {
       ...selectedCourses,
       { course: "", courseName: "", courseCode: "", marks: {cq: "", mcq:""}, date: "", time: ""  },
     ]);
-    console.log(selectedCourses)
   };
 
   // Updating a course when selected
@@ -100,6 +91,7 @@ function CreateExam() {
       time: updatedCourses[index].time,
     };
     setSelectedCourses(updatedCourses);
+    
   };
 
 
@@ -118,28 +110,16 @@ function CreateExam() {
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
-    console.log(selectedCourses)
     const totalCourseMarks = selectedCourses.reduce((acc, cur) => acc + Number(cur.marks.cq) + Number(cur.marks.mcq), 0);
-    if (totalCourseMarks !== Number(totalMarks)) {
-      setErrorMessage("Total marks of courses must equal exam's total marks!");
-      setLoading(false);
-      setTimeout(() => {
-        setErrorMessage(null);
-      }, 20000);
-      return;
-    }
-    console.log(selectedCourses)
+    
     const myForm = new FormData();
 
     myForm.append("name", examName);
     myForm.append("examCode", examCode);
-    // myForm.append("date", examDate);
-    // myForm.append("time", examTime);
-    myForm.append("totalMarks", totalMarks);
+    myForm.append("totalMarks", totalCourseMarks);
     myForm.append("courses", JSON.stringify(selectedCourses));
     myForm.append("batches", JSON.stringify(selectedBatches));
     myForm.append("guards", JSON.stringify(guards));
-
     dispatch(fetchCreateExam(myForm))
       .unwrap()
       .then(() => {
@@ -156,7 +136,6 @@ function CreateExam() {
       })
       .finally(() => setLoading(false));
   };
-
   return (
     <Fragment>
       <MetaData title="Create Exam" />
@@ -193,17 +172,6 @@ function CreateExam() {
               />
             </div>
 
-            {/* Total Marks */}
-            <div className="formGroup">
-              <label>Total Marks</label>
-              <input
-                type="number"
-                value={totalMarks}
-                onChange={(e) => setTotalMarks(e.target.value)}
-                placeholder="e.g. 100"
-                required
-              />
-            </div>
 
             {/* Courses */}
             <div className="formGroup">
@@ -232,7 +200,6 @@ function CreateExam() {
                     value={course.marks.cq}
                     onChange={(e) => {
                       const updatedCourses = [...selectedCourses];
-                      
                       updatedCourses[index].marks.cq = e.target.value;
                       setSelectedCourses(updatedCourses);
                     }}
@@ -244,7 +211,6 @@ function CreateExam() {
                     value={course.marks.mcq}
                     onChange={(e) => {
                       const updatedCourses = [...selectedCourses];
-                      
                       updatedCourses[index].marks.mcq = e.target.value;
                       setSelectedCourses(updatedCourses);
                     }}

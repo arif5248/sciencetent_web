@@ -1,12 +1,15 @@
 const express = require("express");
 const { isAuthenticatedUser, isPermitted } = require("../middleware/auth");
-const { createExam, getAllExamBatchWise, batchWiseMarksInput, getAllExamOptionsBatchWise, getSingleExamDetails, courseWiseMarksInput } = require("../controllers/examController");
+const { createExam, getAllExamBatchWise, batchWiseMarksInput, getAllExamOptionsBatchWise, getSingleExamDetails, courseWiseMarksInput, modifyExam } = require("../controllers/examController");
 
 const router = express.Router();
 
 router
   .route("/admin/newExam")  
   .post(isAuthenticatedUser, isPermitted(process.env.CREATE_EXAM), createExam);
+router
+  .route("/admin/modifyExam")  
+  .put(isAuthenticatedUser, isPermitted(process.env.MODIFY_EXAM), modifyExam);
 router
   .route("/admin/getAllExamBatchWise/:batchId")  
   .get(isAuthenticatedUser, isPermitted(process.env.GET_ALL_EXAM_BATCH_WISE), getAllExamBatchWise);
