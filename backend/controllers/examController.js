@@ -121,15 +121,21 @@ exports.modifyExam = catchAsyncError(async (req, res, next) => {
       // Update results for existing batches when new courses are added
       exam.result.forEach(batchResult => {
           batchResult.batchWiseResult.forEach(studentResult => {
+              // Get existing course IDs for this student
+              const existingStudentCourseIds = studentResult.courses.map(c => c.courseId);
+              
+              // Append only new courses
               newCourses.forEach(newCourse => {
-                  studentResult.courses.push({
-                      courseId: newCourse.course,
-                      courseName: newCourse.courseName,
-                      marks: {
-                          cq: "null",
-                          mcq: "null"
-                      }
-                  });
+                  if (!existingStudentCourseIds.includes(newCourse.course)) {
+                      studentResult.courses.push({
+                          courseId: newCourse.course,
+                          courseName: newCourse.courseName,
+                          marks: {
+                              cq: "null",
+                              mcq: "null"
+                          }
+                      });
+                  }
               });
           });
       });
@@ -153,6 +159,7 @@ exports.modifyExam = catchAsyncError(async (req, res, next) => {
       return next(new ErrorHandler(`Error modifying exam = ${error}`, 500));
   }
 });
+
 
 
 

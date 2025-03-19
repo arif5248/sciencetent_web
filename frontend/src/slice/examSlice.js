@@ -22,6 +22,23 @@ export const fetchCreateExam = createAsyncThunk(
   }
 );
 
+export const fetchModifyExam = createAsyncThunk(
+  "exam/fetchModifyExam",
+  async (examData, { rejectWithValue }) => {
+    try {
+      const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
+      const { data } = await axios.put(`${baseUrl}/api/v1/admin/modifyExam`, examData, config);
+      return data;
+    } catch (error) {
+      // Handle error response, including HTTP 409 Conflict
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message); // Provide custom error message from backend
+      }
+      return rejectWithValue(error.message || "Something went wrong");
+    }
+  }
+);
+
 export const fetchGetAllExamOptionsBatchWise = createAsyncThunk(
   "exam/fetchGetAllExamOptionsBatchWise",
   async (batchId, { rejectWithValue }) => {
@@ -99,6 +116,20 @@ const examSlice = createSlice({
         state.exam = null;
         state.error = action.payload || "An unexpected error occurred";
         })
+
+        .addCase(fetchModifyExam.pending, (state) => {
+          state.isLoading = true;
+          })
+          .addCase(fetchModifyExam.fulfilled, (state, action) => {
+          state.isLoading = false;
+          state.exam = action.payload.exam;
+          state.error = null;
+          })
+          .addCase(fetchModifyExam.rejected, (state, action) => {
+          state.isLoading = false;
+          state.exam = null;
+          state.error = action.payload || "An unexpected error occurred";
+          })
 
         .addCase(fetchGetAllExamOptionsBatchWise.pending, (state) => {
           state.isLoading = true;

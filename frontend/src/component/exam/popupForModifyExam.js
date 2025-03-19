@@ -7,7 +7,7 @@ import { fetchAllBatchForReg } from "../../slice/batchSlice";
 import { fetchAllCoursesForReg } from "../../slice/courseSlice";
 import "./createExam.css";
 import { FaTrash } from "react-icons/fa";
-import { fetchCreateExam } from "../../slice/examSlice";
+import { fetchModifyExam } from "../../slice/examSlice";
 
 function PopupForModifyExam({ content, onClose }) {
   console.log(content)
@@ -115,6 +115,7 @@ function PopupForModifyExam({ content, onClose }) {
    
     const myForm = new FormData();
 
+    myForm.append("examId", content.examDetails._id);
     myForm.append("name", examName);
     myForm.append("examCode", examCode);
     myForm.append("totalMarks", totalCourseMarks);
@@ -123,21 +124,21 @@ function PopupForModifyExam({ content, onClose }) {
     myForm.append("guards", JSON.stringify(guards));
 
     console.log(examName, examCode, totalCourseMarks, JSON.stringify(selectedCourses), JSON.stringify(selectedBatches), JSON.stringify(guards))
-    // dispatch(fetchCreateExam(myForm))
-    //   .unwrap()
-    //   .then(() => {
-    //     setSuccessMessage("Exam created successfully!");
-    //     setTimeout(() => {
-    //       setSuccessMessage(null);
-    //     }, 20000);
-    //   })
-    //   .catch((err) => {
-    //     setErrorMessage(err);
-    //     setTimeout(() => {
-    //       setErrorMessage(null);
-    //     }, 20000);
-    //   })
-    //   .finally(() => setLoading(false));
+    dispatch(fetchModifyExam(myForm))
+      .unwrap()
+      .then(() => {
+        setSuccessMessage("Exam modified successfully!");
+        setTimeout(() => {
+          setSuccessMessage(null);
+        }, 20000);
+      })
+      .catch((err) => {
+        setErrorMessage(err);
+        setTimeout(() => {
+          setErrorMessage(null);
+        }, 20000);
+      })
+      .finally(() => setLoading(false));
   };
 
   return (
