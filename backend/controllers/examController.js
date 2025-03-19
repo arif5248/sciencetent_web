@@ -81,7 +81,6 @@ exports.modifyExam = catchAsyncError(async (req, res, next) => {
       if (!exam) {
           return next(new ErrorHandler("Exam not found", 404));
       }
-
       // Identify new courses
       const existingCourseIds = exam.courses.map(course => course.course);
       const newCourses = courses.filter(course => !existingCourseIds.includes(course.course));
@@ -95,50 +94,54 @@ exports.modifyExam = catchAsyncError(async (req, res, next) => {
       const newStudents = await Student.find({ "batchDetails.batchId": { $in: newBatchIds }, status: "approved" });
 
       // Initialize result for new batches
-      const newBatchResults = newBatches.map(batch => {
-          const batchStudents = newStudents.filter(student =>
-              student.batchDetails.batchId.toString() === batch._id.toString()
-          );
-
-          return {
-              batchId: batch._id,
-              batchWiseResult: batchStudents.map(student => ({
-                  student: student._id,
-                  studentID: student.studentID,
-                  studentName: student.name,
-                  courses: courses.map(course => ({
-                      courseId: course.course,
+      exam.result.map(r =>{
+        if(r.batchId === batches._id){
+          r.batchWiseResult.map(i =>{
+            i.courses.map(c=> {
+              courses.map(course =>{
+                if( course.course !== c.courseId){
+                i.courses.push({
+                  courseId: course.course,
                       courseName: course.courseName,
                       marks: {
                           cq: "null",
                           mcq: "null"
                       }
-                  }))
-              }))
-          };
-      });
+                })
+                }
+              })
+            })
+          })
+        }else{
+          const newBatchResults = newBatches.map(batch => {
+            const batchStudents = newStudents.filter(student =>
+                student.batchDetails.batchId.toString() === batch._id.toString()
+            );
+  
+            return {
+                batchId: batch._id,
+                batchWiseResult: batchStudents.map(student => ({
+                    student: student._id,
+                    studentID: student.studentID,
+                    studentName: student.name,
+                    courses: courses.map(course => ({
+                        courseId: course.course,
+                        courseName: course.courseName,
+                        marks: {
+                            cq: "null",
+                            mcq: "null"
+                        }
+                    }))
+                }))
+            };
+        });
+        }
+      })
 
-      // Update results for existing batches when new courses are added
-      exam.result.forEach(batchResult => {
-          batchResult.batchWiseResult.forEach(studentResult => {
-              // Get existing course IDs for this student
-              const existingStudentCourseIds = studentResult.courses.map(c => c.courseId);
-              
-              // Append only new courses
-              newCourses.forEach(newCourse => {
-                  if (!existingStudentCourseIds.includes(newCourse.course)) {
-                      studentResult.courses.push({
-                          courseId: newCourse.course,
-                          courseName: newCourse.courseName,
-                          marks: {
-                              cq: "null",
-                              mcq: "null"
-                          }
-                      });
-                  }
-              });
-          });
-      });
+      
+      
+
+      
 
       // Add new batch results to existing results
       exam.result.push(...newBatchResults);
