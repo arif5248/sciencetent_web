@@ -135,6 +135,7 @@ exports.modifyExam = catchAsyncError(async (req, res, next) => {
                 }))
             };
         });
+        exam.result.push(...newBatchResults);
         }
       })
 
@@ -144,7 +145,7 @@ exports.modifyExam = catchAsyncError(async (req, res, next) => {
       
 
       // Add new batch results to existing results
-      exam.result.push(...newBatchResults);
+      
 
       // Update exam details
       exam.name = name || exam.name;
