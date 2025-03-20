@@ -10,7 +10,6 @@ import { FaTrash } from "react-icons/fa";
 import { fetchModifyExam } from "../../slice/examSlice";
 
 function PopupForModifyExam({ content, onClose }) {
-  console.log(content)
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -121,9 +120,8 @@ function PopupForModifyExam({ content, onClose }) {
     myForm.append("totalMarks", totalCourseMarks);
     myForm.append("courses", JSON.stringify(selectedCourses));
     myForm.append("batches", JSON.stringify(selectedBatches));
-    myForm.append("guards", JSON.stringify(guards));
+    myForm.append("guards", JSON.stringify([...content.examDetails.guards, ...guards]));
 
-    console.log(examName, examCode, totalCourseMarks, JSON.stringify(selectedCourses), JSON.stringify(selectedBatches), JSON.stringify(guards))
     dispatch(fetchModifyExam(myForm))
       .unwrap()
       .then(() => {
@@ -245,7 +243,6 @@ function PopupForModifyExam({ content, onClose }) {
                       type="date"
                       value={course.date.split("T")[0]}
                       onChange={(e) => {
-                        console.log(e.target.value)
                         const updatedCourses = [...selectedCourses];
                         
                         updatedCourses[index].date = e.target.value;
