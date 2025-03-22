@@ -185,7 +185,7 @@ const handlePayloadData = (studentId, updatedMarks) => {
         courseId: selectedCourseId,
         students : updatedStudents
       }
-    console.log(inputData)
+    // console.log(inputData)
     
 
     setLoading(true);

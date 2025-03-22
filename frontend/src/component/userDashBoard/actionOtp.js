@@ -98,7 +98,7 @@ function PopupForOtpAndExStudentRegister({ content, onClose }) {
 
   return (
     <div className="popup-overlay">
-      <div className="popup-content">
+      <div className="otp-popup-content">
         <button className="close-btn" onClick={onClose}>
           &times;
         </button>
