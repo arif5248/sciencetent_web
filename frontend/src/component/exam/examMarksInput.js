@@ -84,7 +84,14 @@ function ExamMarksInput() {
       .unwrap()
       .then((response) => {
         setCourseOptions(response.exam.courses)
-        setBatchWiseResult((response.exam.result.find(item => item.batchId === batch).batchWiseResult))
+        // setBatchWiseResult((response.exam.result.find(item => item.batchId === batch).batchWiseResult))
+
+        let studentsArray = response.exam.result.find(item => item.batchId === batch).batchWiseResult
+        const sortedStudents = [...studentsArray].sort((a, b) => a.studentID.localeCompare(b.studentID));
+
+        setBatchWiseResult(sortedStudents);
+
+
         setShowCourseSelectBox(true);
       })
       .catch((err) => {
@@ -95,7 +102,7 @@ function ExamMarksInput() {
       })
       .finally(() => setLoading(false));
   };
-
+  // console.log(batchWiseResult)
   const handleCourse = (courseId) => {
     setSelectedCourseId(courseId)
     setCourse(courseOptions.find(course => course.course === courseId))
@@ -135,13 +142,6 @@ function ExamMarksInput() {
     });
     setBatchWiseResult(updatedResults)
     
-    // const inputData = {
-    //   examId: exam,
-    //   batchId: batch,
-    //   courseId: courseId,
-    //   students :[...students, {studentId: studentId, marks: updatedMarks}]
-    // }
-    // console.log(inputData)
     handlePayloadData(studentId, updatedMarks)
     
 };
@@ -174,9 +174,6 @@ const handlePayloadData = (studentId, updatedMarks) => {
       return updated;
   });
 };
-
-
-  
 
   const handleSubmit = () => {
     const inputData = {

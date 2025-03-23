@@ -9,6 +9,9 @@ function PopupForShowExamResult({ content, onClose }) {
   const [errorMessage, setErrorMessage] = useState(null);
   const [sliderValue, setSliderValue] = useState(60); // Slider value for percentage
   
+  let studentsArray = content.examDetails.result.find((item) => item.batchId === content.batchId).batchWiseResult
+  const sortedStudents = [...studentsArray].sort((a, b) => a.studentID.localeCompare(b.studentID));
+
   // Function to calculate the background color based on percentage
   const getBackgroundColor = (marks, maxMarks) => {
     const percentage = (marks / maxMarks) * 100;
@@ -64,17 +67,12 @@ function PopupForShowExamResult({ content, onClose }) {
     // No need to reload the page, as this avoids the interference
   };
   
-
-  
-  
-
   return (
     <div className="popup-overlay">
       <div className="result_popup popup-content">
         <button className="close-btn" onClick={onClose}>
           &times;
         </button>
-        {console.log(content.examDetails)}
         {loading && <p>Loading...</p>}
         {errorMessage && <p className="error">{errorMessage}</p>}
         {!loading && !errorMessage && (
@@ -128,9 +126,8 @@ function PopupForShowExamResult({ content, onClose }) {
                 </thead>
 
                 <tbody>
-                  {content.examDetails.result
-                    .find((item) => item.batchId === content.batchId)
-                    .batchWiseResult.map((student) => {
+                  {
+                  sortedStudents.map((student) => {
                       const totalMarks = content.examDetails.courses.reduce((acc, course) => {
                         const studentCourse = student.courses.find(
                           (sc) => sc.courseId === course.course
@@ -143,8 +140,6 @@ function PopupForShowExamResult({ content, onClose }) {
                         const mcq = isNaN(studentCourse?.marks.mcq) || studentCourse?.marks.mcq === "A"
                           ? 0
                           : parseFloat(studentCourse?.marks.mcq || 0);
-                      
-                        console.log(cq, mcq, acc); // Debugging output
                       
                         return acc + cq + mcq;
                       }, 0);
