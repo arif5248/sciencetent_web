@@ -90,12 +90,11 @@ exports.forgotPassword = catchAsyncError(async (req, res, next) => {
   const message = `Your password reset url is :- \n\n\n ${resetUrl} \n\n if you have not request this email then, please ignore it`;
   
   try {
-    const emailReport = await sendEmail({
+    await sendEmail({
       email: req.body.email,
       subject: `Reset password URL`,
       message,
     });
-    console.log(emailReport)
 
     res.status(200).json({
       success: true,
