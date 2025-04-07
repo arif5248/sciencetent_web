@@ -91,8 +91,8 @@ exports.forgotPassword = catchAsyncError(async (req, res, next) => {
   
   try {
     const emailReport = await sendEmail({
-      email: req.user.email,
-      subject: `Otp for Verification`,
+      email: req.body.email,
+      subject: `Reset password URL`,
       message,
     });
     console.log(emailReport)
