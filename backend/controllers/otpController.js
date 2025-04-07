@@ -50,7 +50,7 @@ exports.createOtpForExStudentVerification = catchAsyncError(async (req, res, nex
             subject: `Otp for Verification`,
             message,
         });
-        console.log(emailReport)
+        // console.log(emailReport)
         res.status(201).json({
             success: true,
             message: `OTP sent successfully to ${req.user.email}`,

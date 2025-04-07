@@ -100,7 +100,7 @@ function PopupForShowExamResult({ content, onClose }) {
                     {content.examDetails.courses.map((course) => {
                       if(course.marks.cq === "00" || course.marks.mcq === "00"){
                         return(
-                          <th>{course.courseName}</th>
+                          <th key={course.courseName}>{course.courseName}</th>
                         )
                       }else{
                         return(
@@ -111,8 +111,8 @@ function PopupForShowExamResult({ content, onClose }) {
                     <th rowSpan={2}>Total Marks</th> {/* Total Marks Column */}
                   </tr>
                   <tr>
-                    {content.examDetails.courses.map((course) => (
-                      <>
+                    {content.examDetails.courses.map((course, index) => (
+                      <React.Fragment key={index}>
                       {course.marks.cq !== "00" && <th style={{ fontSize: "14px" }}>
                           CQ({course.marks.cq})
                         </th>}
@@ -120,7 +120,7 @@ function PopupForShowExamResult({ content, onClose }) {
                         {course.marks.mcq !== "00" && <th style={{ fontSize: "14px" }}>
                           MCQ({course.marks.mcq})
                         </th>}
-                      </>
+                      </React.Fragment>
                     ))}
                   </tr>
                 </thead>
@@ -150,7 +150,7 @@ function PopupForShowExamResult({ content, onClose }) {
                         <tr key={student.studentID}>
                           <td>{student.studentID}</td>
                           <td>{student.studentName}</td>
-                          {content.examDetails.courses.map((course) => {
+                          {content.examDetails.courses.map((course, index) => {
                             const studentCourse = student.courses.find(
                               (sc) => sc.courseId === course.course
                             );
@@ -158,7 +158,7 @@ function PopupForShowExamResult({ content, onClose }) {
                             const mcq = studentCourse?.marks.mcq !== "null" ? studentCourse?.marks.mcq : 0;
 
                             return (
-                              <>
+                              <React.Fragment key={`${course.courseName}${index}`}>
                                 {course.marks.cq !== "00" && <td
                                   style={{
                                     backgroundColor: getBackgroundColor(
@@ -179,7 +179,7 @@ function PopupForShowExamResult({ content, onClose }) {
                                 >
                                   {mcq}
                                 </td>}
-                              </>
+                              </React.Fragment>
                             );
                           })}
                           <td style={{

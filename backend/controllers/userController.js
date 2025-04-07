@@ -74,25 +74,28 @@ exports.logout = catchAsyncError(async (req, res, next) => {
 //forgot password
 exports.forgotPassword = catchAsyncError(async (req, res, next) => {
   const user = await User.findOne({ email: req.body.email });
-  // console.log("========user======", user)
   if (!user) {
     return next(new ErrorHandler("User not found", 404));
   }
 
-  //Get ResetPasword Token
+  //Get ResetPassword Token
   const resetToken = user.getResetPasswordToken();
-  // console.log("========resetToken======", resetToken)
 
   await user.save({ validateBeforeSave: false });
 
   // const protocol = req.protocol; // 'http' or 'https'
-  const host = req.get('origin') || req.get('referrer');  // 'sciencetent.vercel.app' or localhost:5000
+  const host = req.get('origin') || req.get('referrer');  
   const resetUrl = `${host}/password/reset/${resetToken}`;
 
-  const message = `Your password reset token is :- \n\n\n ${resetUrl} \n\n if you have not request this email then, please ignore it`;
+  const message = `Your password reset url is :- \n\n\n ${resetUrl} \n\n if you have not request this email then, please ignore it`;
   
   try {
-    
+    const emailReport = await sendEmail({
+      email: req.user.email,
+      subject: `Otp for Verification`,
+      message,
+    });
+    console.log(emailReport)
 
     res.status(200).json({
       success: true,
