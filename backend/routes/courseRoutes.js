@@ -17,7 +17,7 @@ router
   .get(isAuthenticatedUser, isPermitted(process.env.GET_ALL_COURSE), getAllCourses);
   router
 .route("/user/coursesForReg")
-  .get(isAuthenticatedUser,  getAllCourses);
+  .get(getAllCourses);
 router
   .route("/admin/deleteCourse/:id")
   .delete(isAuthenticatedUser, isPermitted(process.env.DELETE_COURSE), deleteCourse );
