@@ -22,10 +22,10 @@ router
   .get(isAuthenticatedUser, isPermitted(process.env.GET_ALL_BATCH), getAllBatches);
 router
   .route("/user/batchesForStudentReg")
-  .get(isAuthenticatedUser, getAllBatchesForStudents);
+  .get(getAllBatchesForStudents);
 router
   .route("/user/batchesForExStudentReg")
-  .get(isAuthenticatedUser, getAllBatchesForExStudents);
+  .get(getAllBatchesForExStudents);
 router
   .route("/admin/deleteBatch/:id")
   .delete(isAuthenticatedUser, isPermitted(process.env.DELETE_BATCH), deleteBatch);
