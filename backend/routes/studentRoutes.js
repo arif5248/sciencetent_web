@@ -15,7 +15,7 @@ const { isAuthenticatedUser, isAuthorizeRoles, isPermitted } = require("../middl
 const { generateUniqueID } = require("../utils/generateUniqueID");
 const router = express.Router();
 
-router.route("/student/register").post(isAuthenticatedUser, registerStudent);
+router.route("/student/register").post(registerStudent);
 router.route("/exStudent/register").post(isAuthenticatedUser, exRegisterStudent);
 router
   .route("/admin/students")
