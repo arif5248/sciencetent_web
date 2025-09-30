@@ -1,4 +1,4 @@
-const express = require("express");
+const express = require('express')
 const {
   registerStudent,
   getAllStudents,
@@ -10,30 +10,54 @@ const {
   getAllBatchStudents,
   rejectStudent,
   exRegisterStudent,
-} = require("../controllers/studentController");
-const { isAuthenticatedUser, isAuthorizeRoles, isPermitted } = require("../middleware/auth");
-const { generateUniqueID } = require("../utils/generateUniqueID");
-const router = express.Router();
+} = require('../controllers/studentController')
+const {
+  isAuthenticatedUser,
+  isAuthorizeRoles,
+  isPermitted,
+} = require('../middleware/auth')
+const { generateUniqueID } = require('../utils/generateUniqueID')
+const router = express.Router()
 
-router.route("/student/register").post(registerStudent);
-router.route("/exStudent/register").post(isAuthenticatedUser, exRegisterStudent);
+router.route('/student/register').post(isAuthenticatedUser, registerStudent)
+router.route('/exStudent/register').post(isAuthenticatedUser, exRegisterStudent)
 router
-  .route("/admin/students")
-  .get(isAuthenticatedUser, isPermitted(process.env.GET_ALL_STUDENTS), getAllStudents);
+  .route('/admin/students')
+  .get(
+    isAuthenticatedUser,
+    isPermitted(process.env.GET_ALL_STUDENTS),
+    getAllStudents
+  )
 router
-  .route("/admin/pending-students")
-  .get(isAuthenticatedUser, isPermitted(process.env.GET_ALL_PENDING_STUDENTS), getAllPendingStudents);
+  .route('/admin/pending-students')
+  .get(
+    isAuthenticatedUser,
+    isPermitted(process.env.GET_ALL_PENDING_STUDENTS),
+    getAllPendingStudents
+  )
 router
-  .route("/admin/approved-students")
-  .get(isAuthenticatedUser, isPermitted(process.env.GET_ALL_APPROVED_STUDENTS), getAllApprovedStudents);
+  .route('/admin/approved-students')
+  .get(
+    isAuthenticatedUser,
+    isPermitted(process.env.GET_ALL_APPROVED_STUDENTS),
+    getAllApprovedStudents
+  )
 router
-  .route("/admin/rejected-students")
-  .get(isAuthenticatedUser, isPermitted(process.env.GET_ALL_REJECTED_STUDENTS), getAllRejectedStudents);
+  .route('/admin/rejected-students')
+  .get(
+    isAuthenticatedUser,
+    isPermitted(process.env.GET_ALL_REJECTED_STUDENTS),
+    getAllRejectedStudents
+  )
 router
-  .route("/admin/batch-students/:batchID")
-  .get(isAuthenticatedUser, isPermitted(process.env.GET_ALL_BATCH_STUDENTS), getAllBatchStudents);
+  .route('/admin/batch-students/:batchID')
+  .get(
+    isAuthenticatedUser,
+    isPermitted(process.env.GET_ALL_BATCH_STUDENTS),
+    getAllBatchStudents
+  )
 router
-  .route("/admin/approve/students/:id")
+  .route('/admin/approve/students/:id')
   .put(
     isAuthenticatedUser,
     isPermitted(process.env.APPROVE_STUDENT),
@@ -41,13 +65,11 @@ router
     generateUniqueID
   )
 router
-  .route("/admin/reject/students/:id")
+  .route('/admin/reject/students/:id')
   .put(
     isAuthenticatedUser,
     isPermitted(process.env.REJECT_STUDENT),
     rejectStudent
-  );
+  )
 
-
-
-module.exports = router;
+module.exports = router
