@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://sciencetent-backend.vercel.app/api/:path*"
+    }
+  ]
+}
